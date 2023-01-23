@@ -1,10 +1,10 @@
 package ir.maktab.data.model;
 
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.*;
 import java.time.Duration;
 import java.util.Date;
 
@@ -16,15 +16,21 @@ import java.util.Date;
 @Entity
 @ToString
 public class Suggestion extends BaseEntity {
+
     @OneToOne
     Expert expert;
+
     @CreationTimestamp
     @Temporal(value = TemporalType.TIMESTAMP)
     Date registrationTime;
+
     double price;
+
     @Temporal(value = TemporalType.TIME)
     Date suggestionsStartedTime;
+
     Duration duration;
+
     @ManyToOne
     OrderSystem orderSystem;
 }
