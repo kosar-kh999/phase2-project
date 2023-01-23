@@ -1,12 +1,12 @@
 package ir.maktab.data.model;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +18,7 @@ import java.util.List;
 @Entity
 @ToString
 public class Customer extends User {
+
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     List<OrderSystem> orderSystems = new ArrayList<>();
 
