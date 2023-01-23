@@ -1,0 +1,18 @@
+package ir.maktab.data.model;
+
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
+import javax.persistence.Entity;
+
+@Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
+@Entity
+@ToString
+public class Services extends BaseEntity {
+
+    String name;
+}
