@@ -1,9 +1,8 @@
 package ir.maktab.data.model;
 
+import jakarta.persistence.Entity;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import javax.persistence.Entity;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -13,6 +12,8 @@ import javax.persistence.Entity;
 @Entity
 @ToString
 public class Opinion extends BaseEntity {
+
     int score;
+
     String viewpoint;
 }
