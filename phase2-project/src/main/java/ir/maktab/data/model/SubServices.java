@@ -1,9 +1,8 @@
 package ir.maktab.data.model;
 
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import javax.persistence.*;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -16,6 +15,7 @@ public class SubServices extends BaseEntity {
 
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     Services services;
+
     @Column(nullable = false)
     String subName;
     @Column(nullable = false)
