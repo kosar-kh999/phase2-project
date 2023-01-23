@@ -1,10 +1,10 @@
 package ir.maktab.data.model;
 
 import ir.maktab.data.enums.OrderStatus;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,10 +25,13 @@ public class OrderSystem extends BaseEntity {
     @Temporal(value = TemporalType.TIMESTAMP)
     Date timeToDo;
     String address;
+
     @Enumerated(value = EnumType.STRING)
     OrderStatus orderStatus;
+
     @ManyToOne
     Expert expert;
+
     @Temporal(value = TemporalType.TIMESTAMP)
     Date doneDate;
 
