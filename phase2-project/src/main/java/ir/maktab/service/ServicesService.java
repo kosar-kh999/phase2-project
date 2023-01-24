@@ -2,6 +2,7 @@ package ir.maktab.service;
 
 import ir.maktab.data.model.Services;
 import ir.maktab.data.repository.ServicesRepository;
+import ir.maktab.util.exception.NotFound;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,5 +27,9 @@ public class ServicesService {
 
     public void deleteServices(Services services) {
         servicesRepository.delete(services);
+    }
+
+    public Services getByName(String name) throws NotFound {
+        return servicesRepository.findByName(name).orElseThrow(() -> new NotFound("This service is not exist ! "));
     }
 }
