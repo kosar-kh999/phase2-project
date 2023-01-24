@@ -28,11 +28,11 @@ public class ExpertService {
         expertRepository.save(expert);
     }
 
-    public Optional<Expert> signIn(String email, String password) throws NotFoundUser {
+    public Expert signIn(String email, String password) throws NotFoundUser {
         Expert expert = expertRepository.findExpertByEmail(email).orElseThrow(() -> new NotFoundUser("This email is not exist ! "));
         if (!(expert.getPassword().equals(password)))
             throw new NotFoundUser("This user is not correct");
-        return Optional.ofNullable(expert);
+        return expert;
     }
 
     public void changePassword(String newPassword, String confirmedPassword, Expert expert) throws NotCorrect {
@@ -75,4 +75,5 @@ public class ExpertService {
         }
         imageInputStream.close();
     }
+
 }
