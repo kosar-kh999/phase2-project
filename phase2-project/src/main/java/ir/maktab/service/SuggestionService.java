@@ -1,6 +1,8 @@
 package ir.maktab.service;
 
 import ir.maktab.data.enums.OrderStatus;
+import ir.maktab.data.model.Customer;
+import ir.maktab.data.model.OrderSystem;
 import ir.maktab.data.model.SubServices;
 import ir.maktab.data.model.Suggestion;
 import ir.maktab.data.repository.SuggestionRepository;
@@ -40,4 +42,14 @@ public class SuggestionService {
         suggestion.getOrderSystem().setOrderStatus(OrderStatus.WAITING_EXPERT_SELECTION);
         saveSuggestion(suggestion);
     }
+
+    public List<Suggestion> sortSuggestionByPrice(OrderSystem orderSystem) {
+        return suggestionRepository.findByOrderSystemOrderByPrice(orderSystem);
+    }
+
+    public Suggestion acceptSuggestion(Suggestion suggestion, OrderSystem orderSystem) {
+        orderSystem.setOrderStatus(OrderStatus.WAITING_EXPERT_COME_PLACE);
+        return suggestionRepository.save(suggestion);
+    }
+
 }
