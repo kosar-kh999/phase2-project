@@ -1,9 +1,13 @@
 package ir.maktab.service;
 
+import ir.maktab.data.enums.OrderStatus;
 import ir.maktab.data.model.Customer;
+import ir.maktab.data.model.OrderSystem;
+import ir.maktab.data.model.Suggestion;
 import ir.maktab.data.repository.CustomerRepository;
 import ir.maktab.util.exception.NotCorrect;
 import ir.maktab.util.exception.NotFoundUser;
+import ir.maktab.util.exception.OrderException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +20,10 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
     private final ServicesService servicesService;
     private final SubServicesService subServicesService;
+
+    private final SuggestionService suggestionService;
+
+    private final OrderSystemService orderSystemService;
 
     public void signUp(Customer customer) {
         customerRepository.save(customer);
@@ -53,5 +61,17 @@ public class CustomerService {
 
     public void showAllSubServices() {
         subServicesService.getAllSubServices();
+    }
+
+    public void changeOrderStatusToStarted(OrderSystem orderSystem, Suggestion suggestion) throws OrderException {
+        if (suggestion.getSuggestionsStartedTime().before(orderSystem.getTimeToDo()))
+            throw new OrderException("time of suggestion from expert must be after the time of order system to do");
+        orderSystem.setOrderStatus(OrderStatus.STARTED);
+        orderSystemService.addOrder(orderSystem);
+    }
+
+    public void changeOrderStatusToDone(OrderSystem orderSystem) {
+        orderSystem.setOrderStatus(OrderStatus.DONE);
+        orderSystemService.addOrder(orderSystem);
     }
 }
