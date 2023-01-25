@@ -24,11 +24,14 @@ public class Suggestion extends BaseEntity {
     @Temporal(value = TemporalType.TIMESTAMP)
     Date registrationTime;
 
+    @Column(nullable = false)
     double price;
 
     @Temporal(value = TemporalType.TIME)
+    @Column(nullable = false)
     Date suggestionsStartedTime;
 
+    @Column(nullable = false)
     Duration duration;
 
     @ManyToOne
