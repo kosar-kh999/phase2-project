@@ -16,7 +16,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +28,7 @@ public class ExpertService {
     }
 
     public Expert signIn(String email, String password) throws NotFoundUser {
-        Expert expert = expertRepository.findExpertByEmail(email).orElseThrow(() -> new NotFoundUser("This email is not exist ! "));
+        Expert expert = expertRepository.findExpertByEmail(email).orElseThrow(() -> new NotFoundUser("This email is not exist"));
         if (!(expert.getPassword().equals(password)))
             throw new NotFoundUser("This user is not correct");
         return expert;
@@ -54,8 +53,13 @@ public class ExpertService {
         return expertRepository.getExpertByExpertStatus(expertStatus);
     }
 
-    public void update(Expert expert) {
-        expertRepository.save(expert);
+    public Expert update(Expert expert) {
+        return expertRepository.save(expert);
+    }
+
+    public Expert getExpertByEmail(String email) throws NotFoundUser {
+        Expert expert = expertRepository.findExpertByEmail(email).orElseThrow(() -> new NotFoundUser("This email is not exist"));
+        return expert;
     }
 
     public String getPath(File file) {
