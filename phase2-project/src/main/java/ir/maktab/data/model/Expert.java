@@ -4,6 +4,7 @@ import ir.maktab.data.enums.ExpertStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -11,11 +12,12 @@ import java.util.List;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
 @Entity
 @ToString
+@SuperBuilder
 public class Expert extends User implements Serializable {
 
     @Enumerated(value = EnumType.STRING)

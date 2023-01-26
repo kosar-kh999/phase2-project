@@ -3,14 +3,16 @@ package ir.maktab.data.model;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
 @Entity
 @ToString
+@SuperBuilder
 public class SubServices extends BaseEntity {
 
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)

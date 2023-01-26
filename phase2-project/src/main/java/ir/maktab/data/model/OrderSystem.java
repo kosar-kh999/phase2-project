@@ -4,6 +4,7 @@ import ir.maktab.data.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,11 +12,12 @@ import java.util.List;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
 @Entity
 @ToString
+@SuperBuilder
 public class OrderSystem extends BaseEntity {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)

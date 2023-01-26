@@ -3,6 +3,7 @@ package ir.maktab.data.model;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Duration;
@@ -10,11 +11,12 @@ import java.util.Date;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
 @Entity
 @ToString
+@SuperBuilder
 public class Suggestion extends BaseEntity {
 
     @OneToOne

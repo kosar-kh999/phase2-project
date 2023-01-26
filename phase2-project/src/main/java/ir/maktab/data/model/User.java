@@ -4,6 +4,7 @@ import ir.maktab.data.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
@@ -15,6 +16,7 @@ import java.util.Date;
 @NoArgsConstructor
 @EqualsAndHashCode
 @ToString
+@SuperBuilder
 public class User extends BaseEntity {
 
     @Column(nullable = false)
@@ -37,4 +39,6 @@ public class User extends BaseEntity {
     Date entryDate;
 
     double credit;
+
 }
+
