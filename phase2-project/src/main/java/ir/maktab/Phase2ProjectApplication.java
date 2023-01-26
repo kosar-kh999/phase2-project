@@ -1,4 +1,4 @@
-package ir.maktab.phase2project;
+package ir.maktab;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
