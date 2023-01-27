@@ -5,5 +5,6 @@ public enum ExpertStatus {
 
     AWAITING_CONFIRMATION,
 
-    CONFIRMED,
+    CONFIRMED;
+
 }

@@ -5,6 +5,8 @@ import ir.maktab.data.model.Expert;
 import ir.maktab.data.model.Services;
 import ir.maktab.data.model.SubServices;
 import ir.maktab.util.exception.NotFound;
+import ir.maktab.util.exception.NotFoundUser;
+import ir.maktab.util.exception.StatusException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -55,13 +57,11 @@ public class AdminService {
         return subServiceByName;
     }
 
-    public Expert editStatus(Expert expert) {
-        Expert expertStatus = expertService.getStatus(expert.getExpertStatus());
-        if (expertStatus.getExpertStatus().equals(ExpertStatus.NEW)) {
-            expert.setExpertStatus(ExpertStatus.CONFIRMED);
-            expertService.update(expert);
-        }
-        return expert;
-
+    public Expert editStatus(String email) throws NotFoundUser, StatusException {
+        Expert expert = expertService.getExpertByEmail(email);
+        if (!(expert.equals(ExpertStatus.NEW)))
+            throw new StatusException("This user is not new");
+        expert.setExpertStatus(ExpertStatus.CONFIRMED);
+        return expertService.update(expert);
     }
 }

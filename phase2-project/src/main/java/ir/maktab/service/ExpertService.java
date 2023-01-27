@@ -1,6 +1,5 @@
 package ir.maktab.service;
 
-import ir.maktab.data.enums.ExpertStatus;
 import ir.maktab.data.model.Expert;
 import ir.maktab.data.repository.ExpertRepository;
 import ir.maktab.util.exception.NotCorrect;
@@ -34,11 +33,11 @@ public class ExpertService {
         return expert;
     }
 
-    public void changePassword(String newPassword, String confirmedPassword, Expert expert) throws NotCorrect {
+    public Expert changePassword(String newPassword, String confirmedPassword, Expert expert) throws NotCorrect {
         if (!newPassword.equals(confirmedPassword))
             throw new NotCorrect("The new password and confirmed password must be match");
         expert.setPassword(newPassword);
-        expertRepository.save(expert);
+        return expertRepository.save(expert);
     }
 
     public List<Expert> getAll() {
@@ -49,17 +48,21 @@ public class ExpertService {
         expertRepository.delete(expert);
     }
 
-    public Expert getStatus(ExpertStatus expertStatus) {
-        return expertRepository.getExpertByExpertStatus(expertStatus);
+    public void deleteById(Long id) {
+        expertRepository.deleteById(id);
     }
+
 
     public Expert update(Expert expert) {
         return expertRepository.save(expert);
     }
 
     public Expert getExpertByEmail(String email) throws NotFoundUser {
-        Expert expert = expertRepository.findExpertByEmail(email).orElseThrow(() -> new NotFoundUser("This email is not exist"));
-        return expert;
+        return expertRepository.findExpertByEmail(email).orElseThrow(() -> new NotFoundUser("This email is not exist"));
+    }
+
+    public Expert getExpertById(Long id) throws NotFoundUser {
+        return expertRepository.findExpertById(id).orElseThrow(() -> new NotFoundUser("This user is not found"));
     }
 
     public String getPath(File file) {
