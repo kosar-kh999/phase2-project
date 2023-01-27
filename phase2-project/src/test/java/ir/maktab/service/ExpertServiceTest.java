@@ -1,5 +1,7 @@
 package ir.maktab.service;
 
+import ir.maktab.data.enums.ExpertStatus;
+import ir.maktab.data.enums.Role;
 import ir.maktab.data.model.Expert;
 import ir.maktab.util.exception.NotFoundUser;
 import org.assertj.core.api.Assertions;
@@ -28,14 +30,14 @@ public class ExpertServiceTest {
     @Test
     public void saveNewExpert() {
         Expert expert = Expert.builder().firstName("mona").lastName("noori").email("mona.noori@gmail.com").password("123qqqWW")
-                .entryDate(new Date()).credit(100000).build();
+                .entryDate(new Date()).credit(100000).expertStatus(ExpertStatus.NEW).role(Role.EXPORT).build();
         expertService.signUp(expert);
         Assertions.assertThat(expert.getId()).isGreaterThan(0);
     }
 
     @Test
     @Order(2)
-    public void getExpertByEmail(){
+    public void getExpertByEmail() {
         try {
             Expert expert = expertService.getExpertByEmail("mona.noori@gmail.com");
             Assertions.assertThat(expert.getEmail()).isEqualTo("mona.noori@gmail.com");
@@ -53,7 +55,7 @@ public class ExpertServiceTest {
 
     @Test
     @Order(4)
-    public void updateExpertTest(){
+    public void updateExpertTest() {
         try {
             Expert expert = expertService.getExpertByEmail("mona.noori@gmail.com");
             expert.setEmail("mona.noori111@gmail.com");
@@ -64,7 +66,16 @@ public class ExpertServiceTest {
         }
     }
 
+    @Test
+    @Order(5)
+    public void getExpertByStatus() {
+        Expert expert = expertService.getStatus(ExpertStatus.NEW);
+        assertEquals("NEW", expert.getExpertStatus().name());
+    }
 
+    @Test
+    @Order(6)
+    public void changePasswordTest(){
 
-
+    }
 }
