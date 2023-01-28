@@ -2,7 +2,7 @@ package ir.maktab.service;
 
 import ir.maktab.data.enums.ExpertStatus;
 import ir.maktab.data.model.Expert;
-import ir.maktab.data.model.Services;
+import ir.maktab.data.model.MainService;
 import ir.maktab.data.model.SubServices;
 import ir.maktab.util.exception.NotFound;
 import ir.maktab.util.exception.NotFoundUser;
@@ -16,14 +16,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdminService {
 
-    private final ServicesService servicesService;
+    private final MainServicesService mainServicesService;
     private final SubServicesService subServicesService;
     private final ExpertService expertService;
 
-    /*public void addServices(String name) throws NotFound {
-        Services serviceByName = servicesService.getByName(name);
-        servicesService.addServices(serviceByName);
-    }*/
+    public void addServices(MainService mainService) throws NotFound {
+        MainService service = mainServicesService.getByName(mainService);
+        mainServicesService.addServices(service);
+    }
 
     /*public void addSubService(String name, String subName) throws NotFound {
         servicesService.getByName(name);
@@ -31,12 +31,12 @@ public class AdminService {
         subServicesService.saveSubService(subServicesByName);
     }*/
 
-    public Expert addExpertToSubService(Expert expert, String name) throws NotFound {
+    /*public Expert addExpertToSubService(Expert expert, String name) throws NotFound {
         SubServices subServicesByName = subServicesService.getByName(name);
         expert.getSubServices().add(subServicesByName);
         expertService.update(expert);
         return expert;
-    }
+    }*/
 
     public void deleteExpertFromSubServices(Expert expert, SubServices subServices) throws NotFound {
         if (!(expert.getSubServices().contains(subServices)))
@@ -45,17 +45,17 @@ public class AdminService {
         expertService.update(expert);
     }
 
-    public List<Services> showAllServices() {
-        return servicesService.getAllServices();
+    public List<MainService> showAllServices() {
+        return mainServicesService.getAllServices();
     }
 
-    public SubServices updatePriceAndBrief(String name, double price, String brief) throws NotFound {
+    /*public SubServices updatePriceAndBrief(String name, double price, String brief) throws NotFound {
         SubServices subServiceByName = subServicesService.getByName(name);
         subServiceByName.setPrice(price);
         subServiceByName.setBriefExplanation(brief);
         subServicesService.updateSubServices(subServiceByName);
         return subServiceByName;
-    }
+    }*/
 
     public Expert editStatus(String email) throws NotFoundUser, StatusException {
         Expert expert = expertService.getExpertByEmail(email);
