@@ -13,7 +13,7 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @ToString
 @SuperBuilder
-public class Services extends BaseEntity {
+public class MainService extends BaseEntity {
 
     String name;
 }
