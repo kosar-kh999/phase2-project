@@ -22,7 +22,7 @@ public class OrderSystemService {
         orderSystemRepository.save(orderSystem);
     }
 
-    public void choseServiceAndSubService(String serviceName, String subName, OrderSystem orderSystem) throws NotFound, OrderException {
+    /*public void choseServiceAndSubService(String serviceName, String subName, OrderSystem orderSystem) throws NotFound, OrderException {
         servicesService.getByName(serviceName);
         SubServices subServiceByName = subServicesService.getByName(subName);
         if (orderSystem.getPrice() < subServiceByName.getPrice())
@@ -31,7 +31,7 @@ public class OrderSystemService {
             throw new OrderException("time and date must be after than today");
         orderSystem.setOrderStatus(OrderStatus.WAITING_ADVICE_EXPERTS);
         addOrder(orderSystem);
-    }
+    }*/
 
     public void showOrderToExpert(OrderSystem orderSystem) throws OrderException {
         if (!(orderSystem.getOrderStatus().equals(OrderStatus.WAITING_EXPERT_SELECTION) || orderSystem.getOrderStatus().

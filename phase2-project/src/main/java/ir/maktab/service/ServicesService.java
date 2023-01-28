@@ -14,6 +14,7 @@ public class ServicesService {
     private final ServicesRepository servicesRepository;
 
     public void addServices(Services services) {
+
         servicesRepository.save(services);
     }
 
@@ -29,7 +30,9 @@ public class ServicesService {
         servicesRepository.delete(services);
     }
 
-    public Services getByName(String name) throws NotFound {
-        return servicesRepository.findByName(name).orElseThrow(() -> new NotFound("This service is not exist ! "));
+    public Services getByName(Services services) throws NotFound {
+        if (servicesRepository.findByName(services.getName()).isPresent())
+            throw new NotFound("This service is not exist ! ");
+        return servicesRepository.save(services);
     }
 }

@@ -20,16 +20,16 @@ public class AdminService {
     private final SubServicesService subServicesService;
     private final ExpertService expertService;
 
-    public void addServices(String name) throws NotFound {
+    /*public void addServices(String name) throws NotFound {
         Services serviceByName = servicesService.getByName(name);
         servicesService.addServices(serviceByName);
-    }
+    }*/
 
-    public void addSubService(String name, String subName) throws NotFound {
+    /*public void addSubService(String name, String subName) throws NotFound {
         servicesService.getByName(name);
         SubServices subServicesByName = subServicesService.getByName(subName);
         subServicesService.saveSubService(subServicesByName);
-    }
+    }*/
 
     public Expert addExpertToSubService(Expert expert, String name) throws NotFound {
         SubServices subServicesByName = subServicesService.getByName(name);
