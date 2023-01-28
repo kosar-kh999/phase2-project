@@ -16,7 +16,7 @@ import lombok.experimental.SuperBuilder;
 public class SubServices extends BaseEntity {
 
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    Services services;
+    MainService mainService;
 
     @Column(nullable = false)
     String subName;

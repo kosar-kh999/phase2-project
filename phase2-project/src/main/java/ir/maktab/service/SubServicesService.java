@@ -30,8 +30,14 @@ public class SubServicesService {
         subServicesRepository.delete(subServices);
     }
 
-    public SubServices getByName(String name) throws NotFound {
-        return subServicesRepository.findBySubName(name).orElseThrow(() -> new NotFound("This email is not exist ! "));
+    public SubServices getByName(SubServices subServices) throws NotFound {
+        if (subServicesRepository.findBySubName(subServices.getSubName()).isPresent())
+            throw new NotFound("This sub service is exist");
+        return subServicesRepository.save(subServices);
+    }
+
+    public SubServices findByName(String name) throws NotFound {
+        return subServicesRepository.findBySubName(name).orElseThrow(() -> new NotFound("not found this sub service"));
     }
 
     public void updatePrice(double price, String name) {
@@ -41,4 +47,5 @@ public class SubServicesService {
     public void updateBrief(String brief, String name) {
         subServicesRepository.updateBrief(brief, name);
     }
+
 }
