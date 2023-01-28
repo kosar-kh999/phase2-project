@@ -29,6 +29,10 @@ public class CustomerService {
         customerRepository.save(customer);
     }
 
+    public Customer getCustomerByEmail(String email) throws NotFoundUser {
+        return customerRepository.findCustomerByEmail(email).orElseThrow(() -> new NotFoundUser("This email is not exist"));
+    }
+
     public Customer signIn(String email, String password) throws NotFoundUser {
         Customer customer = customerRepository.findCustomerByEmail(email).orElseThrow(() -> new NotFoundUser("This email is not exist ! "));
         if (!(customer.getPassword().equals(password)))
@@ -36,11 +40,11 @@ public class CustomerService {
         return customer;
     }
 
-    public void changePassword(String newPassword, String confirmedPassword, Customer customer) throws NotCorrect {
+    public Customer changePassword(String newPassword, String confirmedPassword, Customer customer) throws NotCorrect {
         if (!newPassword.equals(confirmedPassword))
             throw new NotCorrect("The new password and confirmed password must be match");
         customer.setPassword(newPassword);
-        customerRepository.save(customer);
+        return customerRepository.save(customer);
     }
 
     public List<Customer> getAll() {
@@ -51,8 +55,8 @@ public class CustomerService {
         customerRepository.delete(customer);
     }
 
-    public void update(Customer customer) {
-        customerRepository.save(customer);
+    public Customer update(Customer customer) {
+        return customerRepository.save(customer);
     }
 
     public void showAllServices() {
@@ -74,6 +78,5 @@ public class CustomerService {
         orderSystem.setOrderStatus(OrderStatus.DONE);
         orderSystemService.addOrder(orderSystem);
     }
-
 
 }
