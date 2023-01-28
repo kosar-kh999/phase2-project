@@ -18,7 +18,7 @@ import java.util.List;
 public class CustomerService {
 
     private final CustomerRepository customerRepository;
-    private final ServicesService servicesService;
+    private final MainServicesService mainServicesService;
     private final SubServicesService subServicesService;
 
     private final SuggestionService suggestionService;
@@ -60,7 +60,7 @@ public class CustomerService {
     }
 
     public void showAllServices() {
-        servicesService.getAllServices();
+        mainServicesService.getAllServices();
     }
 
     public void showAllSubServices() {

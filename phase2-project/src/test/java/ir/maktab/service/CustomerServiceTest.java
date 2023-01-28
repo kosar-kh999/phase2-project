@@ -2,7 +2,6 @@ package ir.maktab.service;
 
 import ir.maktab.data.enums.Role;
 import ir.maktab.data.model.Customer;
-import ir.maktab.data.model.Expert;
 import ir.maktab.util.exception.NotCorrect;
 import ir.maktab.util.exception.NotFoundUser;
 import org.assertj.core.api.Assertions;
@@ -18,8 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -77,6 +75,18 @@ public class CustomerServiceTest {
                 customerByEmail);
         customerService.update(changePassword);
         Assertions.assertThat(changePassword.getPassword().equals("lale1JJJ"));
+    }
 
+    @Test
+    @Order(6)
+    public void deleteCustomerTest() {
+        try {
+            Customer customerByEmail = customerService.getCustomerByEmail(customer.getEmail());
+            customerService.delete(customerByEmail);
+            Customer byEmail = customerService.getCustomerByEmail("lale.kamali@gmail.com");
+            assertNull(byEmail);
+        } catch (NotFoundUser e) {
+            assertEquals("This email is not exist", e.getMessage());
+        }
     }
 }
