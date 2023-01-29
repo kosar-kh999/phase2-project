@@ -7,8 +7,10 @@ import ir.maktab.data.model.SubServices;
 import ir.maktab.util.exception.NotFound;
 import ir.maktab.util.exception.NotFoundUser;
 import ir.maktab.util.exception.StatusException;
+import ir.maktab.util.exception.SubServicesException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -30,35 +32,32 @@ public class AdminService {
         subServicesService.saveSubService(services);
     }
 
-    /*public Expert addExpertToSubService(Expert expert, String name) throws NotFound {
-        SubServices subServicesByName = subServicesService.getByName(name);
-        expert.getSubServices().add(subServicesByName);
+    @Transactional
+    public Expert addExpertToSubService(Expert expert, SubServices subServices) throws NotFound, SubServicesException {
+        SubServices services = subServicesService.findByName(subServices.getSubName());
+        if (expert.getSubServices().contains(services))
+            throw new SubServicesException("This sub service was added before");
+        expert.getSubServices().add(services);
         expertService.update(expert);
         return expert;
-    }*/
+    }
 
-    public void deleteExpertFromSubServices(Expert expert, SubServices subServices) throws NotFound {
+    public boolean deleteExpertFromSubServices(Expert expert, SubServices subServices) {
+        boolean flag = true;
         if (!(expert.getSubServices().contains(subServices)))
-            throw new NotFound("not found this sub service for this expert");
+            return false;
         expert.getSubServices().remove(subServices);
         expertService.update(expert);
+        return flag;
     }
 
     public List<MainService> showAllServices() {
         return mainServicesService.getAllServices();
     }
 
-    /*public SubServices updatePriceAndBrief(String name, double price, String brief) throws NotFound {
-        SubServices subServiceByName = subServicesService.getByName(name);
-        subServiceByName.setPrice(price);
-        subServiceByName.setBriefExplanation(brief);
-        subServicesService.updateSubServices(subServiceByName);
-        return subServiceByName;
-    }*/
-
     public Expert editStatus(String email) throws NotFoundUser, StatusException {
         Expert expert = expertService.getExpertByEmail(email);
-        if (!(expert.equals(ExpertStatus.NEW)))
+        if (!(expert.getExpertStatus().equals(ExpertStatus.NEW)))
             throw new StatusException("This user is not new");
         expert.setExpertStatus(ExpertStatus.CONFIRMED);
         return expertService.update(expert);
