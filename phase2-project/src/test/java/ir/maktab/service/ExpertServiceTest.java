@@ -5,6 +5,7 @@ import ir.maktab.data.enums.Role;
 import ir.maktab.data.model.Expert;
 import ir.maktab.util.exception.NotCorrect;
 import ir.maktab.util.exception.NotFoundUser;
+import ir.maktab.util.exception.StatusException;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.jupiter.api.MethodOrderer;
@@ -27,6 +28,8 @@ import static org.junit.Assert.assertNull;
 public class ExpertServiceTest {
     @Autowired
     private ExpertService expertService;
+    @Autowired
+    private AdminService adminService;
 
     @Test
     @Order(1)
@@ -75,6 +78,13 @@ public class ExpertServiceTest {
 
     @Test
     @Order(6)
+    public void editExpertStatusByAdmin() throws StatusException, NotFoundUser {
+        Expert expert = adminService.editStatus("mona.noori@gmail.com");
+        Assertions.assertThat(expert.getExpertStatus()).isEqualTo(ExpertStatus.CONFIRMED);
+    }
+
+    @Test
+    @Order(7)
     public void deleteExpertTest() {
         try {
             Expert expert = expertService.getExpertByEmail("mona.noori@gmail.com");
