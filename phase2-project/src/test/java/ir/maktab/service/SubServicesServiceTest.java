@@ -1,8 +1,8 @@
 package ir.maktab.service;
 
-import ir.maktab.data.model.MainService;
 import ir.maktab.data.model.SubServices;
 import ir.maktab.util.exception.NotFound;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -12,8 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -31,6 +32,46 @@ public class SubServicesServiceTest {
         try {
             SubServices services = subServicesService.findByName(subServices.getSubName());
             assertNotNull(services);
+        } catch (NotFound e) {
+            assertEquals("not found this sub service", e.getMessage());
+        }
+    }
+
+    @Test
+    @Order(2)
+    public void getSubServiceByEmail() {
+        try {
+            subServicesService.findByName(subServices.getSubName());
+            Assertions.assertThat(subServices.getSubName()).isEqualTo("LAVAZEM_ASHPAZKHANE");
+        } catch (NotFound e) {
+            assertEquals("not found this sub service", e.getMessage());
+        }
+    }
+
+    @Test
+    @Order(3)
+    public void getSubServiceTest() {
+        List<SubServices> allSubServices = subServicesService.getAllSubServices();
+        Assertions.assertThat(allSubServices.size()).isGreaterThan(0);
+    }
+
+    @Test
+    @Order(4)
+    public void updateSubServiceTest() throws NotFound {
+        SubServices name = subServicesService.findByName(subServices.getSubName());
+        name.setBriefExplanation("TAMIR");
+        SubServices services = subServicesService.updateSubServices(name);
+        Assertions.assertThat(services.getBriefExplanation()).isEqualTo("TAMIR");
+    }
+
+    @Test
+    @Order(6)
+    public void deleteSubServiceTest() {
+        try {
+            SubServices service = subServicesService.findByName(subServices.getSubName());
+            subServicesService.deleteSubServices(service);
+            subServicesService.findByName("LAVAZEM_ASHPAZKHANE");
+            assertNull(service);
         } catch (NotFound e) {
             assertEquals("not found this sub service", e.getMessage());
         }

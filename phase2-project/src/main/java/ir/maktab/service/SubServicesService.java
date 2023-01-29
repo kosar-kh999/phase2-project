@@ -22,8 +22,8 @@ public class SubServicesService {
         return subServicesRepository.findAll();
     }
 
-    public void updateSubServices(SubServices subServices) {
-        subServicesRepository.save(subServices);
+    public SubServices updateSubServices(SubServices subServices) {
+        return subServicesRepository.save(subServices);
     }
 
     public void deleteSubServices(SubServices subServices) {

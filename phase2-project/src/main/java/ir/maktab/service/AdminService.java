@@ -25,11 +25,10 @@ public class AdminService {
         mainServicesService.addServices(service);
     }
 
-    /*public void addSubService(String name, String subName) throws NotFound {
-        servicesService.getByName(name);
-        SubServices subServicesByName = subServicesService.getByName(subName);
-        subServicesService.saveSubService(subServicesByName);
-    }*/
+    public void addSubService(SubServices subServices) throws NotFound {
+        SubServices services = subServicesService.getByName(subServices);
+        subServicesService.saveSubService(services);
+    }
 
     /*public Expert addExpertToSubService(Expert expert, String name) throws NotFound {
         SubServices subServicesByName = subServicesService.getByName(name);
