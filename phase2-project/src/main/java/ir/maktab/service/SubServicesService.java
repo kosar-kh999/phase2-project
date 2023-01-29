@@ -41,11 +41,11 @@ public class SubServicesService {
     }
 
     public void updatePrice(double price, String name) {
-        subServicesRepository.updatePrice(price, name);
+         subServicesRepository.updatePrice(price, name);
     }
 
     public void updateBrief(String brief, String name) {
-        subServicesRepository.updateBrief(brief, name);
+         subServicesRepository.updateBrief(brief, name);
     }
 
 }

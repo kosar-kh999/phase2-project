@@ -1,7 +1,12 @@
 package ir.maktab.service;
 
+import ir.maktab.data.enums.ExpertStatus;
+import ir.maktab.data.enums.Role;
+import ir.maktab.data.model.Expert;
 import ir.maktab.data.model.SubServices;
 import ir.maktab.util.exception.NotFound;
+import ir.maktab.util.exception.NotFoundUser;
+import ir.maktab.util.exception.SubServicesException;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.jupiter.api.MethodOrderer;
@@ -12,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -22,8 +28,16 @@ import static org.junit.Assert.*;
 public class SubServicesServiceTest {
     @Autowired
     private SubServicesService subServicesService;
+    @Autowired
+    private AdminService adminService;
+
+    @Autowired
+    private ExpertService expertService;
     SubServices subServices = SubServices.builder().subName("LAVAZEM_ASHPAZKHANE").price(300000).briefExplanation("KHARDI")
             .build();
+
+    Expert expert = Expert.builder().firstName("mona").lastName("noori").email("mona.noori@gmail.com").
+            password("123qqqWW").entryDate(new Date()).expertStatus(ExpertStatus.NEW).role(Role.EXPORT).build();
 
     @Test
     @Order(1)
@@ -65,7 +79,23 @@ public class SubServicesServiceTest {
     }
 
     @Test
+    @Order(5)
+    public void updatePrice() throws NotFound {
+        SubServices service = subServicesService.findByName(subServices.getSubName());
+        subServicesService.updatePrice(200000, "LAVAZEM_ASHPAZKHANE");
+        assertEquals(200000,service.getPrice(),100000);
+    }
+
+    @Test
     @Order(6)
+    public void updateBrief() throws NotFound {
+        SubServices service = subServicesService.findByName(subServices.getSubName());
+        subServicesService.updateBrief("taviz","LAVAZEM_ASHPAZKHANE");
+        assertNotNull(service);
+    }
+
+    @Test
+    @Order(7)
     public void deleteSubServiceTest() {
         try {
             SubServices service = subServicesService.findByName(subServices.getSubName());
@@ -75,5 +105,32 @@ public class SubServicesServiceTest {
         } catch (NotFound e) {
             assertEquals("not found this sub service", e.getMessage());
         }
+    }
+
+    @Test
+    @Order(8)
+    public void addSubServiceByAdmin() throws NotFound {
+        SubServices services = SubServices.builder().subName("RAKHT_SHOOIE").price(400000).
+                briefExplanation("Based on weight").build();
+        adminService.addSubService(services);
+        Assertions.assertThat(services.getId()).isGreaterThan(0);
+    }
+
+    @Test
+    @Order(9)
+    public void addExpertToSubServiceByAdmin() throws NotFoundUser, NotFound, SubServicesException {
+        Expert expertByEmail = expertService.getExpertByEmail(expert.getEmail());
+        SubServices service = subServicesService.findByName(subServices.getSubName());
+        Expert expertToSubService = adminService.addExpertToSubService(expertByEmail, service);
+        Assertions.assertThat(expertToSubService.getId()).isGreaterThan(0);
+    }
+
+    @Test
+    @Order(10)
+    public void deleteExpertFromSubServicesByAdmin() throws NotFoundUser, NotFound {
+        Expert expertByEmail = expertService.getExpertByEmail(expert.getEmail());
+        SubServices service = subServicesService.findByName(subServices.getSubName());
+        boolean deleteExpertFromSubServices = adminService.deleteExpertFromSubServices(expertByEmail, service);
+        assertTrue(deleteExpertFromSubServices);
     }
 }
