@@ -6,9 +6,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -20,8 +18,8 @@ import java.util.List;
 @SuperBuilder
 public class OrderSystem extends BaseEntity {
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    List<SubServices> subServices = new ArrayList<>();
+    @ManyToOne
+    SubServices subServices;
     double price;
     String description;
     @Temporal(value = TemporalType.TIMESTAMP)
