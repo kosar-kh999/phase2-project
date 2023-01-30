@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 
@@ -31,6 +32,8 @@ public class ExpertServiceTest {
     @Autowired
     private AdminService adminService;
 
+    File file = new File("");
+
     @Test
     @Order(1)
     public void saveNewExpert() {
@@ -40,6 +43,10 @@ public class ExpertServiceTest {
         Assertions.assertThat(expert.getId()).isGreaterThan(0);
     }
 
+    @Test
+    public void validImage(){
+
+    }
     @Test
     @Order(2)
     public void getExpertByEmail() {

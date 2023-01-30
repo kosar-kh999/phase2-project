@@ -1,6 +1,7 @@
 package ir.maktab.service;
 
 import ir.maktab.data.model.Expert;
+import ir.maktab.data.model.Suggestion;
 import ir.maktab.data.repository.ExpertRepository;
 import ir.maktab.util.exception.NotCorrect;
 import ir.maktab.util.exception.NotFound;
@@ -21,6 +22,7 @@ import java.util.List;
 public class ExpertService {
     public final static int MAX_SIZE = 300000;
     private final ExpertRepository expertRepository;
+    private final SuggestionService suggestionService;
 
     public void signUp(Expert expert) {
         expertRepository.save(expert);
@@ -47,11 +49,6 @@ public class ExpertService {
     public void delete(Expert expert) {
         expertRepository.delete(expert);
     }
-
-    public void deleteById(Long id) {
-        expertRepository.deleteById(id);
-    }
-
 
     public Expert update(Expert expert) {
         return expertRepository.save(expert);
@@ -83,4 +80,11 @@ public class ExpertService {
         imageInputStream.close();
     }
 
+    public Expert deposit(Expert expert, Suggestion suggestion) throws NotFound, NotFoundUser {
+        Expert expertByEmail = getExpertByEmail(expert.getEmail());
+        Suggestion suggestionById = suggestionService.getSuggestionById(suggestion.getId());
+        double deposit = expertByEmail.getCredit() + suggestionById.getPrice();
+        expert.setCredit(deposit);
+        return update(expert);
+    }
 }
