@@ -36,6 +36,6 @@ public class Suggestion extends BaseEntity {
     @Column(nullable = false)
     Duration duration;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.EAGER)
     OrderSystem orderSystem;
 }

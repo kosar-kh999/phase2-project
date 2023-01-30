@@ -5,6 +5,7 @@ import ir.maktab.data.model.OrderSystem;
 import ir.maktab.data.model.SubServices;
 import ir.maktab.data.model.Suggestion;
 import ir.maktab.data.repository.SuggestionRepository;
+import ir.maktab.util.exception.NotFound;
 import ir.maktab.util.exception.SuggestionException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,10 @@ public class SuggestionService {
         suggestionRepository.delete(suggestion);
     }
 
+    public Suggestion getSuggestionById(Long id) throws NotFound {
+        return suggestionRepository.findSuggestionById(id).orElseThrow(() -> new NotFound("Not found this suggestion"));
+    }
+
     @Transactional
     public Suggestion sendSuggestionFromExpert(Suggestion suggestion, SubServices subServices) throws SuggestionException {
         if (suggestion.getPrice() < subServices.getPrice())
@@ -42,12 +47,12 @@ public class SuggestionService {
         if (suggestion.getSuggestionsStartedTime().before(new Date()))
             throw new SuggestionException("time that suggested must be after now");
         return suggestionRepository.save(suggestion);
-        /*suggestion.getOrderSystem().setOrderStatus(OrderStatus.WAITING_EXPERT_SELECTION);*/
-
     }
 
+
     public List<Suggestion> sortSuggestionByPrice(OrderSystem orderSystem) {
-        return suggestionRepository.findByOrderSystemOrderByPrice(orderSystem);
+        List<Suggestion> suggestions = suggestionRepository.findSuggestionByOrderSystemOrderByPriceDesc(orderSystem);
+        return suggestionRepository.saveAll(suggestions);
     }
 
     public Suggestion acceptSuggestion(Suggestion suggestion, OrderSystem orderSystem) {

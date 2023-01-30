@@ -3,7 +3,9 @@ package ir.maktab.service;
 import ir.maktab.data.enums.OrderStatus;
 import ir.maktab.data.model.OrderSystem;
 import ir.maktab.data.model.SubServices;
+import ir.maktab.data.model.Suggestion;
 import ir.maktab.data.repository.OrderSystemRepository;
+import ir.maktab.util.exception.NotFound;
 import ir.maktab.util.exception.OrderException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,9 @@ public class OrderSystemService {
 
     public void addOrder(OrderSystem orderSystem) {
         orderSystemRepository.save(orderSystem);
+    }
+    public OrderSystem getSuggestionById(Long id) throws NotFound {
+        return orderSystemRepository.findOrderSystemById(id).orElseThrow(()->new NotFound("Not found this order"));
     }
 
     @Transactional
@@ -34,6 +39,11 @@ public class OrderSystemService {
         if (!(orderSystem.getOrderStatus().equals(OrderStatus.WAITING_EXPERT_SELECTION) || orderSystem.getOrderStatus().
                 equals(OrderStatus.WAITING_ADVICE_EXPERTS)))
             throw new OrderException("the order status must be WAITING_EXPERT_SELECTION or WAITING_ADVICE_EXPERTS");
+    }
+
+    public void changeOrderStatus(OrderSystem orderSystem){
+        orderSystem.setOrderStatus(OrderStatus.WAITING_EXPERT_SELECTION);
+        orderSystemRepository.save(orderSystem);
     }
 
 }
