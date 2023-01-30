@@ -29,7 +29,7 @@ public class Suggestion extends BaseEntity {
     @Column(nullable = false)
     double price;
 
-    @Temporal(value = TemporalType.TIME)
+    @Temporal(value = TemporalType.TIMESTAMP)
     @Column(nullable = false)
     Date suggestionsStartedTime;
 
