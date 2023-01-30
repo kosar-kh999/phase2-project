@@ -5,11 +5,10 @@ import ir.maktab.data.model.Customer;
 import ir.maktab.data.model.OrderSystem;
 import ir.maktab.data.model.Suggestion;
 import ir.maktab.data.repository.CustomerRepository;
-import ir.maktab.util.exception.NotCorrect;
-import ir.maktab.util.exception.NotFoundUser;
-import ir.maktab.util.exception.OrderException;
+import ir.maktab.util.exception.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,9 +19,7 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
     private final MainServicesService mainServicesService;
     private final SubServicesService subServicesService;
-
     private final SuggestionService suggestionService;
-
     private final OrderSystemService orderSystemService;
 
     public void signUp(Customer customer) {
@@ -67,16 +64,26 @@ public class CustomerService {
         subServicesService.getAllSubServices();
     }
 
-    public void changeOrderStatusToStarted(OrderSystem orderSystem, Suggestion suggestion) throws OrderException {
+    @Transactional
+    public Suggestion changeOrderStatusToStarted(OrderSystem orderSystem, Suggestion suggestion) throws OrderException {
         if (suggestion.getSuggestionsStartedTime().before(orderSystem.getTimeToDo()))
             throw new OrderException("time of suggestion from expert must be after the time of order system to do");
-        orderSystem.setOrderStatus(OrderStatus.STARTED);
-        orderSystemService.addOrder(orderSystem);
+        suggestion.getOrderSystem().setOrderStatus(OrderStatus.STARTED);
+        return suggestionService.updateSuggestion(suggestion);
     }
 
-    public void changeOrderStatusToDone(OrderSystem orderSystem) {
-        orderSystem.setOrderStatus(OrderStatus.DONE);
-        orderSystemService.addOrder(orderSystem);
+    public Suggestion changeOrderStatusToDone(Suggestion suggestion) {
+        suggestion.getOrderSystem().setOrderStatus(OrderStatus.DONE);
+        return suggestionService.updateSuggestion(suggestion);
     }
 
+    public Customer withdraw(Customer customer, Suggestion suggestion) throws NotFound, NotFoundUser, SuggestionException {
+        Customer customerByEmail = getCustomerByEmail(customer.getEmail());
+        Suggestion suggestionById = suggestionService.getSuggestionById(suggestion.getId());
+        if (suggestionById.getPrice() > customerByEmail.getCredit())
+            throw new SuggestionException("the amount of customer is should more than suggestion");
+        double withdraw = customerByEmail.getCredit() - suggestionById.getPrice();
+        customer.setCredit(withdraw);
+        return update(customer);
+    }
 }
