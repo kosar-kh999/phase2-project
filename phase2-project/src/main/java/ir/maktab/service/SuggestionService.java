@@ -1,9 +1,7 @@
 package ir.maktab.service;
 
 import ir.maktab.data.enums.OrderStatus;
-import ir.maktab.data.model.OrderSystem;
-import ir.maktab.data.model.SubServices;
-import ir.maktab.data.model.Suggestion;
+import ir.maktab.data.model.*;
 import ir.maktab.data.repository.SuggestionRepository;
 import ir.maktab.util.exception.NotFound;
 import ir.maktab.util.exception.SuggestionException;
@@ -28,8 +26,8 @@ public class SuggestionService {
         return suggestionRepository.findAll();
     }
 
-    public void updateSuggestion(Suggestion suggestion) {
-        suggestionRepository.save(suggestion);
+    public Suggestion updateSuggestion(Suggestion suggestion) {
+        return suggestionRepository.save(suggestion);
     }
 
     public void deleteSuggestion(Suggestion suggestion) {
@@ -51,12 +49,12 @@ public class SuggestionService {
 
 
     public List<Suggestion> sortSuggestionByPrice(OrderSystem orderSystem) {
-        List<Suggestion> suggestions = suggestionRepository.findSuggestionByOrderSystemOrderByPriceDesc(orderSystem);
+        List<Suggestion> suggestions = suggestionRepository.findSuggestionByOrderSystemOrderByPriceAsc(orderSystem);
         return suggestionRepository.saveAll(suggestions);
     }
 
-    public Suggestion acceptSuggestion(Suggestion suggestion, OrderSystem orderSystem) {
-        orderSystem.setOrderStatus(OrderStatus.WAITING_EXPERT_COME_PLACE);
+    public Suggestion acceptSuggestion(Suggestion suggestion) {
+        suggestion.getOrderSystem().setOrderStatus(OrderStatus.WAITING_EXPERT_COME_PLACE);
         return suggestionRepository.save(suggestion);
     }
 

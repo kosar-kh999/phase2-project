@@ -1,11 +1,11 @@
 package ir.maktab.service;
 
 import ir.maktab.data.enums.OrderStatus;
-import ir.maktab.data.model.OrderSystem;
-import ir.maktab.data.model.SubServices;
-import ir.maktab.data.model.Suggestion;
+import ir.maktab.data.model.*;
 import ir.maktab.util.date.DateUtil;
 import ir.maktab.util.exception.NotFound;
+import ir.maktab.util.exception.NotFoundUser;
+import ir.maktab.util.exception.OrderException;
 import ir.maktab.util.exception.SuggestionException;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -32,6 +33,10 @@ public class SuggestionServiceTest {
     private SuggestionService suggestionService;
     @Autowired
     private OrderSystemService orderSystemService;
+    @Autowired
+    private CustomerService customerService;
+    @Autowired
+    private ExpertService expertService;
     LocalDateTime localDate1 = LocalDateTime.of(2023, 3, 2, 0, 0);
     Date suggestionTime = DateUtil.localDateTimeToDate(localDate1);
     SubServices subServices = SubServices.builder().subName("LAVAZEM_ASHPAZKHANE").price(300000).
@@ -70,6 +75,52 @@ public class SuggestionServiceTest {
     public void sortSuggestionByPrice() throws NotFound {
         OrderSystem orderSystem = orderSystemService.getSuggestionById(302L);
         List<Suggestion> suggestions = suggestionService.sortSuggestionByPrice(orderSystem);
-        Assertions.assertThat(suggestions.size()).isGreaterThan(0);
+        assertEquals(450000, suggestions.get(0).getPrice());
+    }
+
+    @Test
+    @Order(4)
+    public void acceptSuggestionStatus() throws NotFound {
+        Suggestion suggestionById = suggestionService.getSuggestionById(502L);
+        OrderStatus orderStatus = OrderStatus.WAITING_EXPERT_COME_PLACE;
+        Suggestion acceptSuggestion = suggestionService.acceptSuggestion(suggestionById);
+        assertEquals(acceptSuggestion.getOrderSystem().getOrderStatus(), orderStatus);
+    }
+
+    @Test
+    @Order(5)
+    public void changeOrderStatusToStarted() throws NotFound, OrderException {
+        OrderStatus orderStatus = OrderStatus.STARTED;
+        Suggestion suggestionById = suggestionService.getSuggestionById(502L);
+        OrderSystem orderSystem = orderSystemService.getSuggestionById(302L);
+        Suggestion status = customerService.changeOrderStatusToStarted(orderSystem, suggestionById);
+        assertEquals(status.getOrderSystem().getOrderStatus(), orderStatus);
+    }
+
+    @Test
+    @Order(6)
+    public void withdrawTest() throws NotFound, NotFoundUser, SuggestionException {
+        Suggestion suggestionById = suggestionService.getSuggestionById(502L);
+        Customer customerByEmail = customerService.getCustomerByEmail("lale.kamali@gmail.com");
+        Customer customer = customerService.withdraw(customerByEmail, suggestionById);
+        assertEquals(customer.getCredit(), 550000);
+    }
+
+    @Test
+    @Order(7)
+    public void deposit() throws NotFound, NotFoundUser {
+        Suggestion suggestionById = suggestionService.getSuggestionById(502L);
+        Expert expertByEmail = expertService.getExpertByEmail("mona.noori@gmail.com");
+        Expert expert = expertService.deposit(expertByEmail, suggestionById);
+        assertEquals(expert.getCredit(), 450000);
+    }
+
+    @Test
+    @Order(8)
+    public void changeOrderStatusToDone() throws NotFound {
+        OrderStatus orderStatus = OrderStatus.DONE;
+        Suggestion suggestionById = suggestionService.getSuggestionById(502L);
+        Suggestion status = customerService.changeOrderStatusToDone(suggestionById);
+        assertEquals(status.getOrderSystem().getOrderStatus(), orderStatus);
     }
 }
