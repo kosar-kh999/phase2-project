@@ -12,10 +12,10 @@ import org.springframework.stereotype.Service;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -86,5 +86,31 @@ public class ExpertService {
         double deposit = expertByEmail.getCredit() + suggestionById.getPrice();
         expert.setCredit(deposit);
         return update(expert);
+    }
+
+    public void saveImage(Expert expert) {
+        File file = new File("C:\\Users\\HOME\\Downloads\\phase2-project\\phase2-project\\src\\main\\java\\ir\\maktab\\img.jpg");
+        byte[] bFile = new byte[(int) file.length()];
+        try {
+            FileInputStream fileInputStream = new FileInputStream(file);
+            fileInputStream.read(bFile);
+            fileInputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        expert.setImage(bFile);
+        expertRepository.save(expert);
+    }
+
+    public void getImage(String email) throws NotFoundUser {
+        Expert expert = getExpertByEmail(email);
+        byte[] image = expert.getImage();
+        try{
+            FileOutputStream fos = new FileOutputStream("C:\\Users\\HOME\\Downloads\\phase2-project\\phase2-project\\src\\main\\java\\ir\\maktab\\image2.jpg");
+            fos.write(image);
+            fos.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 }

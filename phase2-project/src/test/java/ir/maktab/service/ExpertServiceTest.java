@@ -20,8 +20,7 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -32,7 +31,6 @@ public class ExpertServiceTest {
     @Autowired
     private AdminService adminService;
 
-    File file = new File("");
 
     @Test
     @Order(1)
@@ -44,8 +42,16 @@ public class ExpertServiceTest {
     }
 
     @Test
-    public void validImage(){
+    public void saveImage() throws NotFoundUser {
+        Expert expertByEmail = expertService.getExpertByEmail("mona.noori@gmail.com");
+        expertService.saveImage(expertByEmail);
+        assertNotNull(expertByEmail);
+    }
 
+    @Test
+    public void getImage() throws NotFoundUser {
+        Expert expertByEmail = expertService.getExpertByEmail("mona.noori@gmail.com");
+        expertService.getImage("mona.noori@gmail.com");
     }
     @Test
     @Order(2)
