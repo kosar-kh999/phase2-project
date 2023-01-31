@@ -1,6 +1,9 @@
 package ir.maktab.service;
 
+import ir.maktab.data.enums.ExpertStatus;
 import ir.maktab.data.enums.OrderStatus;
+import ir.maktab.data.enums.Role;
+import ir.maktab.data.model.Expert;
 import ir.maktab.data.model.OrderSystem;
 import ir.maktab.data.model.SubServices;
 import ir.maktab.util.date.DateUtil;
@@ -31,7 +34,7 @@ public class OrderSystemServiceTest {
     LocalDateTime localDate1 = LocalDateTime.of(2023, 3, 1, 0, 0);
     Date timeToDo = DateUtil.localDateTimeToDate(localDate1);
     OrderSystem orderSystem = OrderSystem.builder().price(400000).description("JA_BE_JAEE").timeToDo(timeToDo).
-            address("qeshm").orderStatus(OrderStatus.WAITING_ADVICE_EXPERTS).build();
+            address("qeshm").orderStatus(OrderStatus.WAITING_ADVICE_EXPERTS).expert(null).build();
 
     @Test
     @Order(1)

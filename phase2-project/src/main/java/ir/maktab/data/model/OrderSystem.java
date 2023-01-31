@@ -29,7 +29,7 @@ public class OrderSystem extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     OrderStatus orderStatus;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
     Expert expert;
 
     @Temporal(value = TemporalType.TIMESTAMP)
