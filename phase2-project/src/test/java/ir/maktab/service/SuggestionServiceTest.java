@@ -37,6 +37,7 @@ public class SuggestionServiceTest {
     private CustomerService customerService;
     @Autowired
     private ExpertService expertService;
+
     LocalDateTime localDate1 = LocalDateTime.of(2023, 3, 2, 0, 0);
     Date suggestionTime = DateUtil.localDateTimeToDate(localDate1);
     SubServices subServices = SubServices.builder().subName("LAVAZEM_ASHPAZKHANE").price(300000).
@@ -50,15 +51,11 @@ public class SuggestionServiceTest {
 
     @Test
     @Order(1)
-    public void saveNewSuggestion() throws SuggestionException, NotFound, NotFoundUser {
-        OrderSystem suggestionById = orderSystemService.getSuggestionById(302L);
-        Expert expertByEmail = expertService.getExpertById(852L);
+    public void saveNewSuggestion() throws SuggestionException, NotFound {
+        OrderSystem suggestionById = orderSystemService.getSuggestionById(402L);
         suggestion.setOrderSystem(suggestionById);
-        suggestion.setExpert(expertByEmail);
         Suggestion fromExpert = suggestionService.sendSuggestionFromExpert(suggestion, subServices);
-        Expert expertByEmail1 = expertService.getExpertById(902L);
         suggestion1.setOrderSystem(suggestionById);
-        suggestion1.setExpert(expertByEmail1);
         Suggestion fromExpert1 = suggestionService.sendSuggestionFromExpert(suggestion1, subServices);
         Assertions.assertThat(fromExpert.getId()).isGreaterThan(0);
         Assertions.assertThat(fromExpert1.getId()).isGreaterThan(0);
@@ -67,7 +64,7 @@ public class SuggestionServiceTest {
     @Test
     @Order(2)
     public void changeOrderStatus() throws NotFound {
-        OrderSystem suggestionById = orderSystemService.getSuggestionById(302L);
+        OrderSystem suggestionById = orderSystemService.getSuggestionById(402L);
         orderSystemService.changeOrderStatus(suggestionById);
         assertNotNull(suggestionById);
     }
@@ -75,7 +72,7 @@ public class SuggestionServiceTest {
     @Test
     @Order(3)
     public void sortSuggestionByPrice() throws NotFound {
-        OrderSystem orderSystem = orderSystemService.getSuggestionById(302L);
+        OrderSystem orderSystem = orderSystemService.getSuggestionById(402L);
         List<Suggestion> suggestions = suggestionService.sortSuggestionByPrice(orderSystem);
         assertEquals(450000, suggestions.get(0).getPrice());
     }
@@ -83,7 +80,7 @@ public class SuggestionServiceTest {
     @Test
     @Order(4)
     public void acceptSuggestionStatus() throws NotFound {
-        Suggestion suggestionById = suggestionService.getSuggestionById(502L);
+        Suggestion suggestionById = suggestionService.getSuggestionById(602L);
         OrderStatus orderStatus = OrderStatus.WAITING_EXPERT_COME_PLACE;
         Suggestion acceptSuggestion = suggestionService.acceptSuggestion(suggestionById);
         assertEquals(acceptSuggestion.getOrderSystem().getOrderStatus(), orderStatus);
@@ -93,8 +90,8 @@ public class SuggestionServiceTest {
     @Order(5)
     public void changeOrderStatusToStarted() throws NotFound, OrderException {
         OrderStatus orderStatus = OrderStatus.STARTED;
-        Suggestion suggestionById = suggestionService.getSuggestionById(502L);
-        OrderSystem orderSystem = orderSystemService.getSuggestionById(302L);
+        Suggestion suggestionById = suggestionService.getSuggestionById(602L);
+        OrderSystem orderSystem = orderSystemService.getSuggestionById(402L);
         Suggestion status = customerService.changeOrderStatusToStarted(orderSystem, suggestionById);
         assertEquals(status.getOrderSystem().getOrderStatus(), orderStatus);
     }
@@ -102,7 +99,7 @@ public class SuggestionServiceTest {
     @Test
     @Order(6)
     public void withdrawTest() throws NotFound, NotFoundUser, SuggestionException {
-        Suggestion suggestionById = suggestionService.getSuggestionById(502L);
+        Suggestion suggestionById = suggestionService.getSuggestionById(602L);
         Customer customerByEmail = customerService.getCustomerByEmail("lale.kamali@gmail.com");
         Customer customer = customerService.withdraw(customerByEmail, suggestionById);
         assertEquals(customer.getCredit(), 550000);
@@ -121,7 +118,7 @@ public class SuggestionServiceTest {
     @Order(8)
     public void changeOrderStatusToDone() throws NotFound {
         OrderStatus orderStatus = OrderStatus.DONE;
-        Suggestion suggestionById = suggestionService.getSuggestionById(502L);
+        Suggestion suggestionById = suggestionService.getSuggestionById(602L);
         Suggestion status = customerService.changeOrderStatusToDone(suggestionById);
         assertEquals(status.getOrderSystem().getOrderStatus(), orderStatus);
     }

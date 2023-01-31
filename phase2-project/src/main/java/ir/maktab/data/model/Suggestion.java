@@ -19,7 +19,7 @@ import java.util.Date;
 @SuperBuilder
 public class Suggestion extends BaseEntity {
 
-    @OneToOne
+    @ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
     Expert expert;
 
     @CreationTimestamp
