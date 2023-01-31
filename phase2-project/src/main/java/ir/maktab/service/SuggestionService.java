@@ -1,7 +1,10 @@
 package ir.maktab.service;
 
 import ir.maktab.data.enums.OrderStatus;
-import ir.maktab.data.model.*;
+import ir.maktab.data.model.Expert;
+import ir.maktab.data.model.OrderSystem;
+import ir.maktab.data.model.SubServices;
+import ir.maktab.data.model.Suggestion;
 import ir.maktab.data.repository.SuggestionRepository;
 import ir.maktab.util.exception.NotFound;
 import ir.maktab.util.exception.SuggestionException;
@@ -57,5 +60,8 @@ public class SuggestionService {
         suggestion.getOrderSystem().setOrderStatus(OrderStatus.WAITING_EXPERT_COME_PLACE);
         return suggestionRepository.save(suggestion);
     }
-
+    @Transactional
+    public List<Suggestion> sortSuggestionByExpertScore(Expert expert) {
+        return suggestionRepository.findAllOrderByScore(expert);
+    }
 }

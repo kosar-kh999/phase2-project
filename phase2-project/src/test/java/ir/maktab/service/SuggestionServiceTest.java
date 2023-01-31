@@ -41,22 +41,24 @@ public class SuggestionServiceTest {
     Date suggestionTime = DateUtil.localDateTimeToDate(localDate1);
     SubServices subServices = SubServices.builder().subName("LAVAZEM_ASHPAZKHANE").price(300000).
             briefExplanation("KHARID").build();
-    Date timeToDo = DateUtil.localDateTimeToDate(localDate1);
-    /*OrderSystem orderSystem = OrderSystem.builder().price(400000).description("JA_BE_JAEE").timeToDo(timeToDo).
-            address("qeshm").orderStatus(OrderStatus.WAITING_ADVICE_EXPERTS).build();*/
+
     Suggestion suggestion = Suggestion.builder().price(450000).suggestionsStartedTime(suggestionTime).
-            duration(Duration.ofHours(3)).orderSystem(null).build();
+            duration(Duration.ofHours(3)).orderSystem(null).expert(null).build();
 
     Suggestion suggestion1 = Suggestion.builder().price(500000).suggestionsStartedTime(suggestionTime).
-            duration(Duration.ofHours(2)).orderSystem(null).build();
+            duration(Duration.ofHours(2)).orderSystem(null).expert(null).build();
 
     @Test
     @Order(1)
-    public void saveNewSuggestion() throws SuggestionException, NotFound {
+    public void saveNewSuggestion() throws SuggestionException, NotFound, NotFoundUser {
         OrderSystem suggestionById = orderSystemService.getSuggestionById(302L);
+        Expert expertByEmail = expertService.getExpertById(852L);
         suggestion.setOrderSystem(suggestionById);
+        suggestion.setExpert(expertByEmail);
         Suggestion fromExpert = suggestionService.sendSuggestionFromExpert(suggestion, subServices);
+        Expert expertByEmail1 = expertService.getExpertById(902L);
         suggestion1.setOrderSystem(suggestionById);
+        suggestion1.setExpert(expertByEmail1);
         Suggestion fromExpert1 = suggestionService.sendSuggestionFromExpert(suggestion1, subServices);
         Assertions.assertThat(fromExpert.getId()).isGreaterThan(0);
         Assertions.assertThat(fromExpert1.getId()).isGreaterThan(0);
