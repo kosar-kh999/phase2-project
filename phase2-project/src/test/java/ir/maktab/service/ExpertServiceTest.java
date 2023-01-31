@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.io.File;
 import java.util.Date;
 import java.util.List;
 
@@ -37,8 +36,12 @@ public class ExpertServiceTest {
     public void saveNewExpert() {
         Expert expert = Expert.builder().firstName("mona").lastName("noori").email("mona.noori@gmail.com").
                 password("123qqqWW").entryDate(new Date()).expertStatus(ExpertStatus.NEW).role(Role.EXPORT).build();
+        Expert expert1 = Expert.builder().firstName("nader").lastName("babaee").email("nader.babaee@gmail.com").
+                password("456eeeRR").entryDate(new Date()).expertStatus(ExpertStatus.NEW).role(Role.EXPORT).build();
+        expertService.signUp(expert1);
         expertService.signUp(expert);
         Assertions.assertThat(expert.getId()).isGreaterThan(0);
+        Assertions.assertThat(expert1.getId()).isGreaterThan(0);
     }
 
     @Test
@@ -53,6 +56,7 @@ public class ExpertServiceTest {
         Expert expertByEmail = expertService.getExpertByEmail("mona.noori@gmail.com");
         expertService.getImage("mona.noori@gmail.com");
     }
+
     @Test
     @Order(2)
     public void getExpertByEmail() {
