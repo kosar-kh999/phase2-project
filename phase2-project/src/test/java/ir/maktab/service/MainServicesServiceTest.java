@@ -58,7 +58,7 @@ public class MainServicesServiceTest {
 
     @Test
     @Order(4)
-    public void updateServiceTest() throws NotFound {
+    public void updateServiceTest() {
         MainService serviceByName = mainServicesService.findByName(mainService.getName());
         serviceByName.setName("lavazem_khanegi");
         MainService service = mainServicesService.updateServices(serviceByName);
@@ -80,7 +80,7 @@ public class MainServicesServiceTest {
 
     @Test
     @Order(7)
-    public void addServiceByAdmin() throws NotFound {
+    public void addServiceByAdmin() {
         MainService service = MainService.builder().name("NEZAFAT").build();
         adminService.addServices(service);
         Assertions.assertThat(service.getId()).isGreaterThan(0);
