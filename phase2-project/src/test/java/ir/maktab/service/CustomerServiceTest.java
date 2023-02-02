@@ -2,7 +2,6 @@ package ir.maktab.service;
 
 import ir.maktab.data.enums.Role;
 import ir.maktab.data.model.Customer;
-import ir.maktab.util.exception.NotCorrect;
 import ir.maktab.util.exception.NotFoundUser;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -60,7 +59,7 @@ public class CustomerServiceTest {
 
     @Test
     @Order(4)
-    public void updateCustomerTest() throws NotFoundUser {
+    public void updateCustomerTest() {
         Customer customerByEmail = customerService.getCustomerByEmail(customer.getEmail());
         customerByEmail.setLastName("jarare");
         Customer update = customerService.update(customerByEmail);
@@ -69,7 +68,7 @@ public class CustomerServiceTest {
 
     @Test
     @Order(5)
-    public void changePasswordTest() throws NotFoundUser, NotCorrect {
+    public void changePasswordTest() {
         Customer customerByEmail = customerService.getCustomerByEmail(customer.getEmail());
         Customer changePassword = customerService.changePassword("lale1JJJ", "lale1JJJ",
                 customerByEmail);
