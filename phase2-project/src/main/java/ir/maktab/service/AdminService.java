@@ -4,8 +4,6 @@ import ir.maktab.data.enums.ExpertStatus;
 import ir.maktab.data.model.Expert;
 import ir.maktab.data.model.MainService;
 import ir.maktab.data.model.SubServices;
-import ir.maktab.util.exception.NotFound;
-import ir.maktab.util.exception.NotFoundUser;
 import ir.maktab.util.exception.StatusException;
 import ir.maktab.util.exception.SubServicesException;
 import lombok.RequiredArgsConstructor;
@@ -22,18 +20,18 @@ public class AdminService {
     private final SubServicesService subServicesService;
     private final ExpertService expertService;
 
-    public void addServices(MainService mainService) throws NotFound {
+    public void addServices(MainService mainService) {
         MainService service = mainServicesService.getByName(mainService);
         mainServicesService.addServices(service);
     }
 
-    public void addSubService(SubServices subServices) throws NotFound {
+    public void addSubService(SubServices subServices) {
         SubServices services = subServicesService.getByName(subServices);
         subServicesService.saveSubService(services);
     }
 
     @Transactional
-    public Expert addExpertToSubService(Expert expert, SubServices subServices) throws NotFound, SubServicesException {
+    public Expert addExpertToSubService(Expert expert, SubServices subServices) {
         SubServices services = subServicesService.findByName(subServices.getSubName());
         if (expert.getSubServices().contains(services))
             throw new SubServicesException("This sub service was added before");
@@ -55,7 +53,7 @@ public class AdminService {
         return mainServicesService.getAllServices();
     }
 
-    public Expert editStatus(String email) throws NotFoundUser, StatusException {
+    public Expert editStatus(String email) {
         Expert expert = expertService.getExpertByEmail(email);
         if (!(expert.getExpertStatus().equals(ExpertStatus.NEW)))
             throw new StatusException("This user is not new");
