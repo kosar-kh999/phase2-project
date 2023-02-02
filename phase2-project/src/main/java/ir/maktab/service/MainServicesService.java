@@ -29,17 +29,17 @@ public class MainServicesService {
         mainServicesRepository.delete(mainService);
     }
 
-    public MainService getByName(MainService mainService) throws NotFound {
+    public MainService getByName(MainService mainService) {
         if (mainServicesRepository.findByName(mainService.getName()).isPresent())
             throw new NotFound("This service is exist !");
         return mainServicesRepository.save(mainService);
     }
 
-    public MainService findByName(String name) throws NotFound {
+    public MainService findByName(String name) {
         return mainServicesRepository.findByName(name).orElseThrow(() -> new NotFound("not found this service"));
     }
 
-    public MainService findById(Long id) throws NotFound {
+    public MainService findById(Long id) {
         return mainServicesRepository.findById(id).orElseThrow(() -> new NotFound("not found this service"));
     }
 }
