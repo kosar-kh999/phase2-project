@@ -3,7 +3,6 @@ package ir.maktab.controller;
 import ir.maktab.data.dto.ExpertDto;
 import ir.maktab.data.model.Expert;
 import ir.maktab.service.ExpertService;
-import ir.maktab.util.exception.NotFoundUser;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +26,7 @@ public class ExpertController {
 
     @GetMapping("/sign_In_expert")
     public ResponseEntity<Expert> getByEmail(@RequestParam("email") String email,
-                                             @RequestParam("password") String password) throws NotFoundUser {
+                                             @RequestParam("password") String password) {
         return ResponseEntity.ok().body(expertService.signIn(email, password));
     }
 
@@ -50,7 +49,14 @@ public class ExpertController {
     }
 
     @GetMapping("find_expert")
-    public ResponseEntity<Expert> findExpertByEmail(@RequestParam("email") String email) throws NotFoundUser {
+    public ResponseEntity<Expert> findExpertByEmail(@RequestParam("email") String email) {
         return ResponseEntity.ok().body(expertService.getExpertByEmail(email));
+    }
+
+    @PutMapping("/change_password")
+    public ResponseEntity<Expert> updatePassword(@RequestParam("newPassword") String newPassword,
+                                                 @RequestParam("confirmedPassword") String confirmedPassword,
+                                                 @RequestParam("email") String email) {
+        return ResponseEntity.ok().body(expertService.changePasswordExpert(newPassword,confirmedPassword,email));
     }
 }
