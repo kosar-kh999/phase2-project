@@ -12,10 +12,12 @@ import org.springframework.stereotype.Service;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,18 +30,26 @@ public class ExpertService {
         expertRepository.save(expert);
     }
 
-    public Expert signIn(String email, String password) throws NotFoundUser {
+    public Expert signIn(String email, String password) {
         Expert expert = expertRepository.findExpertByEmail(email).orElseThrow(() -> new NotFoundUser("This email is not exist"));
         if (!(expert.getPassword().equals(password)))
             throw new NotFoundUser("This user is not correct");
         return expert;
     }
 
-    public Expert changePassword(String newPassword, String confirmedPassword, Expert expert) throws NotCorrect {
+    public Expert changePassword(String newPassword, String confirmedPassword, Expert expert) {
         if (!newPassword.equals(confirmedPassword))
             throw new NotCorrect("The new password and confirmed password must be match");
         expert.setPassword(newPassword);
         return expertRepository.save(expert);
+    }
+
+    public Expert changePasswordExpert(String newPassword, String confirmedPassword, String email) {
+        Expert expertByEmail = getExpertByEmail(email);
+        if (!newPassword.equals(confirmedPassword))
+            throw new NotCorrect("The new password and confirmed password must be match");
+        expertByEmail.setPassword(newPassword);
+        return expertRepository.save(expertByEmail);
     }
 
     public List<Expert> getAll() {
@@ -47,18 +57,22 @@ public class ExpertService {
     }
 
     public void delete(Expert expert) {
+        Expert expert1 = getExpertByEmail(expert.getEmail());
+        expert.setId(expert1.getId());
         expertRepository.delete(expert);
     }
 
     public Expert update(Expert expert) {
+        Expert expert1 = getExpertByEmail(expert.getEmail());
+        expert.setId(expert1.getId());
         return expertRepository.save(expert);
     }
 
-    public Expert getExpertByEmail(String email) throws NotFoundUser {
+    public Expert getExpertByEmail(String email) {
         return expertRepository.findExpertByEmail(email).orElseThrow(() -> new NotFoundUser("This email is not exist"));
     }
 
-    public Expert getExpertById(Long id) throws NotFoundUser {
+    public Expert getExpertById(Long id) {
         return expertRepository.findExpertById(id).orElseThrow(() -> new NotFoundUser("This user is not found"));
     }
 
@@ -66,7 +80,7 @@ public class ExpertService {
         return file.getPath();
     }
 
-    public void validImage(File file, Expert expert) throws IOException, NotFound {
+    public void validImage(File file, Expert expert) throws IOException {
         ImageInputStream imageInputStream = ImageIO.createImageInputStream(file);
         Iterator<ImageReader> imageReadersList = ImageIO.getImageReaders(imageInputStream);
         if (!imageReadersList.hasNext()) {
@@ -80,7 +94,7 @@ public class ExpertService {
         imageInputStream.close();
     }
 
-    public Expert deposit(Expert expert, Suggestion suggestion) throws NotFound, NotFoundUser {
+    public Expert deposit(Expert expert, Suggestion suggestion) {
         Expert expertByEmail = getExpertByEmail(expert.getEmail());
         Suggestion suggestionById = suggestionService.getSuggestionById(suggestion.getId());
         double deposit = expertByEmail.getCredit() + suggestionById.getPrice();
@@ -102,14 +116,14 @@ public class ExpertService {
         expertRepository.save(expert);
     }
 
-    public void getImage(String email) throws NotFoundUser {
+    public void getImage(String email) {
         Expert expert = getExpertByEmail(email);
         byte[] image = expert.getImage();
-        try{
+        try {
             FileOutputStream fos = new FileOutputStream("C:\\Users\\HOME\\Downloads\\phase2-project\\phase2-project\\src\\main\\java\\ir\\maktab\\image2.jpg");
             fos.write(image);
             fos.close();
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
