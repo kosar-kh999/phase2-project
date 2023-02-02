@@ -30,22 +30,22 @@ public class SubServicesService {
         subServicesRepository.delete(subServices);
     }
 
-    public SubServices getByName(SubServices subServices) throws NotFound {
+    public SubServices getByName(SubServices subServices) {
         if (subServicesRepository.findBySubName(subServices.getSubName()).isPresent())
             throw new NotFound("This sub service is exist");
         return subServicesRepository.save(subServices);
     }
 
-    public SubServices findByName(String name) throws NotFound {
+    public SubServices findByName(String name) {
         return subServicesRepository.findBySubName(name).orElseThrow(() -> new NotFound("not found this sub service"));
     }
 
     public void updatePrice(double price, String name) {
-         subServicesRepository.updatePrice(price, name);
+        subServicesRepository.updatePrice(price, name);
     }
 
     public void updateBrief(String brief, String name) {
-         subServicesRepository.updateBrief(brief, name);
+        subServicesRepository.updateBrief(brief, name);
     }
 
 }
