@@ -2,10 +2,14 @@ package ir.maktab.service;
 
 import ir.maktab.data.enums.OrderStatus;
 import ir.maktab.data.model.Customer;
+import ir.maktab.data.model.Expert;
 import ir.maktab.data.model.OrderSystem;
 import ir.maktab.data.model.Suggestion;
 import ir.maktab.data.repository.CustomerRepository;
-import ir.maktab.util.exception.*;
+import ir.maktab.util.exception.NotCorrect;
+import ir.maktab.util.exception.NotFoundUser;
+import ir.maktab.util.exception.OrderException;
+import ir.maktab.util.exception.SuggestionException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,22 +30,30 @@ public class CustomerService {
         customerRepository.save(customer);
     }
 
-    public Customer getCustomerByEmail(String email) throws NotFoundUser {
+    public Customer getCustomerByEmail(String email) {
         return customerRepository.findCustomerByEmail(email).orElseThrow(() -> new NotFoundUser("This email is not exist"));
     }
 
-    public Customer signIn(String email, String password) throws NotFoundUser {
+    public Customer signIn(String email, String password) {
         Customer customer = customerRepository.findCustomerByEmail(email).orElseThrow(() -> new NotFoundUser("This email is not exist ! "));
         if (!(customer.getPassword().equals(password)))
             throw new NotFoundUser("This user is not correct");
         return customer;
     }
 
-    public Customer changePassword(String newPassword, String confirmedPassword, Customer customer) throws NotCorrect {
+    public Customer changePassword(String newPassword, String confirmedPassword, Customer customer) {
         if (!newPassword.equals(confirmedPassword))
             throw new NotCorrect("The new password and confirmed password must be match");
         customer.setPassword(newPassword);
         return customerRepository.save(customer);
+    }
+
+    public Customer changePasswordCustomer(String newPassword, String confirmedPassword, String email) {
+        Customer customerByEmail = getCustomerByEmail(email);
+        if (!newPassword.equals(confirmedPassword))
+            throw new NotCorrect("The new password and confirmed password must be match");
+        customerByEmail.setPassword(newPassword);
+        return customerRepository.save(customerByEmail);
     }
 
     public List<Customer> getAll() {
@@ -49,6 +61,8 @@ public class CustomerService {
     }
 
     public void delete(Customer customer) {
+        Customer customer1 = getCustomerByEmail(customer.getEmail());
+        customer.setId(customer1.getId());
         customerRepository.delete(customer);
     }
 
@@ -65,7 +79,7 @@ public class CustomerService {
     }
 
     @Transactional
-    public Suggestion changeOrderStatusToStarted(OrderSystem orderSystem, Suggestion suggestion) throws OrderException {
+    public Suggestion changeOrderStatusToStarted(OrderSystem orderSystem, Suggestion suggestion) {
         if (suggestion.getSuggestionsStartedTime().before(orderSystem.getTimeToDo()))
             throw new OrderException("time of suggestion from expert must be after the time of order system to do");
         suggestion.getOrderSystem().setOrderStatus(OrderStatus.STARTED);
@@ -77,7 +91,7 @@ public class CustomerService {
         return suggestionService.updateSuggestion(suggestion);
     }
 
-    public Customer withdraw(Customer customer, Suggestion suggestion) throws NotFound, NotFoundUser, SuggestionException {
+    public Customer withdraw(Customer customer, Suggestion suggestion) {
         Customer customerByEmail = getCustomerByEmail(customer.getEmail());
         Suggestion suggestionById = suggestionService.getSuggestionById(suggestion.getId());
         if (suggestionById.getPrice() > customerByEmail.getCredit())
