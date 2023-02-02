@@ -3,9 +3,7 @@ package ir.maktab.service;
 import ir.maktab.data.enums.ExpertStatus;
 import ir.maktab.data.enums.Role;
 import ir.maktab.data.model.Expert;
-import ir.maktab.util.exception.NotCorrect;
 import ir.maktab.util.exception.NotFoundUser;
-import ir.maktab.util.exception.StatusException;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.jupiter.api.MethodOrderer;
@@ -45,14 +43,14 @@ public class ExpertServiceTest {
     }
 
     @Test
-    public void saveImage() throws NotFoundUser {
+    public void saveImage() {
         Expert expertByEmail = expertService.getExpertByEmail("mona.noori@gmail.com");
         expertService.saveImage(expertByEmail);
         assertNotNull(expertByEmail);
     }
 
     @Test
-    public void getImage() throws NotFoundUser {
+    public void getImage() {
         Expert expertByEmail = expertService.getExpertByEmail("mona.noori@gmail.com");
         expertService.getImage("mona.noori@gmail.com");
     }
@@ -77,7 +75,7 @@ public class ExpertServiceTest {
 
     @Test
     @Order(4)
-    public void updateExpertTest() throws NotFoundUser {
+    public void updateExpertTest() {
         Expert expert = expertService.getExpertByEmail("mona.noori@gmail.com");
         expert.setFirstName("sara");
         Expert updateExpert = expertService.update(expert);
@@ -86,7 +84,7 @@ public class ExpertServiceTest {
 
     @Test
     @Order(5)
-    public void changePasswordTest() throws NotFoundUser, NotCorrect {
+    public void changePasswordTest() {
         Expert expert = expertService.getExpertByEmail("mona.noori@gmail.com");
         Expert expert1 = expertService.changePassword("111qqqWW", "111qqqWW", expert);
         expertService.update(expert1);
@@ -95,7 +93,7 @@ public class ExpertServiceTest {
 
     @Test
     @Order(6)
-    public void editExpertStatusByAdmin() throws StatusException, NotFoundUser {
+    public void editExpertStatusByAdmin() {
         Expert expert = adminService.editStatus("mona.noori@gmail.com");
         Assertions.assertThat(expert.getExpertStatus()).isEqualTo(ExpertStatus.CONFIRMED);
     }
