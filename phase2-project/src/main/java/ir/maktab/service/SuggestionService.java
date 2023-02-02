@@ -37,12 +37,12 @@ public class SuggestionService {
         suggestionRepository.delete(suggestion);
     }
 
-    public Suggestion getSuggestionById(Long id) throws NotFound {
+    public Suggestion getSuggestionById(Long id) {
         return suggestionRepository.findSuggestionById(id).orElseThrow(() -> new NotFound("Not found this suggestion"));
     }
 
     @Transactional
-    public Suggestion sendSuggestionFromExpert(Suggestion suggestion, SubServices subServices) throws SuggestionException {
+    public Suggestion sendSuggestionFromExpert(Suggestion suggestion, SubServices subServices) {
         if (suggestion.getPrice() < subServices.getPrice())
             throw new SuggestionException("Price must be more than original");
         if (suggestion.getSuggestionsStartedTime().before(new Date()))
@@ -60,6 +60,7 @@ public class SuggestionService {
         suggestion.getOrderSystem().setOrderStatus(OrderStatus.WAITING_EXPERT_COME_PLACE);
         return suggestionRepository.save(suggestion);
     }
+
     @Transactional
     public List<Suggestion> sortSuggestionByExpertScore(Expert expert) {
         return suggestionRepository.findAllOrderByScore(expert);
