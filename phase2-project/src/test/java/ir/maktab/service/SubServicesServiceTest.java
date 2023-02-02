@@ -5,8 +5,6 @@ import ir.maktab.data.enums.Role;
 import ir.maktab.data.model.Expert;
 import ir.maktab.data.model.SubServices;
 import ir.maktab.util.exception.NotFound;
-import ir.maktab.util.exception.NotFoundUser;
-import ir.maktab.util.exception.SubServicesException;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.jupiter.api.MethodOrderer;
@@ -71,7 +69,7 @@ public class SubServicesServiceTest {
 
     @Test
     @Order(4)
-    public void updateSubServiceTest() throws NotFound {
+    public void updateSubServiceTest() {
         SubServices name = subServicesService.findByName(subServices.getSubName());
         name.setBriefExplanation("TAMIR");
         SubServices services = subServicesService.updateSubServices(name);
@@ -80,17 +78,17 @@ public class SubServicesServiceTest {
 
     @Test
     @Order(5)
-    public void updatePrice() throws NotFound {
+    public void updatePrice() {
         SubServices service = subServicesService.findByName(subServices.getSubName());
         subServicesService.updatePrice(200000, "LAVAZEM_ASHPAZKHANE");
-        assertEquals(200000,service.getPrice(),100000);
+        assertEquals(200000, service.getPrice(), 100000);
     }
 
     @Test
     @Order(6)
-    public void updateBrief() throws NotFound {
+    public void updateBrief() {
         SubServices service = subServicesService.findByName(subServices.getSubName());
-        subServicesService.updateBrief("taviz","LAVAZEM_ASHPAZKHANE");
+        subServicesService.updateBrief("taviz", "LAVAZEM_ASHPAZKHANE");
         assertNotNull(service);
     }
 
@@ -109,7 +107,7 @@ public class SubServicesServiceTest {
 
     @Test
     @Order(8)
-    public void addSubServiceByAdmin() throws NotFound {
+    public void addSubServiceByAdmin() {
         SubServices services = SubServices.builder().subName("RAKHT_SHOOIE").price(400000).
                 briefExplanation("Based on weight").build();
         adminService.addSubService(services);
@@ -118,7 +116,7 @@ public class SubServicesServiceTest {
 
     @Test
     @Order(9)
-    public void addExpertToSubServiceByAdmin() throws NotFoundUser, NotFound, SubServicesException {
+    public void addExpertToSubServiceByAdmin() {
         Expert expertByEmail = expertService.getExpertByEmail(expert.getEmail());
         SubServices service = subServicesService.findByName(subServices.getSubName());
         Expert expertToSubService = adminService.addExpertToSubService(expertByEmail, service);
@@ -127,7 +125,7 @@ public class SubServicesServiceTest {
 
     @Test
     @Order(10)
-    public void deleteExpertFromSubServicesByAdmin() throws NotFoundUser, NotFound {
+    public void deleteExpertFromSubServicesByAdmin() {
         Expert expertByEmail = expertService.getExpertByEmail(expert.getEmail());
         SubServices service = subServicesService.findByName(subServices.getSubName());
         boolean deleteExpertFromSubServices = adminService.deleteExpertFromSubServices(expertByEmail, service);
