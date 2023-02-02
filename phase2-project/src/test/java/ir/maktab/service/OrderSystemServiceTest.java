@@ -1,13 +1,9 @@
 package ir.maktab.service;
 
-import ir.maktab.data.enums.ExpertStatus;
 import ir.maktab.data.enums.OrderStatus;
-import ir.maktab.data.enums.Role;
-import ir.maktab.data.model.Expert;
 import ir.maktab.data.model.OrderSystem;
 import ir.maktab.data.model.SubServices;
 import ir.maktab.util.date.DateUtil;
-import ir.maktab.util.exception.OrderException;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.jupiter.api.MethodOrderer;
@@ -38,7 +34,7 @@ public class OrderSystemServiceTest {
 
     @Test
     @Order(1)
-    public void saveNewOrder() throws OrderException {
+    public void saveNewOrder() {
         OrderSystem order = orderSystemService.addOrderWithSubService(subServices, orderSystem);
         Assertions.assertThat(order.getId()).isGreaterThan(0);
     }
