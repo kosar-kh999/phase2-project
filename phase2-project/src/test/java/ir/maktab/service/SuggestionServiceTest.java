@@ -68,7 +68,7 @@ public class SuggestionServiceTest {
     @Test
     @Order(3)
     public void sortSuggestionByPrice() {
-        OrderSystem orderSystem = orderSystemService.getSuggestionById(402L);
+        OrderSystem orderSystem = orderSystemService.getSuggestionById(1L);
         List<Suggestion> suggestions = suggestionService.sortSuggestionByPrice(orderSystem);
         assertEquals(450000, suggestions.get(0).getPrice());
     }
