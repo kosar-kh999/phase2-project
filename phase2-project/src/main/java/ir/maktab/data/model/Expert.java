@@ -6,7 +6,6 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +17,7 @@ import java.util.List;
 @Entity
 @ToString
 @SuperBuilder
-public class Expert extends User implements Serializable {
+public class Expert extends User {
 
     @Enumerated(value = EnumType.STRING)
     ExpertStatus expertStatus;
