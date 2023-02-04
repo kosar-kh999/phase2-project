@@ -40,6 +40,10 @@ public class SubServicesService {
         return subServicesRepository.findBySubName(name).orElseThrow(() -> new NotFound("not found this sub service"));
     }
 
+    public SubServices findById(Long id) {
+        return subServicesRepository.findById(id).orElseThrow(() -> new NotFound("not found this sub service"));
+    }
+
     public void updatePrice(double price, String name) {
         subServicesRepository.updatePrice(price, name);
     }
