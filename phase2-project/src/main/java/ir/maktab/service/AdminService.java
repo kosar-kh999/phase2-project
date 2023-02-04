@@ -31,6 +31,14 @@ public class AdminService {
     }
 
     @Transactional
+    public void addSubServiceToService(SubServices subServices, MainService mainService) {
+        MainService service = mainServicesService.findByName(mainService.getName());
+        SubServices services = subServicesService.getByName(subServices);
+        services.setMainService(service);
+        subServicesService.saveSubService(services);
+    }
+
+    @Transactional
     public Expert addExpertToSubService(Expert expert, SubServices subServices) {
         SubServices services = subServicesService.findByName(subServices.getSubName());
         if (expert.getSubServices().contains(services))
