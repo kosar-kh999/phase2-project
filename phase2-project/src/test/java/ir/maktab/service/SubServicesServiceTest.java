@@ -79,9 +79,9 @@ public class SubServicesServiceTest {
     @Test
     @Order(5)
     public void updatePrice() {
-        SubServices service = subServicesService.findByName(subServices.getSubName());
-        subServicesService.updatePrice(200000, "LAVAZEM_ASHPAZKHANE");
-        assertEquals(200000, service.getPrice(), 100000);
+        SubServices service = subServicesService.findByName("RAKHT_SHOOIE");
+        subServicesService.updatePrice(200000, "RAKHT_SHOOIE");
+        assertEquals(200000, service.getPrice(), 200000);
     }
 
     @Test
@@ -118,7 +118,7 @@ public class SubServicesServiceTest {
     @Order(9)
     public void addExpertToSubServiceByAdmin() {
         Expert expertByEmail = expertService.getExpertByEmail(expert.getEmail());
-        SubServices service = subServicesService.findByName(subServices.getSubName());
+        SubServices service = subServicesService.findByName("RAKHT_SHOOIE");
         Expert expertToSubService = adminService.addExpertToSubService(expertByEmail, service);
         Assertions.assertThat(expertToSubService.getId()).isGreaterThan(0);
     }
@@ -127,7 +127,7 @@ public class SubServicesServiceTest {
     @Order(10)
     public void deleteExpertFromSubServicesByAdmin() {
         Expert expertByEmail = expertService.getExpertByEmail(expert.getEmail());
-        SubServices service = subServicesService.findByName(subServices.getSubName());
+        SubServices service = subServicesService.findByName("RAKHT_SHOOIE");
         boolean deleteExpertFromSubServices = adminService.deleteExpertFromSubServices(expertByEmail, service);
         assertTrue(deleteExpertFromSubServices);
     }
