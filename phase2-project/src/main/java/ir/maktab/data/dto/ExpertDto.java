@@ -2,14 +2,10 @@ package ir.maktab.data.dto;
 
 import ir.maktab.data.enums.ExpertStatus;
 import ir.maktab.data.enums.Role;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Setter
 @Getter
@@ -32,8 +28,6 @@ public class ExpertDto {
     private Date entryDate;
     private double credit;
     private ExpertStatus expertStatus;
-    private List<SubServiceDto> subServiceDto = new ArrayList<>();
-    private List<OpinionDto> opinionDto = new ArrayList<>();
     private byte[] image;
     double score;
 }
