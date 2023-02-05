@@ -31,10 +31,10 @@ public class AdminService {
     }
 
     @Transactional
-    public void addSubServiceToService(SubServices subServices, MainService mainService) {
-        MainService service = mainServicesService.findByName(mainService.getName());
+    public void addSubServiceToService(SubServices subServices, Long id) {
+        MainService mainService = mainServicesService.findById(id);
         SubServices services = subServicesService.getByName(subServices);
-        services.setMainService(service);
+        services.setMainService(mainService);
         subServicesService.saveSubService(services);
     }
 
