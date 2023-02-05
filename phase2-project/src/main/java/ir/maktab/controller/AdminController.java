@@ -9,7 +9,6 @@ import ir.maktab.service.AdminService;
 import ir.maktab.service.ExpertService;
 import ir.maktab.service.MainServicesService;
 import ir.maktab.service.SubServicesService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
@@ -37,12 +36,11 @@ public class AdminController {
 
     @Transactional
     @PostMapping("/add_sub_service")
-    public ResponseEntity<String> addSubService(@Valid @RequestBody SubServiceDto subServiceDto,
+    public ResponseEntity<String> addSubService(@RequestBody SubServiceDto subServiceDto,
                                                 @RequestParam(value = "id") Long id) {
         SubServices subServices = modelMapper.map(subServiceDto, SubServices.class);
-        MainService mainService = mainServicesService.findById(id);
-        adminService.addSubServiceToService(subServices, mainService);
-        return ResponseEntity.ok().body("This sub service is added" + " " + mainService.getName());
+        adminService.addSubServiceToService(subServices, id);
+        return ResponseEntity.ok().body("This sub service is added");
     }
 
     @Transactional
@@ -72,5 +70,19 @@ public class AdminController {
     @PutMapping("/edit_to_confirmed")
     public ResponseEntity<Expert> editToConfirmed(@RequestParam(value = "email") String email) {
         return ResponseEntity.ok().body(adminService.editStatus(email));
+    }
+
+    @PutMapping("/update_price")
+    public ResponseEntity<String> updatePrice(@RequestParam(value = "price") double price,
+                                              @RequestParam(value = "name") String name) {
+        subServicesService.updatePrice(price, name);
+        return ResponseEntity.ok().body("the price has been update");
+    }
+
+    @PutMapping("/update_brief")
+    public ResponseEntity<String> updateBrief(@RequestParam(value = "brief") String brief,
+                                              @RequestParam(value = "name") String name) {
+        subServicesService.updateBrief(brief, name);
+        return ResponseEntity.ok().body("the brief has been update");
     }
 }
