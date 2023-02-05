@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/admin")
 @RequiredArgsConstructor
@@ -50,6 +52,25 @@ public class AdminController {
         SubServices subServices = subServicesService.findById(idSub);
         Expert expert = expertService.getExpertById(id);
         adminService.addExpertToSubService(expert, subServices);
-        return ResponseEntity.ok().body(expert.getFirstName() + " " + "added" + " " +subServices.getSubName());
+        return ResponseEntity.ok().body(expert.getFirstName() + " " + "added" + " " + subServices.getSubName());
+    }
+
+    @DeleteMapping("/delete_expert_from_sub_service")
+    public ResponseEntity<String> deleteExert(@RequestParam(value = "idSub") Long idSub,
+                                              @RequestParam(value = "id") Long id) {
+        SubServices subServices = subServicesService.findById(idSub);
+        Expert expert = expertService.getExpertById(id);
+        adminService.deleteExpertFromSubServices(expert, subServices);
+        return ResponseEntity.ok().body(expert.getFirstName() + " " + "removed from" + " " + subServices.getSubName());
+    }
+
+    @GetMapping("/get_main_services")
+    public ResponseEntity<List<MainService>> gatAllServices() {
+        return ResponseEntity.ok().body(adminService.showAllServices());
+    }
+
+    @PutMapping("/edit_to_confirmed")
+    public ResponseEntity<Expert> editToConfirmed(@RequestParam(value = "email") String email) {
+        return ResponseEntity.ok().body(adminService.editStatus(email));
     }
 }
