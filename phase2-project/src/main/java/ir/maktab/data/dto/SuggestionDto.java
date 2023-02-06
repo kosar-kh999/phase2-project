@@ -3,18 +3,19 @@ package ir.maktab.data.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
+import java.time.Duration;
+
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class OrderSystemDto {
+public class SuggestionDto {
 
+    @JsonFormat(pattern = "yyy-MM-dd HH:mm:ss")
+    private String registrationTime;
     private double price;
-    private String description;
     @JsonFormat(pattern = "yyy-MM-dd HH:mm:ss")
-    private String timeToDo;
-    private String address;
-    @JsonFormat(pattern = "yyy-MM-dd HH:mm:ss")
-    private String doneDate;
+    private String suggestionsStartedTime;
+    private Duration duration;
 }

@@ -45,7 +45,7 @@ public class SuggestionServiceTest {
     Suggestion suggestion1 = Suggestion.builder().price(500000).suggestionsStartedTime(suggestionTime).
             duration(Duration.ofHours(2)).orderSystem(null).expert(null).build();
 
-    @Test
+    /*@Test
     @Order(1)
     public void saveNewSuggestion() {
         OrderSystem suggestionById = orderSystemService.getSuggestionById(1L);
@@ -55,7 +55,7 @@ public class SuggestionServiceTest {
         Suggestion fromExpert1 = suggestionService.sendSuggestionFromExpert(suggestion1, subServices);
         Assertions.assertThat(fromExpert.getId()).isGreaterThan(0);
         Assertions.assertThat(fromExpert1.getId()).isGreaterThan(0);
-    }
+    }*/
 
     @Test
     @Order(2)

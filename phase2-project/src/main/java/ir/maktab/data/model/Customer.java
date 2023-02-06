@@ -21,7 +21,7 @@ import java.util.List;
 @SuperBuilder
 public class Customer extends User {
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, mappedBy = "customer")
     List<OrderSystem> orderSystems = new ArrayList<>();
 
 }

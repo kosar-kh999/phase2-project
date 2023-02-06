@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -38,7 +39,7 @@ public class OrderSystemService {
         return orderSystemRepository.save(orderSystem);
     }
 
-    public void showOrderToExpert(OrderSystem orderSystem) {
+    public void showOrderToExpert(OrderSystem orderSystem, Long id) {
         if (!(orderSystem.getOrderStatus().equals(OrderStatus.WAITING_EXPERT_SELECTION) || orderSystem.getOrderStatus().
                 equals(OrderStatus.WAITING_ADVICE_EXPERTS)))
             throw new OrderException("the order status must be WAITING_EXPERT_SELECTION or WAITING_ADVICE_EXPERTS");
@@ -49,4 +50,7 @@ public class OrderSystemService {
         orderSystemRepository.save(orderSystem);
     }
 
+    public List<OrderSystem> findBySub(String subName) {
+        return orderSystemRepository.findBySub(subName);
+    }
 }

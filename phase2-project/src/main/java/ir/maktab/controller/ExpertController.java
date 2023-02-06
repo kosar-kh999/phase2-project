@@ -1,8 +1,11 @@
 package ir.maktab.controller;
 
 import ir.maktab.data.dto.ExpertDto;
+import ir.maktab.data.dto.SuggestionDto;
 import ir.maktab.data.model.Expert;
+import ir.maktab.data.model.Suggestion;
 import ir.maktab.service.ExpertService;
+import ir.maktab.service.SuggestionService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ExpertController {
     private final ExpertService expertService;
+    private final SuggestionService suggestionService;
     private final ModelMapper modelMapper;
 
     @PostMapping("/add_expert")
@@ -57,6 +61,14 @@ public class ExpertController {
     public ResponseEntity<Expert> updatePassword(@RequestParam("newPassword") String newPassword,
                                                  @RequestParam("confirmedPassword") String confirmedPassword,
                                                  @RequestParam("email") String email) {
-        return ResponseEntity.ok().body(expertService.changePasswordExpert(newPassword,confirmedPassword,email));
+        return ResponseEntity.ok().body(expertService.changePasswordExpert(newPassword, confirmedPassword, email));
+    }
+
+    @PostMapping("/suggestion_add")
+    public ResponseEntity<String> addSuggestion(@RequestBody SuggestionDto suggestionDto,
+                                                @RequestParam(value = "id") Long id) {
+        Suggestion suggestion = modelMapper.map(suggestionDto, Suggestion.class);
+        suggestionService.sendSuggestionFromExpert(suggestion, id);
+        return ResponseEntity.ok().body("suggestion add");
     }
 }

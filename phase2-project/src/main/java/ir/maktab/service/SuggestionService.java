@@ -1,7 +1,6 @@
 package ir.maktab.service;
 
 import ir.maktab.data.enums.OrderStatus;
-import ir.maktab.data.model.Expert;
 import ir.maktab.data.model.OrderSystem;
 import ir.maktab.data.model.SubServices;
 import ir.maktab.data.model.Suggestion;
@@ -20,6 +19,7 @@ import java.util.List;
 public class SuggestionService {
 
     private final SuggestionRepository suggestionRepository;
+    private final SubServicesService subServicesService;
 
     public void saveSuggestion(Suggestion suggestion) {
         suggestionRepository.save(suggestion);
@@ -42,7 +42,8 @@ public class SuggestionService {
     }
 
     @Transactional
-    public Suggestion sendSuggestionFromExpert(Suggestion suggestion, SubServices subServices) {
+    public Suggestion sendSuggestionFromExpert(Suggestion suggestion, Long id) {
+        SubServices subServices = subServicesService.findById(id);
         if (suggestion.getPrice() < subServices.getPrice())
             throw new SuggestionException("Price must be more than original");
         if (suggestion.getSuggestionsStartedTime().before(new Date()))
@@ -61,8 +62,8 @@ public class SuggestionService {
         return suggestionRepository.save(suggestion);
     }
 
-    @Transactional
+    /*@Transactional
     public List<Suggestion> sortSuggestionByExpertScore(Expert expert) {
         return suggestionRepository.findAllOrderByScore(expert);
-    }
+    }*/
 }

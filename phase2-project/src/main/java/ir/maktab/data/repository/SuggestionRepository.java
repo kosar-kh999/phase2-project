@@ -16,7 +16,7 @@ public interface SuggestionRepository extends JpaRepository<Suggestion, Long> {
 
     Optional<Suggestion> findSuggestionById(Long id);
 
-    @Modifying
+    /*@Modifying
     @Query("SELECT s FROM Suggestion s ORDER BY s.expert.score ASC ")
-    List<Suggestion> findAllOrderByScore(Expert expert);
+    List<Suggestion> findAllOrderByScore(Expert expert);*/
 }

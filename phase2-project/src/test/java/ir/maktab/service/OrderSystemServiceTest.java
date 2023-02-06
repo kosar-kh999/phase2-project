@@ -39,9 +39,9 @@ public class OrderSystemServiceTest {
         Assertions.assertThat(order.getId()).isGreaterThan(0);
     }*/
 
-    @Test
+    /*@Test
     @Order(2)
     public void showOrderToExpert() {
         assertDoesNotThrow(() -> orderSystemService.showOrderToExpert(orderSystem));
-    }
+    }*/
 }

@@ -18,7 +18,7 @@ import java.util.Date;
 @SuperBuilder
 public class OrderSystem extends BaseEntity {
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     SubServices subServices;
     double price;
     String description;
@@ -29,11 +29,14 @@ public class OrderSystem extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     OrderStatus orderStatus;
 
-    @ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     Expert expert;
 
     @Temporal(value = TemporalType.TIMESTAMP)
     Date doneDate;
+
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    Customer customer;
 
     public OrderSystem(double price, String description, Date timeToDo, String address) {
         this.price = price;

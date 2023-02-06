@@ -69,6 +69,7 @@ public class CustomerController {
         return ResponseEntity.ok().body(customerService.changePasswordCustomer(newPassword, confirmedPassword, email));
     }
 
+
     @GetMapping("/all_services")
     public ResponseEntity<List<MainService>> getAllServices() {
         return ResponseEntity.ok().body(customerService.showAllServices());
@@ -81,9 +82,16 @@ public class CustomerController {
 
     @Transactional
     @PostMapping("/add_order")
-    public ResponseEntity<OrderSystem> addOrder(@RequestBody OrderSystemDto orderSystemDto,
-                                                @RequestParam(value = "id") Long id) {
+    public ResponseEntity<String> addOrder(@RequestBody OrderSystemDto orderSystemDto,
+                                           @RequestParam(value = "id") Long id) {
         OrderSystem orderSystem = modelMapper.map(orderSystemDto, OrderSystem.class);
-        return ResponseEntity.ok().body(orderSystemService.addOrderWithSubService(id, orderSystem));
+        orderSystemService.addOrderWithSubService(id, orderSystem);
+        return ResponseEntity.ok().body("order added");
+    }
+
+    @Transactional
+    @GetMapping("/find_order_by_sub")
+    public ResponseEntity<List<OrderSystem>> findBySub(@RequestParam(value = "subName") String subName) {
+        return ResponseEntity.ok().body(orderSystemService.findBySub(subName));
     }
 }
