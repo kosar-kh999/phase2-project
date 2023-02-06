@@ -37,12 +37,12 @@ public class ExpertService {
         return expert;
     }
 
-    public Expert changePassword(String newPassword, String confirmedPassword, Expert expert) {
+    /*public Expert changePassword(String newPassword, String confirmedPassword, Expert expert) {
         if (!newPassword.equals(confirmedPassword))
             throw new NotCorrect("The new password and confirmed password must be match");
         expert.setPassword(newPassword);
         return expertRepository.save(expert);
-    }
+    }*/
 
     public Expert changePasswordExpert(String newPassword, String confirmedPassword, String email) {
         Expert expertByEmail = getExpertByEmail(email);

@@ -1,10 +1,7 @@
 package ir.maktab.service;
 
 import ir.maktab.data.enums.OrderStatus;
-import ir.maktab.data.model.Customer;
-import ir.maktab.data.model.Expert;
-import ir.maktab.data.model.OrderSystem;
-import ir.maktab.data.model.Suggestion;
+import ir.maktab.data.model.*;
 import ir.maktab.data.repository.CustomerRepository;
 import ir.maktab.util.exception.NotCorrect;
 import ir.maktab.util.exception.NotFoundUser;
@@ -41,12 +38,12 @@ public class CustomerService {
         return customer;
     }
 
-    public Customer changePassword(String newPassword, String confirmedPassword, Customer customer) {
+    /*public Customer changePassword(String newPassword, String confirmedPassword, Customer customer) {
         if (!newPassword.equals(confirmedPassword))
             throw new NotCorrect("The new password and confirmed password must be match");
         customer.setPassword(newPassword);
         return customerRepository.save(customer);
-    }
+    }*/
 
     public Customer changePasswordCustomer(String newPassword, String confirmedPassword, String email) {
         Customer customerByEmail = getCustomerByEmail(email);
@@ -70,12 +67,8 @@ public class CustomerService {
         return customerRepository.save(customer);
     }
 
-    public void showAllServices() {
-        mainServicesService.getAllServices();
-    }
-
-    public void showAllSubServices() {
-        subServicesService.getAllSubServices();
+    public List<MainService> showAllServices() {
+        return mainServicesService.getAllServices();
     }
 
     @Transactional

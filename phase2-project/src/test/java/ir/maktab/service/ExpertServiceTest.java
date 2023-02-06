@@ -82,14 +82,14 @@ public class ExpertServiceTest {
         Assertions.assertThat(updateExpert.getFirstName()).isEqualTo("sara");
     }
 
-    @Test
+    /*@Test
     @Order(5)
     public void changePasswordTest() {
         Expert expert = expertService.getExpertByEmail("mona.noori@gmail.com");
         Expert expert1 = expertService.changePassword("111qqqWW", "111qqqWW", expert);
         expertService.update(expert1);
         Assertions.assertThat(expert1.getPassword().equals("111qqqWW"));
-    }
+    }*/
 
     @Test
     @Order(6)

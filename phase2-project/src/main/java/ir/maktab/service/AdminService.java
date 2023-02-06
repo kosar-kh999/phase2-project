@@ -25,10 +25,10 @@ public class AdminService {
         mainServicesService.addServices(service);
     }
 
-    public void addSubService(SubServices subServices) {
+    /*public void addSubService(SubServices subServices) {
         SubServices services = subServicesService.getByName(subServices);
         subServicesService.saveSubService(services);
-    }
+    }*/
 
     @Transactional
     public void addSubServiceToService(SubServices subServices, Long id) {
@@ -39,8 +39,9 @@ public class AdminService {
     }
 
     @Transactional
-    public Expert addExpertToSubService(Expert expert, SubServices subServices) {
-        SubServices services = subServicesService.findByName(subServices.getSubName());
+    public Expert addExpertToSubService(Long expertId, Long subId) {
+        Expert expert = expertService.getExpertById(expertId);
+        SubServices services = subServicesService.findById(subId);
         if (expert.getSubServices().contains(services))
             throw new SubServicesException("This sub service was added before");
         expert.getSubServices().add(services);
@@ -48,7 +49,9 @@ public class AdminService {
         return expert;
     }
 
-    public boolean deleteExpertFromSubServices(Expert expert, SubServices subServices) {
+    public boolean deleteExpertFromSubServices(Long expertId, Long subId) {
+        Expert expert = expertService.getExpertById(expertId);
+        SubServices subServices = subServicesService.findById(subId);
         boolean flag = true;
         if (!(expert.getSubServices().contains(subServices)))
             return false;

@@ -1,11 +1,18 @@
 package ir.maktab.controller;
 
 import ir.maktab.data.dto.CustomerDto;
+import ir.maktab.data.dto.OrderSystemDto;
 import ir.maktab.data.model.Customer;
+import ir.maktab.data.model.MainService;
+import ir.maktab.data.model.OrderSystem;
+import ir.maktab.data.model.SubServices;
 import ir.maktab.service.CustomerService;
+import ir.maktab.service.OrderSystemService;
+import ir.maktab.service.SubServicesService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,6 +22,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CustomerController {
     private final CustomerService customerService;
+    private final SubServicesService subServicesService;
+    private final OrderSystemService orderSystemService;
     private final ModelMapper modelMapper;
 
     @PostMapping("/add_customer")
@@ -58,5 +67,23 @@ public class CustomerController {
                                                    @RequestParam("confirmedPassword") String confirmedPassword,
                                                    @RequestParam("email") String email) {
         return ResponseEntity.ok().body(customerService.changePasswordCustomer(newPassword, confirmedPassword, email));
+    }
+
+    @GetMapping("/all_services")
+    public ResponseEntity<List<MainService>> getAllServices() {
+        return ResponseEntity.ok().body(customerService.showAllServices());
+    }
+
+    @GetMapping("/all_sub_services_of_service")
+    public ResponseEntity<List<SubServices>> getAllSubServiceOfService(@RequestParam(value = "name") String name) {
+        return ResponseEntity.ok().body(subServicesService.getSubServiceByMainService(name));
+    }
+
+    @Transactional
+    @PostMapping("/add_order")
+    public ResponseEntity<OrderSystem> addOrder(@RequestBody OrderSystemDto orderSystemDto,
+                                                @RequestParam(value = "id") Long id) {
+        OrderSystem orderSystem = modelMapper.map(orderSystemDto, OrderSystem.class);
+        return ResponseEntity.ok().body(orderSystemService.addOrderWithSubService(id, orderSystem));
     }
 }

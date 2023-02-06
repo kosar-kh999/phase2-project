@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface SubServicesRepository extends JpaRepository<SubServices, Long> {
@@ -21,4 +22,7 @@ public interface SubServicesRepository extends JpaRepository<SubServices, Long> 
     @Transactional
     @Query("update SubServices s set s.price=:price where s.subName=:sub")
     void updatePrice(@Param("price") double price, @Param("sub") String sub);
+
+    @Query("select s from SubServices s where s.mainService.name=:name")
+    List<SubServices> findSubService(String name);
 }

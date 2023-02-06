@@ -16,6 +16,7 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class OrderSystemService {
     private final OrderSystemRepository orderSystemRepository;
+    private final SubServicesService subServicesService;
 
     public void addOrder(OrderSystem orderSystem) {
         orderSystemRepository.save(orderSystem);
@@ -26,16 +27,18 @@ public class OrderSystemService {
     }
 
     @Transactional
-    public OrderSystem addOrderWithSubService(SubServices subServices, OrderSystem orderSystem) {
+    public OrderSystem addOrderWithSubService(Long id, OrderSystem orderSystem) {
+        SubServices subServices = subServicesService.findById(id);
         if (orderSystem.getPrice() < subServices.getPrice())
             throw new OrderException("Price must be more than original");
         if (new Date().after(orderSystem.getTimeToDo()))
             throw new OrderException("time and date must be after than today");
+        orderSystem.setSubServices(subServices);
         orderSystem.setOrderStatus(OrderStatus.WAITING_ADVICE_EXPERTS);
         return orderSystemRepository.save(orderSystem);
     }
 
-    public void showOrderToExpert(OrderSystem orderSystem)  {
+    public void showOrderToExpert(OrderSystem orderSystem) {
         if (!(orderSystem.getOrderStatus().equals(OrderStatus.WAITING_EXPERT_SELECTION) || orderSystem.getOrderStatus().
                 equals(OrderStatus.WAITING_ADVICE_EXPERTS)))
             throw new OrderException("the order status must be WAITING_EXPERT_SELECTION or WAITING_ADVICE_EXPERTS");

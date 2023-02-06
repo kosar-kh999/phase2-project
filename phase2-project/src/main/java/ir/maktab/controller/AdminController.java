@@ -31,7 +31,7 @@ public class AdminController {
     public ResponseEntity<String> addService(@RequestBody MainServiceDto mainServiceDto) {
         MainService mainService = modelMapper.map(mainServiceDto, MainService.class);
         adminService.addServices(mainService);
-        return ResponseEntity.ok().body("This service is added");
+        return ResponseEntity.ok().body(mainService.getName() + " " + " is added");
     }
 
     @Transactional
@@ -40,26 +40,22 @@ public class AdminController {
                                                 @RequestParam(value = "id") Long id) {
         SubServices subServices = modelMapper.map(subServiceDto, SubServices.class);
         adminService.addSubServiceToService(subServices, id);
-        return ResponseEntity.ok().body("This sub service is added");
+        return ResponseEntity.ok().body(subServices.getSubName() + " " + " is added");
     }
 
     @Transactional
     @PostMapping("/add_expert_to_sub_service")
     public ResponseEntity<String> addExpertToSubService(@RequestParam(value = "idSub") Long idSub,
                                                         @RequestParam(value = "id") Long id) {
-        SubServices subServices = subServicesService.findById(idSub);
-        Expert expert = expertService.getExpertById(id);
-        adminService.addExpertToSubService(expert, subServices);
-        return ResponseEntity.ok().body(expert.getFirstName() + " " + "added" + " " + subServices.getSubName());
+        Expert expert = adminService.addExpertToSubService(id, idSub);
+        return ResponseEntity.ok().body(expert.getFirstName() + " " + "added to sub service");
     }
 
     @DeleteMapping("/delete_expert_from_sub_service")
     public ResponseEntity<String> deleteExert(@RequestParam(value = "idSub") Long idSub,
                                               @RequestParam(value = "id") Long id) {
-        SubServices subServices = subServicesService.findById(idSub);
-        Expert expert = expertService.getExpertById(id);
-        adminService.deleteExpertFromSubServices(expert, subServices);
-        return ResponseEntity.ok().body(expert.getFirstName() + " " + "removed from" + " " + subServices.getSubName());
+        adminService.deleteExpertFromSubServices(id, idSub);
+        return ResponseEntity.ok().body("expert removed from sub service");
     }
 
     @GetMapping("/get_main_services")

@@ -29,5 +29,4 @@ public class CustomerDto {
     private String password;
     private Date entryDate;
     private double credit;
-    private List<OrderSystemDto> orderSystemDto = new ArrayList<>();
 }

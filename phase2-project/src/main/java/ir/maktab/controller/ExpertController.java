@@ -21,7 +21,7 @@ public class ExpertController {
     public ResponseEntity<String> addExpert(@RequestBody ExpertDto expertDto) {
         Expert expert = modelMapper.map(expertDto, Expert.class);
         expertService.signUp(expert);
-        return ResponseEntity.ok().body("You sign up successfully");
+        return ResponseEntity.ok().body(expert.getFirstName() + " " + " sign up successfully");
     }
 
     @GetMapping("/sign_In_expert")

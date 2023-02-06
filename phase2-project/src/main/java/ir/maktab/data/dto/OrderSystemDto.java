@@ -12,12 +12,10 @@ import java.util.Date;
 @ToString
 public class OrderSystemDto {
 
-    private MainServiceDto mainServiceDto;
     private double price;
     private String description;
     private Date timeToDo;
     private String address;
     private OrderStatus orderStatus;
-    private ExpertDto expertDto;
     private Date doneDate;
 }

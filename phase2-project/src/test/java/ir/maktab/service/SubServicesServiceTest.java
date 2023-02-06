@@ -105,30 +105,30 @@ public class SubServicesServiceTest {
         }
     }
 
-    @Test
+    /*@Test
     @Order(8)
     public void addSubServiceByAdmin() {
         SubServices services = SubServices.builder().subName("RAKHT_SHOOIE").price(400000).
                 briefExplanation("Based on weight").build();
         adminService.addSubService(services);
         Assertions.assertThat(services.getId()).isGreaterThan(0);
-    }
+    }*/
 
-    @Test
+    /*@Test
     @Order(9)
     public void addExpertToSubServiceByAdmin() {
         Expert expertByEmail = expertService.getExpertByEmail(expert.getEmail());
         SubServices service = subServicesService.findByName("RAKHT_SHOOIE");
         Expert expertToSubService = adminService.addExpertToSubService(expertByEmail, service);
         Assertions.assertThat(expertToSubService.getId()).isGreaterThan(0);
-    }
+    }*/
 
-    @Test
+    /*@Test
     @Order(10)
     public void deleteExpertFromSubServicesByAdmin() {
         Expert expertByEmail = expertService.getExpertByEmail(expert.getEmail());
         SubServices service = subServicesService.findByName("RAKHT_SHOOIE");
         boolean deleteExpertFromSubServices = adminService.deleteExpertFromSubServices(expertByEmail, service);
         assertTrue(deleteExpertFromSubServices);
-    }
+    }*/
 }

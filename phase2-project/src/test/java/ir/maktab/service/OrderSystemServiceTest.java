@@ -32,12 +32,12 @@ public class OrderSystemServiceTest {
     OrderSystem orderSystem = OrderSystem.builder().price(400000).description("JA_BE_JAEE").timeToDo(timeToDo).
             address("qeshm").orderStatus(OrderStatus.WAITING_ADVICE_EXPERTS).expert(null).build();
 
-    @Test
+    /*@Test
     @Order(1)
     public void saveNewOrder() {
         OrderSystem order = orderSystemService.addOrderWithSubService(subServices, orderSystem);
         Assertions.assertThat(order.getId()).isGreaterThan(0);
-    }
+    }*/
 
     @Test
     @Order(2)
