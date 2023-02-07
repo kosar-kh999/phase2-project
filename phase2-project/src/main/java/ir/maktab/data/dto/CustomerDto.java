@@ -24,9 +24,7 @@ public class CustomerDto {
             "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
             "A-Z]{2,7}$")
     private String email;
-    private Role role;
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z]).{8}$")
     private String password;
-    private Date entryDate;
     private double credit;
 }

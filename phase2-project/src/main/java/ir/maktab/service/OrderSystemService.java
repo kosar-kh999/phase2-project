@@ -1,6 +1,7 @@
 package ir.maktab.service;
 
 import ir.maktab.data.enums.OrderStatus;
+import ir.maktab.data.model.Customer;
 import ir.maktab.data.model.OrderSystem;
 import ir.maktab.data.model.SubServices;
 import ir.maktab.data.repository.OrderSystemRepository;
@@ -18,25 +19,36 @@ import java.util.List;
 public class OrderSystemService {
     private final OrderSystemRepository orderSystemRepository;
     private final SubServicesService subServicesService;
+    private final CustomerService customerService;
+    private final ExpertService expertService;
 
     public void addOrder(OrderSystem orderSystem) {
         orderSystemRepository.save(orderSystem);
     }
 
-    public OrderSystem getSuggestionById(Long id) {
+    public OrderSystem getOrderById(Long id) {
         return orderSystemRepository.findOrderSystemById(id).orElseThrow(() -> new NotFound("Not found this order"));
     }
 
     @Transactional
-    public OrderSystem addOrderWithSubService(Long id, OrderSystem orderSystem) {
+    public OrderSystem addOrderWithSubService(Long id, OrderSystem orderSystem, Long customerId) {
         SubServices subServices = subServicesService.findById(id);
+        Customer customer = customerService.getById(customerId);
         if (orderSystem.getPrice() < subServices.getPrice())
             throw new OrderException("Price must be more than original");
         if (new Date().after(orderSystem.getTimeToDo()))
             throw new OrderException("time and date must be after than today");
         orderSystem.setSubServices(subServices);
+        orderSystem.setCustomer(customer);
         orderSystem.setOrderStatus(OrderStatus.WAITING_ADVICE_EXPERTS);
         return orderSystemRepository.save(orderSystem);
+    }
+
+    @Transactional
+    public void setExpertAndCustomer(Long orderId, Long customerId) {
+        OrderSystem order = getOrderById(orderId);
+        Customer customer = customerService.getById(customerId);
+        order.setCustomer(customer);
     }
 
     public void showOrderToExpert(OrderSystem orderSystem, Long id) {
@@ -50,7 +62,7 @@ public class OrderSystemService {
         orderSystemRepository.save(orderSystem);
     }
 
-    public List<OrderSystem> findBySub(String subName) {
-        return orderSystemRepository.findBySub(subName);
+    public List<OrderSystem> findBySub(SubServices subServices) {
+        return orderSystemRepository.findBySub(subServices.getSubName());
     }
 }

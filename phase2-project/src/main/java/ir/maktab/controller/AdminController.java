@@ -1,13 +1,12 @@
 package ir.maktab.controller;
 
+import ir.maktab.data.dto.ExpertSignInDto;
 import ir.maktab.data.dto.MainServiceDto;
 import ir.maktab.data.dto.SubServiceDto;
 import ir.maktab.data.model.Expert;
 import ir.maktab.data.model.MainService;
 import ir.maktab.data.model.SubServices;
 import ir.maktab.service.AdminService;
-import ir.maktab.service.ExpertService;
-import ir.maktab.service.MainServicesService;
 import ir.maktab.service.SubServicesService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -16,14 +15,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/admin")
 @RequiredArgsConstructor
 public class AdminController {
     private final AdminService adminService;
-    private final ExpertService expertService;
-    private final MainServicesService mainServicesService;
     private final SubServicesService subServicesService;
     private final ModelMapper modelMapper;
 
@@ -59,13 +57,16 @@ public class AdminController {
     }
 
     @GetMapping("/get_main_services")
-    public ResponseEntity<List<MainService>> gatAllServices() {
-        return ResponseEntity.ok().body(adminService.showAllServices());
+    public ResponseEntity<List<MainServiceDto>> gatAllServices() {
+        return ResponseEntity.ok().body(adminService.showAllServices().stream().map(mainService -> modelMapper.
+                map(mainService, MainServiceDto.class)).collect(Collectors.toList()));
     }
 
     @PutMapping("/edit_to_confirmed")
-    public ResponseEntity<Expert> editToConfirmed(@RequestParam(value = "email") String email) {
-        return ResponseEntity.ok().body(adminService.editStatus(email));
+    public ResponseEntity<ExpertSignInDto> editToConfirmed(@RequestParam(value = "email") String email) {
+        Expert expert = adminService.editStatus(email);
+        ExpertSignInDto dto = modelMapper.map(expert, ExpertSignInDto.class);
+        return ResponseEntity.ok().body(dto);
     }
 
     @PutMapping("/update_price")

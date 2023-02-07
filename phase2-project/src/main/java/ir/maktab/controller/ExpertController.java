@@ -1,6 +1,7 @@
 package ir.maktab.controller;
 
 import ir.maktab.data.dto.ExpertDto;
+import ir.maktab.data.dto.ExpertSignInDto;
 import ir.maktab.data.dto.SuggestionDto;
 import ir.maktab.data.model.Expert;
 import ir.maktab.data.model.Suggestion;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/expert")
@@ -29,20 +31,25 @@ public class ExpertController {
     }
 
     @GetMapping("/sign_In_expert")
-    public ResponseEntity<Expert> getByEmail(@RequestParam("email") String email,
-                                             @RequestParam("password") String password) {
-        return ResponseEntity.ok().body(expertService.signIn(email, password));
+    public ResponseEntity<ExpertSignInDto> getByEmail(@RequestParam("email") String email,
+                                                      @RequestParam("password") String password) {
+        Expert expert = expertService.signIn(email, password);
+        ExpertSignInDto dto = modelMapper.map(expert, ExpertSignInDto.class);
+        return ResponseEntity.ok().body(dto);
     }
 
     @GetMapping("/get_all")
-    public ResponseEntity<List<Expert>> getAllExpert() {
-        return ResponseEntity.ok().body(expertService.getAll());
+    public ResponseEntity<List<ExpertSignInDto>> getAllExpert() {
+        return ResponseEntity.ok().body(expertService.getAll().stream().map(expert -> modelMapper.
+                map(expert, ExpertSignInDto.class)).collect(Collectors.toList()));
     }
 
     @PutMapping("/update_expert")
-    public ResponseEntity<Expert> updateExpert(@RequestBody ExpertDto expertDto) {
+    public ResponseEntity<ExpertDto> updateExpert(@RequestBody ExpertDto expertDto) {
         Expert expert = modelMapper.map(expertDto, Expert.class);
-        return ResponseEntity.ok().body(expertService.update(expert));
+        Expert update = expertService.update(expert);
+        ExpertDto dto = modelMapper.map(update, ExpertDto.class);
+        return ResponseEntity.ok().body(dto);
     }
 
     @DeleteMapping("delete_expert")
@@ -53,15 +60,19 @@ public class ExpertController {
     }
 
     @GetMapping("find_expert")
-    public ResponseEntity<Expert> findExpertByEmail(@RequestParam("email") String email) {
-        return ResponseEntity.ok().body(expertService.getExpertByEmail(email));
+    public ResponseEntity<ExpertSignInDto> findExpertByEmail(@RequestParam("email") String email) {
+        Expert expert = expertService.getExpertByEmail(email);
+        ExpertSignInDto dto = modelMapper.map(expert, ExpertSignInDto.class);
+        return ResponseEntity.ok().body(dto);
     }
 
     @PutMapping("/change_password")
-    public ResponseEntity<Expert> updatePassword(@RequestParam("newPassword") String newPassword,
-                                                 @RequestParam("confirmedPassword") String confirmedPassword,
-                                                 @RequestParam("email") String email) {
-        return ResponseEntity.ok().body(expertService.changePasswordExpert(newPassword, confirmedPassword, email));
+    public ResponseEntity<ExpertSignInDto> updatePassword(@RequestParam("newPassword") String newPassword,
+                                                          @RequestParam("confirmedPassword") String confirmedPassword,
+                                                          @RequestParam("email") String email) {
+        Expert expert = expertService.changePasswordExpert(newPassword, confirmedPassword, email);
+        ExpertSignInDto dto = modelMapper.map(expert, ExpertSignInDto.class);
+        return ResponseEntity.ok().body(dto);
     }
 
     @PostMapping("/suggestion_add")

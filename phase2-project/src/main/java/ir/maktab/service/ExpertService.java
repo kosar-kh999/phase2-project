@@ -1,7 +1,8 @@
 package ir.maktab.service;
 
+import ir.maktab.data.enums.ExpertStatus;
+import ir.maktab.data.enums.Role;
 import ir.maktab.data.model.Expert;
-import ir.maktab.data.model.Suggestion;
 import ir.maktab.data.repository.ExpertRepository;
 import ir.maktab.util.exception.NotCorrect;
 import ir.maktab.util.exception.NotFound;
@@ -24,9 +25,12 @@ import java.util.List;
 public class ExpertService {
     public final static int MAX_SIZE = 300000;
     private final ExpertRepository expertRepository;
-    private final SuggestionService suggestionService;
 
     public void signUp(Expert expert) {
+        expert.setRole(Role.EXPORT);
+        expert.setScore(0);
+        expert.setExpertStatus(ExpertStatus.NEW);
+        expert.setCredit(0);
         expertRepository.save(expert);
     }
 
@@ -94,13 +98,13 @@ public class ExpertService {
         imageInputStream.close();
     }
 
-    public Expert deposit(Expert expert, Suggestion suggestion) {
+    /*public Expert deposit(Expert expert, Suggestion suggestion) {
         Expert expertByEmail = getExpertByEmail(expert.getEmail());
         Suggestion suggestionById = suggestionService.getSuggestionById(suggestion.getId());
         double deposit = expertByEmail.getCredit() + suggestionById.getPrice();
         expert.setCredit(deposit);
         return update(expert);
-    }
+    }*/
 
     public void saveImage(Expert expert) {
         File file = new File("C:\\Users\\HOME\\Downloads\\phase2-project\\phase2-project\\src\\main\\java\\ir\\maktab\\img.jpg");

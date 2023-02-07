@@ -1,9 +1,7 @@
 package ir.maktab.controller;
 
-import ir.maktab.data.dto.CustomerDto;
-import ir.maktab.data.dto.OrderSystemDto;
+import ir.maktab.data.dto.*;
 import ir.maktab.data.model.Customer;
-import ir.maktab.data.model.MainService;
 import ir.maktab.data.model.OrderSystem;
 import ir.maktab.data.model.SubServices;
 import ir.maktab.service.CustomerService;
@@ -16,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/customer")
@@ -34,20 +33,25 @@ public class CustomerController {
     }
 
     @GetMapping("/sign_In_customer")
-    public ResponseEntity<Customer> getByEmail(@RequestParam("email") String email,
-                                               @RequestParam("password") String password) {
-        return ResponseEntity.ok().body(customerService.signIn(email, password));
+    public ResponseEntity<CustomerSignInDto> getByEmail(@RequestParam("email") String email,
+                                                        @RequestParam("password") String password) {
+        Customer customer = customerService.signIn(email, password);
+        CustomerSignInDto dto = modelMapper.map(customer, CustomerSignInDto.class);
+        return ResponseEntity.ok().body(dto);
     }
 
     @GetMapping("/get_all")
-    public ResponseEntity<List<Customer>> getAllExpert() {
-        return ResponseEntity.ok().body(customerService.getAll());
+    public ResponseEntity<List<CustomerSignInDto>> getAllExpert() {
+        return ResponseEntity.ok().body(customerService.getAll().stream().map(customer -> modelMapper.
+                map(customer, CustomerSignInDto.class)).collect(Collectors.toList()));
     }
 
     @PutMapping("/update_customer")
-    public ResponseEntity<Customer> updateCustomer(@RequestBody CustomerDto customerDto) {
+    public ResponseEntity<CustomerSignInDto> updateCustomer(@RequestBody CustomerDto customerDto) {
         Customer customer = modelMapper.map(customerDto, Customer.class);
-        return ResponseEntity.ok().body(customerService.update(customer));
+        Customer update = customerService.update(customer);
+        CustomerSignInDto dto = modelMapper.map(update, CustomerSignInDto.class);
+        return ResponseEntity.ok().body(dto);
     }
 
     @DeleteMapping("delete_customer")
@@ -58,40 +62,61 @@ public class CustomerController {
     }
 
     @GetMapping("find_customer")
-    public ResponseEntity<Customer> findCustomerByEmail(@RequestParam("email") String email) {
-        return ResponseEntity.ok().body(customerService.getCustomerByEmail(email));
+    public ResponseEntity<CustomerSignInDto> findCustomerByEmail(@RequestParam("email") String email) {
+        Customer customer = customerService.getCustomerByEmail(email);
+        CustomerSignInDto dto = modelMapper.map(customer, CustomerSignInDto.class);
+        return ResponseEntity.ok().body(dto);
     }
 
     @PutMapping("/change_password")
-    public ResponseEntity<Customer> updatePassword(@RequestParam("newPassword") String newPassword,
-                                                   @RequestParam("confirmedPassword") String confirmedPassword,
-                                                   @RequestParam("email") String email) {
-        return ResponseEntity.ok().body(customerService.changePasswordCustomer(newPassword, confirmedPassword, email));
+    public ResponseEntity<CustomerSignInDto> updatePassword(@RequestParam("newPassword") String newPassword,
+                                                            @RequestParam("confirmedPassword") String confirmedPassword,
+                                                            @RequestParam("email") String email) {
+        Customer customer = customerService.changePasswordCustomer(newPassword, confirmedPassword, email);
+        CustomerSignInDto dto = modelMapper.map(customer, CustomerSignInDto.class);
+        return ResponseEntity.ok().body(dto);
     }
 
 
     @GetMapping("/all_services")
-    public ResponseEntity<List<MainService>> getAllServices() {
-        return ResponseEntity.ok().body(customerService.showAllServices());
+    public ResponseEntity<List<MainServiceDto>> getAllServices() {
+        return ResponseEntity.ok().body(customerService.showAllServices().stream().map(mainService -> modelMapper.
+                map(mainService, MainServiceDto.class)).collect(Collectors.toList()));
     }
 
     @GetMapping("/all_sub_services_of_service")
-    public ResponseEntity<List<SubServices>> getAllSubServiceOfService(@RequestParam(value = "name") String name) {
-        return ResponseEntity.ok().body(subServicesService.getSubServiceByMainService(name));
+    public ResponseEntity<List<SubServiceDto>> getAllSubServiceOfService(@RequestParam(value = "name") String name) {
+        return ResponseEntity.ok().body(subServicesService.getSubServiceByMainService(name).stream().
+                map(subServices -> modelMapper.map(subServices, SubServiceDto.class)).collect(Collectors.toList()));
     }
 
     @Transactional
     @PostMapping("/add_order")
-    public ResponseEntity<String> addOrder(@RequestBody OrderSystemDto orderSystemDto,
-                                           @RequestParam(value = "id") Long id) {
+    public ResponseEntity<OrderSystemDto> addOrder(@RequestBody OrderSystemDto orderSystemDto,
+                                                   @RequestParam(value = "subId") Long subId,
+                                                   @RequestParam(value = "customerId") Long customerId) {
         OrderSystem orderSystem = modelMapper.map(orderSystemDto, OrderSystem.class);
-        orderSystemService.addOrderWithSubService(id, orderSystem);
-        return ResponseEntity.ok().body("order added");
+        OrderSystem order = orderSystemService.addOrderWithSubService(subId, orderSystem, customerId);
+        OrderSystemDto dto = modelMapper.map(order, OrderSystemDto.class);
+        return ResponseEntity.ok().body(dto);
     }
 
-    @Transactional
+    /*@Transactional
     @GetMapping("/find_order_by_sub")
-    public ResponseEntity<List<OrderSystem>> findBySub(@RequestParam(value = "subName") String subName) {
-        return ResponseEntity.ok().body(orderSystemService.findBySub(subName));
+    public ResponseEntity<List<OrderSystemDto>> findBySub(@RequestBody SubServiceDto subServiceDto) {
+        SubServices subServices = modelMapper.map(subServiceDto, SubServices.class);
+        return ResponseEntity.ok().body(orderSystemService.findBySub());
+        *//*List<OrderSystem> orderSystems = orderSystemService.findBySub(subServices);
+        OrderSystemDto dto = modelMapper.map(orderSystems, OrderSystemDto.class);*//*
+
+    }*/
+
+    @Transactional
+    @PostMapping("add_expert_and_customer")
+    public ResponseEntity<String> addExpertAndCustomer(@RequestParam(value = "orderId") Long orderId,
+                                                       @RequestParam(value = "customerId") Long customerId) {
+        orderSystemService.setExpertAndCustomer(orderId, customerId);
+        return ResponseEntity.ok().body("add expert and customer");
     }
+
 }

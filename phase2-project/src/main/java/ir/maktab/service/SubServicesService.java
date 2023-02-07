@@ -54,7 +54,6 @@ public class SubServicesService {
     }
 
     public List<SubServices> getSubServiceByMainService(String name) {
-        mainServicesService.findByName(name);
         return subServicesRepository.findSubService(name);
     }
 
