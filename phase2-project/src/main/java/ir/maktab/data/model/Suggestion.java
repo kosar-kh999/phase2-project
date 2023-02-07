@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Duration;
 import java.util.Date;
@@ -19,12 +18,8 @@ import java.util.Date;
 @SuperBuilder
 public class Suggestion extends BaseEntity {
 
-    @ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     Expert expert;
-
-    @CreationTimestamp
-    @Temporal(value = TemporalType.TIMESTAMP)
-    Date registrationTime;
 
     @Column(nullable = false)
     double price;
@@ -36,6 +31,6 @@ public class Suggestion extends BaseEntity {
     @Column(nullable = false)
     Duration duration;
 
-    @ManyToOne(cascade = CascadeType.MERGE,fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     OrderSystem orderSystem;
 }

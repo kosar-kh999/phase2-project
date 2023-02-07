@@ -3,10 +3,11 @@ package ir.maktab.controller;
 import ir.maktab.data.dto.*;
 import ir.maktab.data.model.Customer;
 import ir.maktab.data.model.OrderSystem;
-import ir.maktab.data.model.SubServices;
+import ir.maktab.data.model.Suggestion;
 import ir.maktab.service.CustomerService;
 import ir.maktab.service.OrderSystemService;
 import ir.maktab.service.SubServicesService;
+import ir.maktab.service.SuggestionService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ public class CustomerController {
     private final CustomerService customerService;
     private final SubServicesService subServicesService;
     private final OrderSystemService orderSystemService;
+    private final SuggestionService suggestionService;
     private final ModelMapper modelMapper;
 
     @PostMapping("/add_customer")
@@ -101,22 +103,39 @@ public class CustomerController {
         return ResponseEntity.ok().body(dto);
     }
 
-    /*@Transactional
-    @GetMapping("/find_order_by_sub")
-    public ResponseEntity<List<OrderSystemDto>> findBySub(@RequestBody SubServiceDto subServiceDto) {
-        SubServices subServices = modelMapper.map(subServiceDto, SubServices.class);
-        return ResponseEntity.ok().body(orderSystemService.findBySub());
-        *//*List<OrderSystem> orderSystems = orderSystemService.findBySub(subServices);
-        OrderSystemDto dto = modelMapper.map(orderSystems, OrderSystemDto.class);*//*
-
-    }*/
-
-    @Transactional
-    @PostMapping("add_expert_and_customer")
-    public ResponseEntity<String> addExpertAndCustomer(@RequestParam(value = "orderId") Long orderId,
-                                                       @RequestParam(value = "customerId") Long customerId) {
-        orderSystemService.setExpertAndCustomer(orderId, customerId);
-        return ResponseEntity.ok().body("add expert and customer");
+    @GetMapping("/sort_by_price")
+    public ResponseEntity<List<SuggestionDto>> sortByPrice(@RequestParam(value = "orderId") Long orderId) {
+        return ResponseEntity.ok().body(suggestionService.sortSuggestionByPrice(orderId).stream().
+                map(suggestion -> modelMapper.map(suggestion, SuggestionDto.class)).collect(Collectors.toList()));
     }
 
+    @GetMapping("/sort_by_score")
+    public ResponseEntity<List<SuggestionDto>> sortByScore(@RequestParam(value = "orderId") Long orderId) {
+        return ResponseEntity.ok().body(suggestionService.sortSuggestionByExpertScore(orderId).stream().
+                map(suggestion -> modelMapper.map(suggestion, SuggestionDto.class)).collect(Collectors.toList()));
+    }
+
+    @GetMapping("/choose_expert")
+    public ResponseEntity<SuggestionDto> chooseExpert(@RequestParam(value = "suggestionId") Long suggestionId,
+                                                      @RequestParam(value = "expertId") Long expertId,
+                                                      @RequestParam(value = "orderId") Long orderId) {
+        Suggestion suggestion = suggestionService.acceptSuggestion(suggestionId, expertId, orderId);
+        SuggestionDto dto = modelMapper.map(suggestion, SuggestionDto.class);
+        return ResponseEntity.ok().body(dto);
+    }
+
+    @PutMapping("/change_status_to_started")
+    public ResponseEntity<SuggestionDto> changeStatusToStarted(@RequestParam(value = "orderId") Long orderId,
+                                                               @RequestParam(value = "suggestionId") Long suggestionId) {
+        Suggestion suggestion = suggestionService.changeOrderStatusToStarted(orderId, suggestionId);
+        SuggestionDto dto = modelMapper.map(suggestion, SuggestionDto.class);
+        return ResponseEntity.ok().body(dto);
+    }
+
+    @PutMapping("/change_status_to_done")
+    public ResponseEntity<SuggestionDto> changeStatusToDone(@RequestParam(value = "suggestionId") Long suggestionId){
+        Suggestion suggestion = suggestionService.changeOrderStatusToDone(suggestionId);
+        SuggestionDto dto = modelMapper.map(suggestion, SuggestionDto.class);
+        return ResponseEntity.ok().body(dto);
+    }
 }

@@ -44,25 +44,17 @@ public class OrderSystemService {
         return orderSystemRepository.save(orderSystem);
     }
 
-    @Transactional
-    public void setExpertAndCustomer(Long orderId, Long customerId) {
-        OrderSystem order = getOrderById(orderId);
-        Customer customer = customerService.getById(customerId);
-        order.setCustomer(customer);
+    public OrderSystem changeOrderStatus(Long id) {
+        OrderSystem orderSystem = getOrderById(id);
+        orderSystem.setOrderStatus(OrderStatus.WAITING_EXPERT_SELECTION);
+        return orderSystemRepository.save(orderSystem);
     }
 
-    public void showOrderToExpert(OrderSystem orderSystem, Long id) {
-        if (!(orderSystem.getOrderStatus().equals(OrderStatus.WAITING_EXPERT_SELECTION) || orderSystem.getOrderStatus().
+    public List<OrderSystem> findBySubAndStatus(Long subId, OrderStatus orderStatus, OrderStatus orderStatus1) {
+        SubServices subServices = subServicesService.findById(subId);
+        if (!(orderStatus.equals(OrderStatus.WAITING_EXPERT_SELECTION) || orderStatus1.
                 equals(OrderStatus.WAITING_ADVICE_EXPERTS)))
             throw new OrderException("the order status must be WAITING_EXPERT_SELECTION or WAITING_ADVICE_EXPERTS");
-    }
-
-    public void changeOrderStatus(OrderSystem orderSystem) {
-        orderSystem.setOrderStatus(OrderStatus.WAITING_EXPERT_SELECTION);
-        orderSystemRepository.save(orderSystem);
-    }
-
-    public List<OrderSystem> findBySub(SubServices subServices) {
-        return orderSystemRepository.findBySub(subServices.getSubName());
+        return orderSystemRepository.findBySub(subServices, orderStatus, orderStatus1);
     }
 }

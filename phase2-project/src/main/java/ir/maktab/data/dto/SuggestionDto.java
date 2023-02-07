@@ -12,8 +12,6 @@ import java.time.Duration;
 @ToString
 public class SuggestionDto {
 
-    @JsonFormat(pattern = "yyy-MM-dd HH:mm:ss")
-    private String registrationTime;
     private double price;
     @JsonFormat(pattern = "yyy-MM-dd HH:mm:ss")
     private String suggestionsStartedTime;

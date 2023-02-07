@@ -2,10 +2,14 @@ package ir.maktab.controller;
 
 import ir.maktab.data.dto.ExpertDto;
 import ir.maktab.data.dto.ExpertSignInDto;
+import ir.maktab.data.dto.OrderSystemDto;
 import ir.maktab.data.dto.SuggestionDto;
+import ir.maktab.data.enums.OrderStatus;
 import ir.maktab.data.model.Expert;
+import ir.maktab.data.model.OrderSystem;
 import ir.maktab.data.model.Suggestion;
 import ir.maktab.service.ExpertService;
+import ir.maktab.service.OrderSystemService;
 import ir.maktab.service.SuggestionService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -21,6 +25,7 @@ import java.util.stream.Collectors;
 public class ExpertController {
     private final ExpertService expertService;
     private final SuggestionService suggestionService;
+    private final OrderSystemService orderSystemService;
     private final ModelMapper modelMapper;
 
     @PostMapping("/add_expert")
@@ -75,11 +80,38 @@ public class ExpertController {
         return ResponseEntity.ok().body(dto);
     }
 
-    @PostMapping("/suggestion_add")
-    public ResponseEntity<String> addSuggestion(@RequestBody SuggestionDto suggestionDto,
-                                                @RequestParam(value = "id") Long id) {
-        Suggestion suggestion = modelMapper.map(suggestionDto, Suggestion.class);
-        suggestionService.sendSuggestionFromExpert(suggestion, id);
-        return ResponseEntity.ok().body("suggestion add");
+    @GetMapping("/sub_service_and_status")
+    public ResponseEntity<List<OrderSystemDto>> findByServiceAndStatus(@RequestParam("id") Long id,
+                                                                       @RequestParam("status") OrderStatus orderStatus,
+                                                                       @RequestParam("status1") OrderStatus orderStatus1) {
+
+        return ResponseEntity.ok().body(orderSystemService.findBySubAndStatus(id, orderStatus, orderStatus1).stream().
+                map(orderSystem -> modelMapper.map(orderSystem, OrderSystemDto.class)).collect(Collectors.toList()));
     }
+
+    @PostMapping("/suggestion_add")
+    public ResponseEntity<SuggestionDto> addSuggestion(@RequestBody SuggestionDto suggestionDto,
+                                                       @RequestParam(value = "subId") Long subId,
+                                                       @RequestParam(value = "expertId") Long expertId) {
+        Suggestion suggestion = modelMapper.map(suggestionDto, Suggestion.class);
+        Suggestion suggestionFromExpert = suggestionService.sendSuggestionFromExpert(suggestion, subId, expertId);
+        SuggestionDto dto = modelMapper.map(suggestionFromExpert, SuggestionDto.class);
+        return ResponseEntity.ok().body(dto);
+    }
+
+    @PostMapping("/set_order")
+    public ResponseEntity<SuggestionDto> setOrder(@RequestParam(value = "suggestionId") Long suggestionId,
+                                                  @RequestParam(value = "orderId") Long orderId) {
+        Suggestion suggestion = suggestionService.setOrder(suggestionId, orderId);
+        SuggestionDto dto = modelMapper.map(suggestion, SuggestionDto.class);
+        return ResponseEntity.ok().body(dto);
+    }
+
+    @PutMapping("/status_expert_selection")
+    public ResponseEntity<OrderSystemDto> changeToSelection(@RequestParam(value = "orderId") Long orderId) {
+        OrderSystem orderSystem = orderSystemService.changeOrderStatus(orderId);
+        OrderSystemDto dto = modelMapper.map(orderSystem, OrderSystemDto.class);
+        return ResponseEntity.ok().body(dto);
+    }
+
 }

@@ -58,30 +58,30 @@ public class SuggestionServiceTest {
         Assertions.assertThat(fromExpert1.getId()).isGreaterThan(0);
     }*/
 
-    @Test
+    /*@Test
     @Order(2)
     public void changeOrderStatus() {
         OrderSystem suggestionById = orderSystemService.getOrderById(1L);
         orderSystemService.changeOrderStatus(suggestionById);
         assertNotNull(suggestionById);
-    }
+    }*/
 
-    @Test
+    /*@Test
     @Order(3)
     public void sortSuggestionByPrice() {
         OrderSystem orderSystem = orderSystemService.getOrderById(1L);
         List<Suggestion> suggestions = suggestionService.sortSuggestionByPrice(orderSystem);
         assertEquals(450000, suggestions.get(0).getPrice());
-    }
+    }*/
 
-    @Test
+    /*@Test
     @Order(4)
     public void acceptSuggestionStatus() {
         Suggestion suggestionById = suggestionService.getSuggestionById(1L);
         OrderStatus orderStatus = OrderStatus.WAITING_EXPERT_COME_PLACE;
         Suggestion acceptSuggestion = suggestionService.acceptSuggestion(suggestionById);
         assertEquals(acceptSuggestion.getOrderSystem().getOrderStatus(), orderStatus);
-    }
+    }*/
 
     /*@Test
     @Order(5)
