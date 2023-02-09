@@ -1,5 +1,6 @@
 package ir.maktab.service;
 
+import ir.maktab.data.enums.ActiveExpert;
 import ir.maktab.data.enums.ExpertStatus;
 import ir.maktab.data.model.Expert;
 import ir.maktab.data.model.MainService;
@@ -24,11 +25,6 @@ public class AdminService {
         MainService service = mainServicesService.getByName(mainService);
         mainServicesService.addServices(service);
     }
-
-    /*public void addSubService(SubServices subServices) {
-        SubServices services = subServicesService.getByName(subServices);
-        subServicesService.saveSubService(services);
-    }*/
 
     @Transactional
     public void addSubServiceToService(SubServices subServices, Long id) {
@@ -69,6 +65,7 @@ public class AdminService {
         if (!(expert.getExpertStatus().equals(ExpertStatus.NEW)))
             throw new StatusException("This user is not new");
         expert.setExpertStatus(ExpertStatus.CONFIRMED);
+        expert.setActiveExpert(ActiveExpert.ACTIVE);
         return expertService.update(expert);
     }
 }

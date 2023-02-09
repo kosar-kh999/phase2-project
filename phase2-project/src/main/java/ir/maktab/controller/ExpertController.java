@@ -1,14 +1,12 @@
 package ir.maktab.controller;
 
-import ir.maktab.data.dto.ExpertDto;
-import ir.maktab.data.dto.ExpertSignInDto;
-import ir.maktab.data.dto.OrderSystemDto;
-import ir.maktab.data.dto.SuggestionDto;
+import ir.maktab.data.dto.*;
 import ir.maktab.data.enums.OrderStatus;
 import ir.maktab.data.model.Expert;
 import ir.maktab.data.model.OrderSystem;
 import ir.maktab.data.model.Suggestion;
 import ir.maktab.service.ExpertService;
+import ir.maktab.service.OpinionService;
 import ir.maktab.service.OrderSystemService;
 import ir.maktab.service.SuggestionService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +24,7 @@ public class ExpertController {
     private final ExpertService expertService;
     private final SuggestionService suggestionService;
     private final OrderSystemService orderSystemService;
+    private final OpinionService opinionService;
     private final ModelMapper modelMapper;
 
     @PostMapping("/add_expert")
@@ -112,6 +111,19 @@ public class ExpertController {
         OrderSystem orderSystem = orderSystemService.changeOrderStatus(orderId);
         OrderSystemDto dto = modelMapper.map(orderSystem, OrderSystemDto.class);
         return ResponseEntity.ok().body(dto);
+    }
+
+    @PutMapping("/add_image")
+    public ResponseEntity<ExpertDto> addImage(@RequestParam(value = "id") Long id) {
+        Expert expert = expertService.saveImage(id);
+        ExpertDto dto = modelMapper.map(expert, ExpertDto.class);
+        return ResponseEntity.ok().body(dto);
+    }
+
+    @GetMapping("/show-by-score")
+    public ResponseEntity<List<OpinionByScoreDto>> showByScore(@RequestParam(value = "id") Long id) {
+        return ResponseEntity.ok().body(opinionService.showByScore(id).stream().map(opinion -> modelMapper.
+                map(opinion, OpinionByScoreDto.class)).collect(Collectors.toList()));
     }
 
 }

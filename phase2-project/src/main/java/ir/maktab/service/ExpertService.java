@@ -41,12 +41,6 @@ public class ExpertService {
         return expert;
     }
 
-    /*public Expert changePassword(String newPassword, String confirmedPassword, Expert expert) {
-        if (!newPassword.equals(confirmedPassword))
-            throw new NotCorrect("The new password and confirmed password must be match");
-        expert.setPassword(newPassword);
-        return expertRepository.save(expert);
-    }*/
 
     public Expert changePasswordExpert(String newPassword, String confirmedPassword, String email) {
         Expert expertByEmail = getExpertByEmail(email);
@@ -98,15 +92,7 @@ public class ExpertService {
         imageInputStream.close();
     }
 
-    /*public Expert deposit(Expert expert, Suggestion suggestion) {
-        Expert expertByEmail = getExpertByEmail(expert.getEmail());
-        Suggestion suggestionById = suggestionService.getSuggestionById(suggestion.getId());
-        double deposit = expertByEmail.getCredit() + suggestionById.getPrice();
-        expert.setCredit(deposit);
-        return update(expert);
-    }*/
-
-    public void saveImage(Expert expert) {
+    public Expert saveImage(Long id) {
         File file = new File("C:\\Users\\HOME\\Downloads\\phase2-project\\phase2-project\\src\\main\\java\\ir\\maktab\\img.jpg");
         byte[] bFile = new byte[(int) file.length()];
         try {
@@ -116,8 +102,9 @@ public class ExpertService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        Expert expert = getExpertById(id);
         expert.setImage(bFile);
-        expertRepository.save(expert);
+        return expertRepository.save(expert);
     }
 
     public void getImage(String email) {
@@ -131,4 +118,5 @@ public class ExpertService {
             e.printStackTrace();
         }
     }
+
 }

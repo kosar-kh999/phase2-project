@@ -1,5 +1,6 @@
 package ir.maktab.data.model;
 
+import ir.maktab.data.enums.ActiveExpert;
 import ir.maktab.data.enums.ExpertStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -34,5 +35,6 @@ public class Expert extends User {
     @Lob
     private byte[] image;
     double score;
-    boolean isConfirmed;
+    @Enumerated(value = EnumType.STRING)
+    ActiveExpert activeExpert;
 }

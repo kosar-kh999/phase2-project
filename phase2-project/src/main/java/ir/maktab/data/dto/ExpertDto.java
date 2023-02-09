@@ -20,5 +20,4 @@ public class ExpertDto {
     private String email;
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z]).{8}$")
     private String password;
-    private byte[] image;
 }

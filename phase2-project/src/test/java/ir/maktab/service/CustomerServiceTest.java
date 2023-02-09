@@ -22,10 +22,10 @@ import static org.junit.Assert.*;
 @RunWith(SpringRunner.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CustomerServiceTest {
-    @Autowired
-    private CustomerService customerService;
     Customer customer = Customer.builder().firstName("lale").lastName("kamali").email("lale.kamali@gmail.com").credit(100000).
             entryDate(new Date()).password("lale1KKK").role(Role.CUSTOMER).build();
+    @Autowired
+    private CustomerService customerService;
 
     @Test
     @Order(1)

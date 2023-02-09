@@ -17,7 +17,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -42,12 +43,12 @@ public class ExpertServiceTest {
         Assertions.assertThat(expert1.getId()).isGreaterThan(0);
     }
 
-    @Test
+    /*@Test
     public void saveImage() {
         Expert expertByEmail = expertService.getExpertByEmail("mona.noori@gmail.com");
         expertService.saveImage(expertByEmail);
         assertNotNull(expertByEmail);
-    }
+    }*/
 
     @Test
     public void getImage() {

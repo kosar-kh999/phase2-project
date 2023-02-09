@@ -7,6 +7,8 @@ import java.util.Optional;
 
 public interface ExpertRepository extends JpaRepository<Expert, Long> {
     Optional<Expert> findExpertByEmail(String email);
+
     Optional<Expert> findExpertById(Long id);
+
 
 }

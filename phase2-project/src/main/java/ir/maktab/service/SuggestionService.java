@@ -1,10 +1,8 @@
 package ir.maktab.service;
 
+import ir.maktab.data.enums.ActiveExpert;
 import ir.maktab.data.enums.OrderStatus;
-import ir.maktab.data.model.Expert;
-import ir.maktab.data.model.OrderSystem;
-import ir.maktab.data.model.SubServices;
-import ir.maktab.data.model.Suggestion;
+import ir.maktab.data.model.*;
 import ir.maktab.data.repository.SuggestionRepository;
 import ir.maktab.util.date.DateUtil;
 import ir.maktab.util.exception.NotFound;
@@ -14,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -26,6 +25,7 @@ public class SuggestionService {
     private final SubServicesService subServicesService;
     private final ExpertService expertService;
     private final OrderSystemService orderSystemService;
+    private final CustomerService customerService;
 
     public void saveSuggestion(Suggestion suggestion) {
         suggestionRepository.save(suggestion);
@@ -109,16 +109,32 @@ public class SuggestionService {
         Suggestion suggestion = getSuggestionById(suggestionId);
         LocalDateTime doneOrder = DateUtil.changeDateToLocalDateTime(orderSystem.getDoneDate());
         LocalDateTime doneSuggestion = DateUtil.changeDateToLocalDateTime(suggestion.getDoneDateExpert());
-        if (orderSystem.getDoneDate().after(suggestion.getDoneDateExpert())) {
-            System.out.println(doneOrder.getHour());
-            System.out.println(doneSuggestion.getHour());
-            int difference = doneOrder.getHour() - doneSuggestion.getHour();
-            System.out.println(difference);
-            double score = expert.getScore() - difference;
-            System.out.println(score);
-            expert.setScore(score);
-            expertService.update(expert);
-        }
+        long hours = Duration.between(doneSuggestion, doneOrder).toHours();
+        double score = expert.getScore() - hours;
+        expert.setScore(score);
+        if (score < 0)
+            expert.setActiveExpert(ActiveExpert.NOT_ACTIVE);
+        expertService.update(expert);
         return expert;
+    }
+
+    public Customer withdraw(Long customerId, Long suggestionId) {
+        Customer customer = customerService.getById(customerId);
+        Suggestion suggestion = getSuggestionById(suggestionId);
+        Customer customerByEmail = customerService.getCustomerByEmail(customer.getEmail());
+        ;
+        if (suggestion.getPrice() > customerByEmail.getCredit())
+            throw new SuggestionException("the amount of customer is should more than suggestion");
+        double withdraw = customerByEmail.getCredit() - suggestion.getPrice();
+        customer.setCredit(withdraw);
+        return customerService.update(customer);
+    }
+
+    public Expert deposit(Long expertId, Long suggestionId) {
+        Expert expert = expertService.getExpertById(expertId);
+        Suggestion suggestion = getSuggestionById(suggestionId);
+        double deposit = expert.getCredit() + (0.7 * suggestion.getPrice());
+        expert.setCredit(deposit);
+        return expertService.update(expert);
     }
 }

@@ -64,17 +64,4 @@ public class CustomerService {
         return mainServicesService.getAllServices();
     }
 
-
-
-
-
-    /*public Customer withdraw(Customer customer, Suggestion suggestion) {
-        Customer customerByEmail = getCustomerByEmail(customer.getEmail());
-        Suggestion suggestionById = suggestionService.getSuggestionById(suggestion.getId());
-        if (suggestionById.getPrice() > customerByEmail.getCredit())
-            throw new SuggestionException("the amount of customer is should more than suggestion");
-        double withdraw = customerByEmail.getCredit() - suggestionById.getPrice();
-        customer.setCredit(withdraw);
-        return update(customer);
-    }*/
 }

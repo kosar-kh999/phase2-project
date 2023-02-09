@@ -1,6 +1,6 @@
 package ir.maktab.data.model;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
@@ -15,7 +15,11 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class Opinion extends BaseEntity {
 
+    @Column(nullable = false)
     int score;
 
     String viewpoint;
+
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    Expert expert;
 }

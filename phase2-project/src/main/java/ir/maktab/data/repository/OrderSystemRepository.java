@@ -16,5 +16,5 @@ public interface OrderSystemRepository extends JpaRepository<OrderSystem, Long> 
     @Transactional
     @Query("select o from OrderSystem o where o.subServices=:subServices and o.orderStatus=:orderStatus or " +
             "o.orderStatus=:orderStatus1 ")
-    List<OrderSystem> findBySub(SubServices subServices, OrderStatus orderStatus,OrderStatus orderStatus1);
+    List<OrderSystem> findBySub(SubServices subServices, OrderStatus orderStatus, OrderStatus orderStatus1);
 }

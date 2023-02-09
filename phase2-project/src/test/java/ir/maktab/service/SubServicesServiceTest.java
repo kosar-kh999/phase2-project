@@ -24,18 +24,16 @@ import static org.junit.Assert.*;
 @RunWith(SpringRunner.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class SubServicesServiceTest {
+    SubServices subServices = SubServices.builder().subName("LAVAZEM_ASHPAZKHANE").price(300000).briefExplanation("KHARDI")
+            .build();
+    Expert expert = Expert.builder().firstName("mona").lastName("noori").email("mona.noori@gmail.com").
+            password("123qqqWW").entryDate(new Date()).expertStatus(ExpertStatus.NEW).role(Role.EXPORT).build();
     @Autowired
     private SubServicesService subServicesService;
     @Autowired
     private AdminService adminService;
-
     @Autowired
     private ExpertService expertService;
-    SubServices subServices = SubServices.builder().subName("LAVAZEM_ASHPAZKHANE").price(300000).briefExplanation("KHARDI")
-            .build();
-
-    Expert expert = Expert.builder().firstName("mona").lastName("noori").email("mona.noori@gmail.com").
-            password("123qqqWW").entryDate(new Date()).expertStatus(ExpertStatus.NEW).role(Role.EXPORT).build();
 
     @Test
     @Order(1)

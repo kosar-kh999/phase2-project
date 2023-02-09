@@ -1,7 +1,6 @@
 package ir.maktab.util.validation;
 
 
-
 import ir.maktab.util.exception.ValidationException;
 
 import java.util.regex.Matcher;

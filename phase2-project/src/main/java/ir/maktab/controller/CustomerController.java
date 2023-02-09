@@ -1,10 +1,7 @@
 package ir.maktab.controller;
 
 import ir.maktab.data.dto.*;
-import ir.maktab.data.model.Customer;
-import ir.maktab.data.model.Expert;
-import ir.maktab.data.model.OrderSystem;
-import ir.maktab.data.model.Suggestion;
+import ir.maktab.data.model.*;
 import ir.maktab.service.CustomerService;
 import ir.maktab.service.OrderSystemService;
 import ir.maktab.service.SubServicesService;
@@ -116,7 +113,7 @@ public class CustomerController {
                 map(suggestion -> modelMapper.map(suggestion, SuggestionDto.class)).collect(Collectors.toList()));
     }
 
-    @GetMapping("/choose_expert")
+    @PutMapping("/choose_expert")
     public ResponseEntity<SuggestionDto> chooseExpert(@RequestParam(value = "suggestionId") Long suggestionId,
                                                       @RequestParam(value = "expertId") Long expertId,
                                                       @RequestParam(value = "orderId") Long orderId) {
@@ -134,7 +131,7 @@ public class CustomerController {
     }
 
     @PutMapping("/change_status_to_done")
-    public ResponseEntity<SuggestionDto> changeStatusToDone(@RequestParam(value = "suggestionId") Long suggestionId){
+    public ResponseEntity<SuggestionDto> changeStatusToDone(@RequestParam(value = "suggestionId") Long suggestionId) {
         Suggestion suggestion = suggestionService.changeOrderStatusToDone(suggestionId);
         SuggestionDto dto = modelMapper.map(suggestion, SuggestionDto.class);
         return ResponseEntity.ok().body(dto);
@@ -143,9 +140,18 @@ public class CustomerController {
     @PutMapping("/update_score")
     public ResponseEntity<ExpertDto> updateScore(@RequestParam(value = "suggestionId") Long suggestionId,
                                                  @RequestParam(value = "expertId") Long expertId,
-                                                 @RequestParam(value = "orderId") Long orderId){
-        Expert expert = suggestionService.checkDuration(orderId,suggestionId,expertId);
+                                                 @RequestParam(value = "orderId") Long orderId) {
+        Expert expert = suggestionService.checkDuration(orderId, suggestionId, expertId);
         ExpertDto dto = modelMapper.map(expert, ExpertDto.class);
+        return ResponseEntity.ok().body(dto);
+    }
+
+    @PostMapping("/add_opinion")
+    public ResponseEntity<OpinionDto> addOpinion(@RequestBody OpinionDto opinionDto,
+                                                 @RequestParam(value = "orderId") Long orderId) {
+        Opinion opinion = modelMapper.map(opinionDto, Opinion.class);
+        Opinion opinionForExpert = orderSystemService.saveOpinionForExpert(opinion, orderId);
+        OpinionDto dto = modelMapper.map(opinionForExpert, OpinionDto.class);
         return ResponseEntity.ok().body(dto);
     }
 }

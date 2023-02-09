@@ -1,13 +1,16 @@
 package ir.maktab.controller;
 
+import ir.maktab.data.dto.CustomerDto;
 import ir.maktab.data.dto.ExpertSignInDto;
 import ir.maktab.data.dto.MainServiceDto;
 import ir.maktab.data.dto.SubServiceDto;
+import ir.maktab.data.model.Customer;
 import ir.maktab.data.model.Expert;
 import ir.maktab.data.model.MainService;
 import ir.maktab.data.model.SubServices;
 import ir.maktab.service.AdminService;
 import ir.maktab.service.SubServicesService;
+import ir.maktab.service.SuggestionService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +26,7 @@ import java.util.stream.Collectors;
 public class AdminController {
     private final AdminService adminService;
     private final SubServicesService subServicesService;
+    private final SuggestionService suggestionService;
     private final ModelMapper modelMapper;
 
     @PostMapping("/add_service")
@@ -81,5 +85,21 @@ public class AdminController {
                                               @RequestParam(value = "name") String name) {
         subServicesService.updateBrief(brief, name);
         return ResponseEntity.ok().body("the brief has been update");
+    }
+
+    @PutMapping("/withdraw_credit")
+    public ResponseEntity<CustomerDto> withdraw(@RequestParam(value = "idCustomer") Long idCustomer,
+                                                @RequestParam(value = "idSuggestion") Long idSuggestion) {
+        Customer customer = suggestionService.withdraw(idCustomer, idSuggestion);
+        CustomerDto dto = modelMapper.map(customer, CustomerDto.class);
+        return ResponseEntity.ok().body(dto);
+    }
+
+    @PutMapping("/deposit_credit")
+    public ResponseEntity<ExpertSignInDto> deposit(@RequestParam(value = "idExpert") Long idExpert,
+                                                   @RequestParam(value = "idSuggestion") Long idSuggestion) {
+        Expert expert = suggestionService.deposit(idExpert, idSuggestion);
+        ExpertSignInDto dto = modelMapper.map(expert, ExpertSignInDto.class);
+        return ResponseEntity.ok().body(dto);
     }
 }

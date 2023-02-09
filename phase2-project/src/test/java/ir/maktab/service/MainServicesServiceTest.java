@@ -20,11 +20,11 @@ import static org.junit.Assert.*;
 @RunWith(SpringRunner.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class MainServicesServiceTest {
+    MainService mainService = MainService.builder().name("ASHPA_ZKHANE").build();
     @Autowired
     private MainServicesService mainServicesService;
     @Autowired
     private AdminService adminService;
-    MainService mainService = MainService.builder().name("ASHPA_ZKHANE").build();
 
     @Test
     @Order(1)

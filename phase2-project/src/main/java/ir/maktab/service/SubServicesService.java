@@ -13,7 +13,6 @@ import java.util.List;
 public class SubServicesService {
 
     private final SubServicesRepository subServicesRepository;
-    private final MainServicesService mainServicesService;
 
     public void saveSubService(SubServices subServices) {
         subServicesRepository.save(subServices);

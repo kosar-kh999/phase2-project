@@ -1,12 +1,7 @@
 package ir.maktab.data.dto;
 
-import ir.maktab.data.enums.Role;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 @Setter
 @Getter
