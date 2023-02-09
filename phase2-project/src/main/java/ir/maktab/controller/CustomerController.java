@@ -2,6 +2,7 @@ package ir.maktab.controller;
 
 import ir.maktab.data.dto.*;
 import ir.maktab.data.model.Customer;
+import ir.maktab.data.model.Expert;
 import ir.maktab.data.model.OrderSystem;
 import ir.maktab.data.model.Suggestion;
 import ir.maktab.service.CustomerService;
@@ -136,6 +137,15 @@ public class CustomerController {
     public ResponseEntity<SuggestionDto> changeStatusToDone(@RequestParam(value = "suggestionId") Long suggestionId){
         Suggestion suggestion = suggestionService.changeOrderStatusToDone(suggestionId);
         SuggestionDto dto = modelMapper.map(suggestion, SuggestionDto.class);
+        return ResponseEntity.ok().body(dto);
+    }
+
+    @PutMapping("/update_score")
+    public ResponseEntity<ExpertDto> updateScore(@RequestParam(value = "suggestionId") Long suggestionId,
+                                                 @RequestParam(value = "expertId") Long expertId,
+                                                 @RequestParam(value = "orderId") Long orderId){
+        Expert expert = suggestionService.checkDuration(orderId,suggestionId,expertId);
+        ExpertDto dto = modelMapper.map(expert, ExpertDto.class);
         return ResponseEntity.ok().body(dto);
     }
 }

@@ -10,4 +10,9 @@ public class DateUtil {
         ZonedDateTime zdt = localDateTime.atZone(ZoneId.systemDefault());
         return Date.from(zdt.toInstant());
     }
+
+    public static LocalDateTime changeDateToLocalDateTime(Date date) {
+        LocalDateTime ldt = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+        return ldt;
+    }
 }

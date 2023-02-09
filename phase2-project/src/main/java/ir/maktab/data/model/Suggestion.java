@@ -33,4 +33,8 @@ public class Suggestion extends BaseEntity {
 
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     OrderSystem orderSystem;
+
+    @Temporal(value = TemporalType.TIMESTAMP)
+    @Column(nullable = false)
+    Date doneDateExpert;
 }

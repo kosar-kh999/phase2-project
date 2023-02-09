@@ -6,6 +6,7 @@ import ir.maktab.data.model.OrderSystem;
 import ir.maktab.data.model.SubServices;
 import ir.maktab.data.model.Suggestion;
 import ir.maktab.data.repository.SuggestionRepository;
+import ir.maktab.util.date.DateUtil;
 import ir.maktab.util.exception.NotFound;
 import ir.maktab.util.exception.OrderException;
 import ir.maktab.util.exception.SuggestionException;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -99,5 +101,24 @@ public class SuggestionService {
             throw new OrderException("time of suggestion from expert must be after the time of order system to do");
         suggestion.getOrderSystem().setOrderStatus(OrderStatus.STARTED);
         return suggestionRepository.save(suggestion);
+    }
+
+    public Expert checkDuration(Long orderId, Long suggestionId, Long expertId) {
+        Expert expert = expertService.getExpertById(expertId);
+        OrderSystem orderSystem = orderSystemService.getOrderById(orderId);
+        Suggestion suggestion = getSuggestionById(suggestionId);
+        LocalDateTime doneOrder = DateUtil.changeDateToLocalDateTime(orderSystem.getDoneDate());
+        LocalDateTime doneSuggestion = DateUtil.changeDateToLocalDateTime(suggestion.getDoneDateExpert());
+        if (orderSystem.getDoneDate().after(suggestion.getDoneDateExpert())) {
+            System.out.println(doneOrder.getHour());
+            System.out.println(doneSuggestion.getHour());
+            int difference = doneOrder.getHour() - doneSuggestion.getHour();
+            System.out.println(difference);
+            double score = expert.getScore() - difference;
+            System.out.println(score);
+            expert.setScore(score);
+            expertService.update(expert);
+        }
+        return expert;
     }
 }
