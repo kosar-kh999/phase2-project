@@ -50,11 +50,11 @@ public class ExpertServiceTest {
         assertNotNull(expertByEmail);
     }*/
 
-    @Test
+    /*@Test
     public void getImage() {
         Expert expertByEmail = expertService.getExpertByEmail("mona.noori@gmail.com");
         expertService.getImage("mona.noori@gmail.com");
-    }
+    }*/
 
     @Test
     @Order(2)

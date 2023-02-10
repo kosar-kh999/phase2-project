@@ -32,9 +32,11 @@ public class Expert extends User {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     List<Opinion> opinions = new ArrayList<>();
 
-    @Lob
-    private byte[] image;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    Image image;
+
     double score;
+
     @Enumerated(value = EnumType.STRING)
     ActiveExpert activeExpert;
 }

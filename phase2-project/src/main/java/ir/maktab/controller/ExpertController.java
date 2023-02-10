@@ -5,15 +5,15 @@ import ir.maktab.data.enums.OrderStatus;
 import ir.maktab.data.model.Expert;
 import ir.maktab.data.model.OrderSystem;
 import ir.maktab.data.model.Suggestion;
-import ir.maktab.service.ExpertService;
-import ir.maktab.service.OpinionService;
-import ir.maktab.service.OrderSystemService;
-import ir.maktab.service.SuggestionService;
+import ir.maktab.service.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,6 +25,7 @@ public class ExpertController {
     private final SuggestionService suggestionService;
     private final OrderSystemService orderSystemService;
     private final OpinionService opinionService;
+    private final ImageService imageService;
     private final ModelMapper modelMapper;
 
     @PostMapping("/add_expert")
@@ -113,9 +114,10 @@ public class ExpertController {
         return ResponseEntity.ok().body(dto);
     }
 
-    @PutMapping("/add_image")
-    public ResponseEntity<ExpertDto> addImage(@RequestParam(value = "id") Long id) {
-        Expert expert = expertService.saveImage(id);
+    @PostMapping("/add_image")
+    public ResponseEntity<ExpertDto> addImage(@RequestParam("image") MultipartFile file,
+                                              @RequestParam(value = "id") Long id) throws IOException {
+        Expert expert = imageService.uploadImage(file, id);
         ExpertDto dto = modelMapper.map(expert, ExpertDto.class);
         return ResponseEntity.ok().body(dto);
     }
@@ -124,6 +126,12 @@ public class ExpertController {
     public ResponseEntity<List<OpinionByScoreDto>> showByScore(@RequestParam(value = "id") Long id) {
         return ResponseEntity.ok().body(opinionService.showByScore(id).stream().map(opinion -> modelMapper.
                 map(opinion, OpinionByScoreDto.class)).collect(Collectors.toList()));
+    }
+
+    @GetMapping("get_image")
+    public ResponseEntity<byte[]> getImage(@RequestParam(value = "email") String email) {
+        byte[] image = imageService.getImage(email);
+        return ResponseEntity.ok().contentType(MediaType.valueOf("image/jpeg")).body(image);
     }
 
 }

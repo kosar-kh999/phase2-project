@@ -78,7 +78,7 @@ public class ExpertService {
         return file.getPath();
     }
 
-    public void validImage(File file, Expert expert) throws IOException {
+    /*public void validImage(File file, Expert expert) throws IOException {
         ImageInputStream imageInputStream = ImageIO.createImageInputStream(file);
         Iterator<ImageReader> imageReadersList = ImageIO.getImageReaders(imageInputStream);
         if (!imageReadersList.hasNext()) {
@@ -90,9 +90,9 @@ public class ExpertService {
             signUp(expert);
         }
         imageInputStream.close();
-    }
+    }*/
 
-    public Expert saveImage(Long id) {
+    /*public Expert saveImage(Long id) {
         File file = new File("C:\\Users\\HOME\\Downloads\\phase2-project\\phase2-project\\src\\main\\java\\ir\\maktab\\img.jpg");
         byte[] bFile = new byte[(int) file.length()];
         try {
@@ -105,9 +105,9 @@ public class ExpertService {
         Expert expert = getExpertById(id);
         expert.setImage(bFile);
         return expertRepository.save(expert);
-    }
+    }*/
 
-    public void getImage(String email) {
+    /*public void getImage(String email) {
         Expert expert = getExpertByEmail(email);
         byte[] image = expert.getImage();
         try {
@@ -117,6 +117,6 @@ public class ExpertService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
 }
