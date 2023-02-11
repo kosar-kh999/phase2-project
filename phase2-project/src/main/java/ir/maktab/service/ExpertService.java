@@ -5,25 +5,21 @@ import ir.maktab.data.enums.Role;
 import ir.maktab.data.model.Expert;
 import ir.maktab.data.repository.ExpertRepository;
 import ir.maktab.util.exception.NotCorrect;
-import ir.maktab.util.exception.NotFound;
 import ir.maktab.util.exception.NotFoundUser;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.ImageInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class ExpertService {
-    public final static int MAX_SIZE = 300000;
     private final ExpertRepository expertRepository;
 
     public void signUp(Expert expert) {
@@ -74,49 +70,22 @@ public class ExpertService {
         return expertRepository.findExpertById(id).orElseThrow(() -> new NotFoundUser("This user is not found"));
     }
 
-    public String getPath(File file) {
-        return file.getPath();
+    public List<Expert> getExperts(Expert expert) {
+        return expertRepository.findAll((Specification<Expert>) (root, cq, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            if (expert.getRole() != null)
+                predicates.add(cb.equal(root.get("role"), expert.getRole()));
+            if (expert.getFirstName() != null && expert.getFirstName().length() != 0)
+                predicates.add(cb.equal(root.get("firstName"), expert.getFirstName()));
+            if (expert.getLastName() != null && expert.getLastName().length() != 0)
+                predicates.add(cb.equal(root.get("lastName"), expert.getLastName()));
+            if (expert.getEmail() != null && expert.getEmail().length() != 0)
+                predicates.add(cb.equal(root.get("email"), expert.getEmail()));
+            if (expert.getSubServices() != null && expert.getSubServices().size() != 0)
+                predicates.add(cb.equal(root.get("subServices"), expert.getSubServices()));
+            if (expert.getScore() < 6)
+                cq.orderBy(cb.desc(root.get("score")));
+            return cb.and(predicates.toArray(new Predicate[0]));
+        });
     }
-
-    /*public void validImage(File file, Expert expert) throws IOException {
-        ImageInputStream imageInputStream = ImageIO.createImageInputStream(file);
-        Iterator<ImageReader> imageReadersList = ImageIO.getImageReaders(imageInputStream);
-        if (!imageReadersList.hasNext()) {
-            throw new NotFound("Image Readers not found");
-        }
-        ImageReader reader = imageReadersList.next();
-        String formatName = reader.getFormatName();
-        if (formatName.equals("jpg") && file.length() <= MAX_SIZE) {
-            signUp(expert);
-        }
-        imageInputStream.close();
-    }*/
-
-    /*public Expert saveImage(Long id) {
-        File file = new File("C:\\Users\\HOME\\Downloads\\phase2-project\\phase2-project\\src\\main\\java\\ir\\maktab\\img.jpg");
-        byte[] bFile = new byte[(int) file.length()];
-        try {
-            FileInputStream fileInputStream = new FileInputStream(file);
-            fileInputStream.read(bFile);
-            fileInputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        Expert expert = getExpertById(id);
-        expert.setImage(bFile);
-        return expertRepository.save(expert);
-    }*/
-
-    /*public void getImage(String email) {
-        Expert expert = getExpertByEmail(email);
-        byte[] image = expert.getImage();
-        try {
-            FileOutputStream fos = new FileOutputStream("C:\\Users\\HOME\\Downloads\\phase2-project\\phase2-project\\src\\main\\java\\ir\\maktab\\image2.jpg");
-            fos.write(image);
-            fos.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }*/
-
 }
