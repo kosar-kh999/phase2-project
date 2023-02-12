@@ -154,4 +154,10 @@ public class CustomerController {
         OpinionDto dto = modelMapper.map(opinionForExpert, OpinionDto.class);
         return ResponseEntity.ok().body(dto);
     }
+
+    @GetMapping("/filter_customer")
+    public ResponseEntity<List<CustomerFilterDto>> filterCustomer(@RequestBody CustomerFilterDto customerFilterDto){
+        return ResponseEntity.ok().body(customerService.getCustomers(customerFilterDto).stream().map(customer ->
+                modelMapper.map(customer,CustomerFilterDto.class)).collect(Collectors.toList()));
+    }
 }

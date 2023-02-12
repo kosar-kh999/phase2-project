@@ -135,9 +135,9 @@ public class ExpertController {
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<List<ExpertDto>> filter(@RequestBody Expert expert) {
+    public ResponseEntity<List<ExpertFilterDto>> filter(@RequestBody ExpertFilterDto expert) {
         return ResponseEntity.ok().body(expertService.getExperts(expert).stream().map(expert1 -> modelMapper.
-                map(expert1, ExpertDto.class)).collect(Collectors.toList()));
+                map(expert1, ExpertFilterDto.class)).collect(Collectors.toList()));
     }
 
 }

@@ -4,6 +4,7 @@ import ir.maktab.data.model.SubServices;
 import ir.maktab.data.repository.SubServicesRepository;
 import ir.maktab.util.exception.NotFound;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

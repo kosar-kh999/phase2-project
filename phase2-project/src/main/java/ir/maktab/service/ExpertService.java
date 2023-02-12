@@ -1,18 +1,20 @@
 package ir.maktab.service;
 
+import ir.maktab.data.dto.ExpertFilterDto;
 import ir.maktab.data.enums.ExpertStatus;
 import ir.maktab.data.enums.Role;
 import ir.maktab.data.model.Expert;
+import ir.maktab.data.model.SubServices;
 import ir.maktab.data.repository.ExpertRepository;
 import ir.maktab.util.exception.NotCorrect;
 import ir.maktab.util.exception.NotFoundUser;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +23,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ExpertService {
     private final ExpertRepository expertRepository;
+    private final SubServicesService subServicesService;
+    private final ModelMapper modelMapper;
 
     public void signUp(Expert expert) {
         expert.setRole(Role.EXPORT);
@@ -70,7 +74,9 @@ public class ExpertService {
         return expertRepository.findExpertById(id).orElseThrow(() -> new NotFoundUser("This user is not found"));
     }
 
-    public List<Expert> getExperts(Expert expert) {
+    @Transactional
+    public List<Expert> getExperts(ExpertFilterDto expert) {
+        SubServices service = subServicesService.findByName(expert.getSubName());
         return expertRepository.findAll((Specification<Expert>) (root, cq, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
             if (expert.getRole() != null)
@@ -81,10 +87,12 @@ public class ExpertService {
                 predicates.add(cb.equal(root.get("lastName"), expert.getLastName()));
             if (expert.getEmail() != null && expert.getEmail().length() != 0)
                 predicates.add(cb.equal(root.get("email"), expert.getEmail()));
-            if (expert.getSubServices() != null && expert.getSubServices().size() != 0)
-                predicates.add(cb.equal(root.get("subServices"), expert.getSubServices()));
             if (expert.getScore() < 6)
                 cq.orderBy(cb.desc(root.get("score")));
+            if (service.getSubName() != null && service.getSubName().length() != 0) {
+                Join<Expert, SubServices> expertSub = root.join("subServices");
+                predicates.add(cb.equal(expertSub.get("subName"), expert.getSubName()));
+            }
             return cb.and(predicates.toArray(new Predicate[0]));
         });
     }
