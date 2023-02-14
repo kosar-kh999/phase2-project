@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <style>
+
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: gray;
+        }
+
+        .main-container {
+            width: 238px;
+            height: 200px;
+            background-color: pink;
+            top: 50%;
+            left: 50%;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .main-container * {
+            margin-top: 10px;
+        }
+
+        input {
+            border-radius: 10px;
+            border: none;
+        }
+
+
+    </style>
+
+
+</head>
+<body>
+<div class="container p-3 my-3 border">
+    <div class="card">
+        <div class="card-header bg-info text-black">
+            <h3>USER REGISTRATION PAGE</h3>
+        </div>
+
+        <div class="card-body">
+            <form th:action="@{/customer/withdraw_with_credit}" method="POST" th:object="${creditCardDto}">
+                <input type="hidden" th:field="*{id}">
+                <div class="row">
+                    <div class="col-2">
+                        <label>NAME</label>
+                    </div>
+                    <div class="col-4">
+                        <input type="text" th:field="*{name}" class="form-control"/>
+                    </div>
+                </div>
+                <!-- 	NAME : <input type="text" th:field="*{name}" /> -->
+                <br>
+                <div class="row">
+                    <div class="col-2">
+                        <label>EMAIL</label>
+                    </div>
+                    <div class="col-4">
+                        <input type="text" th:field="*{email}" class="form-control"/>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-2">
+                        <label>CAPTCHA</label>
+                    </div>
+                    <div class="col-4">
+                        <img th:src="*{'data:realCaptcha/jpg;base64,'+ realCaptcha}"/>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-2">
+                        <label>ENTER CAPTCHA</label>
+                    </div>
+                    <div class="col-4">
+                        <input type="hidden" th:field="*{hiddenCaptcha}"/>
+                        <input type="text" th:field="*{captcha}" class="form-control"/>
+                    </div>
+                </div>
+
+                <br>
+                <!-- 	EMAIL : <input type="text" th:field="*{email}" /> -->
+                <div class="col-md-4 col-md-offset-4 text-center">
+                    <input type="submit" value="Register" class="btn btn-success" />
+                </div>
+            </form>
+            <br/>
+        </div>
+        <div th:if="${message!=null}" class="card-footer bg-info text-white">
+            <span class="alert alert-danger" th:text="${message}"></span>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+<script>
+
+    //const button = document.getElementById("submit");
+
+    $("#submit").on('click', function (e) {
+        e.preventDefault();
+        const cardNumber = document.getElementById("cardNumber");
+        const cvv2 = document.getElementById("cvv2");
+
+        const form = new FormData();
+        form.append("cardNumber", cardNumber.value);
+        form.append("cvv2", cvv2.value);
+
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:8080/customer/withdraw_with_credit",
+            data: form,
+            processData : false,
+            contentType : false,
+            dataType:"text",
+            success: function(response){
+                e.preventDefault();
+                alert("success")
+            },error: function (jqXHR, textStatus, errorThrown) {
+                e.preventDefault();
+                alert("error")
+            }
+        });
+    })
+
+</script>
+</body>
+
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

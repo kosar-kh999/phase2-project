@@ -85,4 +85,5 @@ public class CustomerService {
             return cb.and(predicates.toArray(new Predicate[0]));
         });
     }
+
 }

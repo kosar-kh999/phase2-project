@@ -75,16 +75,16 @@ public class AdminController {
 
     @PutMapping("/update_price")
     public ResponseEntity<String> updatePrice(@RequestParam(value = "price") double price,
-                                              @RequestParam(value = "name") String name) {
-        subServicesService.updatePrice(price, name);
-        return ResponseEntity.ok().body("the price has been update");
+                                              @RequestParam(value = "id") Long id) {
+        subServicesService.updatePrice(price, id);
+        return ResponseEntity.ok().body("The price has been update");
     }
 
     @PutMapping("/update_brief")
     public ResponseEntity<String> updateBrief(@RequestParam(value = "brief") String brief,
-                                              @RequestParam(value = "name") String name) {
-        subServicesService.updateBrief(brief, name);
-        return ResponseEntity.ok().body("the brief has been update");
+                                              @RequestParam(value = "id") Long id) {
+        subServicesService.updateBrief(brief, id);
+        return ResponseEntity.ok().body("The brief has been update");
     }
 
     @PutMapping("/withdraw_credit")

@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,7 +25,6 @@ public class CustomerController {
     private final OrderSystemService orderSystemService;
     private final SuggestionService suggestionService;
     private final ModelMapper modelMapper;
-
     @PostMapping("/add_customer")
     public ResponseEntity<String> addCustomer(@RequestBody CustomerDto customerDto) {
         Customer customer = modelMapper.map(customerDto, Customer.class);
@@ -156,8 +156,9 @@ public class CustomerController {
     }
 
     @GetMapping("/filter_customer")
-    public ResponseEntity<List<CustomerFilterDto>> filterCustomer(@RequestBody CustomerFilterDto customerFilterDto){
+    public ResponseEntity<List<CustomerFilterDto>> filterCustomer(@RequestBody CustomerFilterDto customerFilterDto) {
         return ResponseEntity.ok().body(customerService.getCustomers(customerFilterDto).stream().map(customer ->
-                modelMapper.map(customer,CustomerFilterDto.class)).collect(Collectors.toList()));
+                modelMapper.map(customer, CustomerFilterDto.class)).collect(Collectors.toList()));
     }
+
 }

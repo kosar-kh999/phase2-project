@@ -2,6 +2,7 @@ package ir.maktab.service;
 
 import ir.maktab.data.model.MainService;
 import ir.maktab.data.repository.MainServicesRepository;
+import ir.maktab.util.exception.ExistException;
 import ir.maktab.util.exception.NotFound;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,9 +30,9 @@ public class MainServicesService {
         mainServicesRepository.delete(mainService);
     }
 
-    public MainService getByName(MainService mainService) {
+    public MainService saveNewService(MainService mainService) {
         if (mainServicesRepository.findByName(mainService.getName()).isPresent())
-            throw new NotFound("This service is exist !");
+            throw new ExistException("This service is exist !");
         return mainServicesRepository.save(mainService);
     }
 

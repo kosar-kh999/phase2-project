@@ -1,14 +1,17 @@
 package ir.maktab.service;
 
+import ir.maktab.data.dto.CreditCardDto;
 import ir.maktab.data.enums.ActiveExpert;
 import ir.maktab.data.enums.OrderStatus;
 import ir.maktab.data.model.*;
 import ir.maktab.data.repository.SuggestionRepository;
 import ir.maktab.util.date.DateUtil;
+import ir.maktab.util.exception.NotCorrect;
 import ir.maktab.util.exception.NotFound;
 import ir.maktab.util.exception.OrderException;
 import ir.maktab.util.exception.SuggestionException;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +29,8 @@ public class SuggestionService {
     private final ExpertService expertService;
     private final OrderSystemService orderSystemService;
     private final CustomerService customerService;
+
+    private final ModelMapper modelMapper;
 
     public void saveSuggestion(Suggestion suggestion) {
         suggestionRepository.save(suggestion);
@@ -81,6 +86,16 @@ public class SuggestionService {
         return suggestionRepository.save(suggestion);
     }
 
+    public OrderSystem setDoneDate(Long orderId, Date date,Long suggestionId) {
+        OrderSystem order = orderSystemService.getOrderById(orderId);
+        Suggestion suggestion = getSuggestionById(suggestionId);
+        if (order.getDoneDate().before(suggestion.getSuggestionsStartedTime()))
+            throw new NotCorrect("order done date must be after suggestion started time");
+        order.setDoneDate(date);
+        orderSystemService.addOrder(order);
+        return order;
+    }
+
     @Transactional
     public List<Suggestion> sortSuggestionByExpertScore(Long id) {
         OrderSystem orderSystem = orderSystemService.getOrderById(id);
@@ -122,7 +137,6 @@ public class SuggestionService {
         Customer customer = customerService.getById(customerId);
         Suggestion suggestion = getSuggestionById(suggestionId);
         Customer customerByEmail = customerService.getCustomerByEmail(customer.getEmail());
-        ;
         if (suggestion.getPrice() > customerByEmail.getCredit())
             throw new SuggestionException("the amount of customer is should more than suggestion");
         double withdraw = customerByEmail.getCredit() - suggestion.getPrice();

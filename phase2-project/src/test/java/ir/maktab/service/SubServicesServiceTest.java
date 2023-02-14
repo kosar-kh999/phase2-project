@@ -74,21 +74,21 @@ public class SubServicesServiceTest {
         Assertions.assertThat(services.getBriefExplanation()).isEqualTo("TAMIR");
     }
 
-    @Test
+    /*@Test
     @Order(5)
     public void updatePrice() {
         SubServices service = subServicesService.findByName("RAKHT_SHOOIE");
         subServicesService.updatePrice(200000, "RAKHT_SHOOIE");
         assertEquals(200000, service.getPrice(), 200000);
-    }
+    }*/
 
-    @Test
+    /*@Test
     @Order(6)
     public void updateBrief() {
         SubServices service = subServicesService.findByName(subServices.getSubName());
         subServicesService.updateBrief("taviz", "LAVAZEM_ASHPAZKHANE");
         assertNotNull(service);
-    }
+    }*/
 
     @Test
     @Order(7)

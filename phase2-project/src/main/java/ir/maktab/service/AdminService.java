@@ -22,14 +22,14 @@ public class AdminService {
     private final ExpertService expertService;
 
     public void addServices(MainService mainService) {
-        MainService service = mainServicesService.getByName(mainService);
+        MainService service = mainServicesService.saveNewService(mainService);
         mainServicesService.addServices(service);
     }
 
     @Transactional
     public void addSubServiceToService(SubServices subServices, Long id) {
         MainService mainService = mainServicesService.findById(id);
-        SubServices services = subServicesService.getByName(subServices);
+        SubServices services = subServicesService.saveNewSubService(subServices);
         services.setMainService(mainService);
         subServicesService.saveSubService(services);
     }
