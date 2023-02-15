@@ -10,11 +10,13 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class OrderSystemDto {
+public class OrderSystemDoneDto {
 
     private double price;
     private String description;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date timeToDo;
     private String address;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date doneDate;
 }

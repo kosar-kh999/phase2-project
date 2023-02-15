@@ -30,8 +30,6 @@ public class SuggestionService {
     private final OrderSystemService orderSystemService;
     private final CustomerService customerService;
 
-    private final ModelMapper modelMapper;
-
     public void saveSuggestion(Suggestion suggestion) {
         suggestionRepository.save(suggestion);
     }
@@ -89,7 +87,7 @@ public class SuggestionService {
     public OrderSystem setDoneDate(Long orderId, Date date,Long suggestionId) {
         OrderSystem order = orderSystemService.getOrderById(orderId);
         Suggestion suggestion = getSuggestionById(suggestionId);
-        if (order.getDoneDate().before(suggestion.getSuggestionsStartedTime()))
+        if (date.before(suggestion.getSuggestionsStartedTime()))
             throw new NotCorrect("order done date must be after suggestion started time");
         order.setDoneDate(date);
         orderSystemService.addOrder(order);

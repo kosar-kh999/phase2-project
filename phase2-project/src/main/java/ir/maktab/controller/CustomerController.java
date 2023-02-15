@@ -6,6 +6,7 @@ import ir.maktab.service.CustomerService;
 import ir.maktab.service.OrderSystemService;
 import ir.maktab.service.SubServicesService;
 import ir.maktab.service.SuggestionService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,8 @@ public class CustomerController {
     private final OrderSystemService orderSystemService;
     private final SuggestionService suggestionService;
     private final ModelMapper modelMapper;
+    private String message;
+
     @PostMapping("/add_customer")
     public ResponseEntity<String> addCustomer(@RequestBody CustomerDto customerDto) {
         Customer customer = modelMapper.map(customerDto, Customer.class);
@@ -159,6 +162,29 @@ public class CustomerController {
     public ResponseEntity<List<CustomerFilterDto>> filterCustomer(@RequestBody CustomerFilterDto customerFilterDto) {
         return ResponseEntity.ok().body(customerService.getCustomers(customerFilterDto).stream().map(customer ->
                 modelMapper.map(customer, CustomerFilterDto.class)).collect(Collectors.toList()));
+    }
+
+    @PutMapping("/order_done_date")
+    public ResponseEntity<OrderSystemDoneDto> setDoneDate(@RequestParam(value = "suggestionId") Long suggestionId,
+                                                          @RequestBody OrderDoneDateDto orderDoneDateDto,
+                                                          @RequestParam(value = "orderId") Long orderId) {
+        OrderSystem orderSystem = suggestionService.setDoneDate(orderId, orderDoneDateDto.getDoneDate(), suggestionId);
+        OrderSystemDoneDto dto = modelMapper.map(orderSystem, OrderSystemDoneDto.class);
+        return ResponseEntity.ok().body(dto);
+    }
+
+    @GetMapping("/")
+    public String addCard(Model model){
+        model.addAttribute("message",message);
+        model.addAttribute("CreditCardDto", new CreditCardDto());
+        return "add Card";
+    }
+
+    @PostMapping("/save_card")
+    public String saveCard(@ModelAttribute("CreditCardDto") CreditCardDto creditCardDto, HttpServletRequest httpServletRequest){
+        if (creditCardDto.getCaptcha().equals(httpServletRequest.getSession().getAttribute("captcha")))
+            System.out.println("captcha is match");
+        return "captcha is not correct";
     }
 
 }
