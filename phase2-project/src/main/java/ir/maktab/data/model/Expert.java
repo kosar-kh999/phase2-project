@@ -1,6 +1,5 @@
 package ir.maktab.data.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import ir.maktab.data.enums.ActiveExpert;
 import ir.maktab.data.enums.ExpertStatus;
 import jakarta.persistence.*;

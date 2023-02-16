@@ -1,10 +1,7 @@
 package ir.maktab.data.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
-
-import java.util.Date;
 
 @Setter
 @Getter

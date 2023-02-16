@@ -1,6 +1,5 @@
 package ir.maktab.service;
 
-import ir.maktab.data.dto.CreditCardDto;
 import ir.maktab.data.enums.ActiveExpert;
 import ir.maktab.data.enums.OrderStatus;
 import ir.maktab.data.model.*;
@@ -11,7 +10,6 @@ import ir.maktab.util.exception.NotFound;
 import ir.maktab.util.exception.OrderException;
 import ir.maktab.util.exception.SuggestionException;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -84,7 +82,7 @@ public class SuggestionService {
         return suggestionRepository.save(suggestion);
     }
 
-    public OrderSystem setDoneDate(Long orderId, Date date,Long suggestionId) {
+    public OrderSystem setDoneDate(Long orderId, Date date, Long suggestionId) {
         OrderSystem order = orderSystemService.getOrderById(orderId);
         Suggestion suggestion = getSuggestionById(suggestionId);
         if (date.before(suggestion.getSuggestionsStartedTime()))
@@ -148,5 +146,10 @@ public class SuggestionService {
         double deposit = expert.getCredit() + (0.7 * suggestion.getPrice());
         expert.setCredit(deposit);
         return expertService.update(expert);
+    }
+
+    public List<Suggestion> getAllSuggestionFromExpert(Long expertId) {
+        Expert expert = expertService.getExpertById(expertId);
+        return suggestionRepository.showAllSuggestionOfExpert(expert);
     }
 }

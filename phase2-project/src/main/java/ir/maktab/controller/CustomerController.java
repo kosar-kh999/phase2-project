@@ -222,4 +222,10 @@ public class CustomerController {
                 map(orderSystem -> modelMapper.map(orderSystem, OrderSystemDto.class)).collect(Collectors.toList()));
     }
 
+    @GetMapping("all_suggestion_from_expert")
+    public ResponseEntity<List<SuggestionDto>> showAllSuggestion(@RequestParam("id") Long id) {
+        return ResponseEntity.ok().body(suggestionService.getAllSuggestionFromExpert(id).stream().map(suggestion ->
+                modelMapper.map(suggestion, SuggestionDto.class)).collect(Collectors.toList()));
+    }
+
 }

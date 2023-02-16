@@ -1,9 +1,11 @@
 package ir.maktab.data.repository;
 
+import ir.maktab.data.model.Expert;
 import ir.maktab.data.model.OrderSystem;
 import ir.maktab.data.model.Suggestion;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,4 +19,8 @@ public interface SuggestionRepository extends JpaRepository<Suggestion, Long> {
 
     @Query("SELECT s FROM Suggestion s where s.orderSystem=:orderSystem ORDER BY s.expert.score desc ")
     List<Suggestion> findAllOrderByScore(OrderSystem orderSystem);
+
+    @Transactional
+    @Query("select s from Suggestion s where s.expert=:expert")
+    List<Suggestion> showAllSuggestionOfExpert(Expert expert);
 }
