@@ -58,6 +58,48 @@ public class OrderSystemService {
         return orderSystemRepository.findBySub(subServices, orderStatus, orderStatus1);
     }
 
+    public List<OrderSystem> findByStatusAdvice(Long customerId, OrderStatus orderStatus) {
+        Customer customer = customerService.getById(customerId);
+        if (!(orderStatus.equals(OrderStatus.WAITING_ADVICE_EXPERTS)))
+            throw new OrderException("the order status must be waiting advice experts");
+        return orderSystemRepository.findByStatus(customer, orderStatus);
+    }
+
+    public List<OrderSystem> findByStatusSelection(Long customerId, OrderStatus orderStatus) {
+        Customer customer = customerService.getById(customerId);
+        if (!(orderStatus.equals(OrderStatus.WAITING_EXPERT_SELECTION)))
+            throw new OrderException("the order status must be waiting expert selection");
+        return orderSystemRepository.findByStatus(customer, orderStatus);
+    }
+
+    public List<OrderSystem> findByStatusComePlace(Long customerId, OrderStatus orderStatus) {
+        Customer customer = customerService.getById(customerId);
+        if (!(orderStatus.equals(OrderStatus.WAITING_EXPERT_COME_PLACE)))
+            throw new OrderException("the order status must be waiting expert come place");
+        return orderSystemRepository.findByStatus(customer, orderStatus);
+    }
+
+    public List<OrderSystem> findByStatusStarted(Long customerId, OrderStatus orderStatus) {
+        Customer customer = customerService.getById(customerId);
+        if (!(orderStatus.equals(OrderStatus.STARTED)))
+            throw new OrderException("the order status must be started");
+        return orderSystemRepository.findByStatus(customer, orderStatus);
+    }
+
+    public List<OrderSystem> findByStatusDone(Long customerId, OrderStatus orderStatus) {
+        Customer customer = customerService.getById(customerId);
+        if (!(orderStatus.equals(OrderStatus.DONE)))
+            throw new OrderException("the order status must be done");
+        return orderSystemRepository.findByStatus(customer, orderStatus);
+    }
+
+    public List<OrderSystem> findByStatusPaid(Long customerId, OrderStatus orderStatus) {
+        Customer customer = customerService.getById(customerId);
+        if (!(orderStatus.equals(OrderStatus.PAID)))
+            throw new OrderException("the order status must be paid");
+        return orderSystemRepository.findByStatus(customer, orderStatus);
+    }
+
 
     public Opinion saveOpinionForExpert(Opinion opinion, Long orderId) {
         OrderSystem order = getOrderById(orderId);

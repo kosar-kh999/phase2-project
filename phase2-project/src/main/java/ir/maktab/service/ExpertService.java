@@ -6,12 +6,12 @@ import ir.maktab.data.enums.Role;
 import ir.maktab.data.model.Expert;
 import ir.maktab.data.model.SubServices;
 import ir.maktab.data.repository.ExpertRepository;
+import ir.maktab.util.exception.ExistException;
 import ir.maktab.util.exception.NotCorrect;
 import ir.maktab.util.exception.NotFoundUser;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,9 +24,10 @@ import java.util.List;
 public class ExpertService {
     private final ExpertRepository expertRepository;
     private final SubServicesService subServicesService;
-    private final ModelMapper modelMapper;
 
     public void signUp(Expert expert) {
+        if (expertRepository.findExpertByEmail(expert.getEmail()).isPresent())
+            throw new ExistException("The email is exist");
         expert.setRole(Role.EXPORT);
         expert.setScore(0);
         expert.setExpertStatus(ExpertStatus.NEW);

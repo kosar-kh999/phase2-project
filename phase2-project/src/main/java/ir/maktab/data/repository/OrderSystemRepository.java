@@ -1,6 +1,7 @@
 package ir.maktab.data.repository;
 
 import ir.maktab.data.enums.OrderStatus;
+import ir.maktab.data.model.Customer;
 import ir.maktab.data.model.OrderSystem;
 import ir.maktab.data.model.SubServices;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,4 +18,8 @@ public interface OrderSystemRepository extends JpaRepository<OrderSystem, Long> 
     @Query("select o from OrderSystem o where o.subServices=:subServices and o.orderStatus=:orderStatus or " +
             "o.orderStatus=:orderStatus1 ")
     List<OrderSystem> findBySub(SubServices subServices, OrderStatus orderStatus, OrderStatus orderStatus1);
+
+    @Transactional
+    @Query("select o from OrderSystem o where o.customer=:customer and o.orderStatus=:orderStatus")
+    List<OrderSystem> findByStatus(Customer customer, OrderStatus orderStatus);
 }

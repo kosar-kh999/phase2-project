@@ -1,17 +1,18 @@
 package ir.maktab.controller;
 
 import ir.maktab.data.dto.*;
+import ir.maktab.data.enums.OrderStatus;
 import ir.maktab.data.model.*;
 import ir.maktab.service.CustomerService;
 import ir.maktab.service.OrderSystemService;
 import ir.maktab.service.SubServicesService;
 import ir.maktab.service.SuggestionService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,10 +27,9 @@ public class CustomerController {
     private final OrderSystemService orderSystemService;
     private final SuggestionService suggestionService;
     private final ModelMapper modelMapper;
-    private String message;
 
     @PostMapping("/add_customer")
-    public ResponseEntity<String> addCustomer(@RequestBody CustomerDto customerDto) {
+    public ResponseEntity<String> addCustomer(@Valid @RequestBody CustomerDto customerDto) {
         Customer customer = modelMapper.map(customerDto, Customer.class);
         customerService.signUp(customer);
         return ResponseEntity.ok().body("You sign up successfully");
@@ -50,7 +50,7 @@ public class CustomerController {
     }
 
     @PutMapping("/update_customer")
-    public ResponseEntity<CustomerSignInDto> updateCustomer(@RequestBody CustomerDto customerDto) {
+    public ResponseEntity<CustomerSignInDto> updateCustomer(@Valid @RequestBody CustomerDto customerDto) {
         Customer customer = modelMapper.map(customerDto, Customer.class);
         Customer update = customerService.update(customer);
         CustomerSignInDto dto = modelMapper.map(update, CustomerSignInDto.class);
@@ -58,7 +58,7 @@ public class CustomerController {
     }
 
     @DeleteMapping("delete_customer")
-    public ResponseEntity<String> deleteCustomer(@RequestBody CustomerDto customerDto) {
+    public ResponseEntity<String> deleteCustomer(@Valid @RequestBody CustomerDto customerDto) {
         Customer customer = modelMapper.map(customerDto, Customer.class);
         customerService.delete(customer);
         return ResponseEntity.ok().body("This customer delete");
@@ -95,7 +95,7 @@ public class CustomerController {
 
     @Transactional
     @PostMapping("/add_order")
-    public ResponseEntity<OrderSystemDto> addOrder(@RequestBody OrderSystemDto orderSystemDto,
+    public ResponseEntity<OrderSystemDto> addOrder(@Valid @RequestBody OrderSystemDto orderSystemDto,
                                                    @RequestParam(value = "subId") Long subId,
                                                    @RequestParam(value = "customerId") Long customerId) {
         OrderSystem orderSystem = modelMapper.map(orderSystemDto, OrderSystem.class);
@@ -150,7 +150,7 @@ public class CustomerController {
     }
 
     @PostMapping("/add_opinion")
-    public ResponseEntity<OpinionDto> addOpinion(@RequestBody OpinionDto opinionDto,
+    public ResponseEntity<OpinionDto> addOpinion(@Valid @RequestBody OpinionDto opinionDto,
                                                  @RequestParam(value = "orderId") Long orderId) {
         Opinion opinion = modelMapper.map(opinionDto, Opinion.class);
         Opinion opinionForExpert = orderSystemService.saveOpinionForExpert(opinion, orderId);
@@ -159,32 +159,67 @@ public class CustomerController {
     }
 
     @GetMapping("/filter_customer")
-    public ResponseEntity<List<CustomerFilterDto>> filterCustomer(@RequestBody CustomerFilterDto customerFilterDto) {
+    public ResponseEntity<List<CustomerFilterDto>> filterCustomer(@Valid @RequestBody CustomerFilterDto customerFilterDto) {
         return ResponseEntity.ok().body(customerService.getCustomers(customerFilterDto).stream().map(customer ->
                 modelMapper.map(customer, CustomerFilterDto.class)).collect(Collectors.toList()));
     }
 
     @PutMapping("/order_done_date")
     public ResponseEntity<OrderSystemDoneDto> setDoneDate(@RequestParam(value = "suggestionId") Long suggestionId,
-                                                          @RequestBody OrderDoneDateDto orderDoneDateDto,
+                                                          @Valid @RequestBody OrderDoneDateDto orderDoneDateDto,
                                                           @RequestParam(value = "orderId") Long orderId) {
         OrderSystem orderSystem = suggestionService.setDoneDate(orderId, orderDoneDateDto.getDoneDate(), suggestionId);
         OrderSystemDoneDto dto = modelMapper.map(orderSystem, OrderSystemDoneDto.class);
         return ResponseEntity.ok().body(dto);
     }
 
-    @GetMapping("/")
-    public String addCard(Model model){
-        model.addAttribute("message",message);
-        model.addAttribute("CreditCardDto", new CreditCardDto());
-        return "add Card";
-    }
-
-    @PostMapping("/save_card")
-    public String saveCard(@ModelAttribute("CreditCardDto") CreditCardDto creditCardDto, HttpServletRequest httpServletRequest){
+    @PostMapping("/save")
+    public String saveCard(@ModelAttribute("creditCardDto") CreditCardDto creditCardDto, HttpServletRequest httpServletRequest) {
         if (creditCardDto.getCaptcha().equals(httpServletRequest.getSession().getAttribute("captcha")))
             System.out.println("captcha is match");
         return "captcha is not correct";
+    }
+
+    @GetMapping("/status_advice")
+    public ResponseEntity<List<OrderSystemDto>> findByStatusAdvice(@RequestParam("id") Long id,
+                                                                   @RequestParam("status") OrderStatus orderStatus) {
+        return ResponseEntity.ok().body(orderSystemService.findByStatusAdvice(id, orderStatus).stream().
+                map(orderSystem -> modelMapper.map(orderSystem, OrderSystemDto.class)).collect(Collectors.toList()));
+    }
+
+    @GetMapping("/status_selection")
+    public ResponseEntity<List<OrderSystemDto>> findByStatusSelection(@RequestParam("id") Long id,
+                                                                      @RequestParam("status") OrderStatus orderStatus) {
+        return ResponseEntity.ok().body(orderSystemService.findByStatusSelection(id, orderStatus).stream().
+                map(orderSystem -> modelMapper.map(orderSystem, OrderSystemDto.class)).collect(Collectors.toList()));
+    }
+
+    @GetMapping("/status_come-place")
+    public ResponseEntity<List<OrderSystemDto>> findByStatusComePlace(@RequestParam("id") Long id,
+                                                                      @RequestParam("status") OrderStatus orderStatus) {
+        return ResponseEntity.ok().body(orderSystemService.findByStatusComePlace(id, orderStatus).stream().
+                map(orderSystem -> modelMapper.map(orderSystem, OrderSystemDto.class)).collect(Collectors.toList()));
+    }
+
+    @GetMapping("/status_started")
+    public ResponseEntity<List<OrderSystemDto>> findByStatusStarted(@RequestParam("id") Long id,
+                                                                    @RequestParam("status") OrderStatus orderStatus) {
+        return ResponseEntity.ok().body(orderSystemService.findByStatusStarted(id, orderStatus).stream().
+                map(orderSystem -> modelMapper.map(orderSystem, OrderSystemDto.class)).collect(Collectors.toList()));
+    }
+
+    @GetMapping("/status_done")
+    public ResponseEntity<List<OrderSystemDto>> findByStatusDone(@RequestParam("id") Long id,
+                                                                 @RequestParam("status") OrderStatus orderStatus) {
+        return ResponseEntity.ok().body(orderSystemService.findByStatusDone(id, orderStatus).stream().
+                map(orderSystem -> modelMapper.map(orderSystem, OrderSystemDto.class)).collect(Collectors.toList()));
+    }
+
+    @GetMapping("/status_paid")
+    public ResponseEntity<List<OrderSystemDto>> findByStatusPaid(@RequestParam("id") Long id,
+                                                                 @RequestParam("status") OrderStatus orderStatus) {
+        return ResponseEntity.ok().body(orderSystemService.findByStatusPaid(id, orderStatus).stream().
+                map(orderSystem -> modelMapper.map(orderSystem, OrderSystemDto.class)).collect(Collectors.toList()));
     }
 
 }

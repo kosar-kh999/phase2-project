@@ -5,6 +5,7 @@ import ir.maktab.data.enums.Role;
 import ir.maktab.data.model.Customer;
 import ir.maktab.data.model.MainService;
 import ir.maktab.data.repository.CustomerRepository;
+import ir.maktab.util.exception.ExistException;
 import ir.maktab.util.exception.NotCorrect;
 import ir.maktab.util.exception.NotFoundUser;
 import jakarta.persistence.criteria.Predicate;
@@ -24,6 +25,8 @@ public class CustomerService {
     private final MainServicesService mainServicesService;
 
     public void signUp(Customer customer) {
+        if (customerRepository.findCustomerByEmail(customer.getEmail()).isPresent())
+            throw new ExistException("The email is exist");
         customer.setRole(Role.CUSTOMER);
         customerRepository.save(customer);
     }

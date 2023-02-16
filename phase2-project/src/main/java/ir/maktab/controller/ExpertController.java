@@ -6,6 +6,7 @@ import ir.maktab.data.model.Expert;
 import ir.maktab.data.model.OrderSystem;
 import ir.maktab.data.model.Suggestion;
 import ir.maktab.service.*;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
@@ -29,7 +30,7 @@ public class ExpertController {
     private final ModelMapper modelMapper;
 
     @PostMapping("/add_expert")
-    public ResponseEntity<String> addExpert(@RequestBody ExpertDto expertDto) {
+    public ResponseEntity<String> addExpert(@Valid @RequestBody ExpertDto expertDto) {
         Expert expert = modelMapper.map(expertDto, Expert.class);
         expertService.signUp(expert);
         return ResponseEntity.ok().body(expert.getFirstName() + " " + " sign up successfully");
@@ -50,7 +51,7 @@ public class ExpertController {
     }
 
     @PutMapping("/update_expert")
-    public ResponseEntity<ExpertDto> updateExpert(@RequestBody ExpertDto expertDto) {
+    public ResponseEntity<ExpertDto> updateExpert(@Valid @RequestBody ExpertDto expertDto) {
         Expert expert = modelMapper.map(expertDto, Expert.class);
         Expert update = expertService.update(expert);
         ExpertDto dto = modelMapper.map(update, ExpertDto.class);
@@ -58,7 +59,7 @@ public class ExpertController {
     }
 
     @DeleteMapping("delete_expert")
-    public ResponseEntity<String> deleteExpert(@RequestBody ExpertDto expertDto) {
+    public ResponseEntity<String> deleteExpert(@Valid @RequestBody ExpertDto expertDto) {
         Expert expert = modelMapper.map(expertDto, Expert.class);
         expertService.delete(expert);
         return ResponseEntity.ok().body("This expert delete");
@@ -90,7 +91,7 @@ public class ExpertController {
     }
 
     @PostMapping("/suggestion_add")
-    public ResponseEntity<SuggestionDto> addSuggestion(@RequestBody SuggestionDto suggestionDto,
+    public ResponseEntity<SuggestionDto> addSuggestion(@Valid @RequestBody SuggestionDto suggestionDto,
                                                        @RequestParam(value = "subId") Long subId,
                                                        @RequestParam(value = "expertId") Long expertId) {
         Suggestion suggestion = modelMapper.map(suggestionDto, Suggestion.class);
@@ -135,7 +136,7 @@ public class ExpertController {
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<List<ExpertFilterDto>> filter(@RequestBody ExpertFilterDto expert) {
+    public ResponseEntity<List<ExpertFilterDto>> filter(@Valid @RequestBody ExpertFilterDto expert) {
         return ResponseEntity.ok().body(expertService.getExperts(expert).stream().map(expert1 -> modelMapper.
                 map(expert1, ExpertFilterDto.class)).collect(Collectors.toList()));
     }

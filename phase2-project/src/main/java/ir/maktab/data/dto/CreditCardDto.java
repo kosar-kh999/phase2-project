@@ -22,10 +22,6 @@ public class CreditCardDto {
     @Pattern(regexp = "^[0-9]{7}$")
     private String secondPassword;
 
-    @JsonFormat(pattern = "yyyy-MM")
-    private Date expireDate;
-
-    private double amount;
     private String captcha;
 
 }

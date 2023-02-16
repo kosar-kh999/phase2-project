@@ -11,6 +11,7 @@ import ir.maktab.data.model.SubServices;
 import ir.maktab.service.AdminService;
 import ir.maktab.service.SubServicesService;
 import ir.maktab.service.SuggestionService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,7 @@ public class AdminController {
     private final ModelMapper modelMapper;
 
     @PostMapping("/add_service")
-    public ResponseEntity<String> addService(@RequestBody MainServiceDto mainServiceDto) {
+    public ResponseEntity<String> addService(@Valid @RequestBody MainServiceDto mainServiceDto) {
         MainService mainService = modelMapper.map(mainServiceDto, MainService.class);
         adminService.addServices(mainService);
         return ResponseEntity.ok().body(mainService.getName() + " " + " is added");
@@ -38,7 +39,7 @@ public class AdminController {
 
     @Transactional
     @PostMapping("/add_sub_service")
-    public ResponseEntity<String> addSubService(@RequestBody SubServiceDto subServiceDto,
+    public ResponseEntity<String> addSubService(@Valid @RequestBody SubServiceDto subServiceDto,
                                                 @RequestParam(value = "id") Long id) {
         SubServices subServices = modelMapper.map(subServiceDto, SubServices.class);
         adminService.addSubServiceToService(subServices, id);
