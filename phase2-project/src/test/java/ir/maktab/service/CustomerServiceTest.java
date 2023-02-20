@@ -23,7 +23,7 @@ import static org.junit.Assert.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CustomerServiceTest {
     Customer customer = Customer.builder().firstName("lale").lastName("kamali").email("lale.kamali@gmail.com").credit(100000).
-            entryDate(new Date()).password("lale1KKK").role(Role.CUSTOMER).build();
+            entryDate(new Date()).password("lale1KKK").role(Role.ROLE_CUSTOMER).build();
     @Autowired
     private CustomerService customerService;
 

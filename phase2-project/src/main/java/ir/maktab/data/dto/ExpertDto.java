@@ -9,6 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 public class ExpertDto {
+
     @Pattern(regexp = "^[A-Za-z]\\w{2,29}$")
     private String firstName;
     @Pattern(regexp = "^[A-Za-z]\\w{2,29}$")

@@ -6,8 +6,8 @@ import ir.maktab.data.model.Expert;
 import ir.maktab.data.model.OrderSystem;
 import ir.maktab.data.model.Suggestion;
 import ir.maktab.service.*;
+import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/expert")
-@RequiredArgsConstructor
 public class ExpertController {
     private final ExpertService expertService;
     private final SuggestionService suggestionService;
@@ -29,7 +28,18 @@ public class ExpertController {
     private final ImageService imageService;
     private final ModelMapper modelMapper;
 
-    @PostMapping("/add_expert")
+    public ExpertController(ExpertService expertService, SuggestionService suggestionService,
+                            OrderSystemService orderSystemService, OpinionService opinionService,
+                            ImageService imageService, ModelMapper modelMapper) {
+        this.expertService = expertService;
+        this.suggestionService = suggestionService;
+        this.orderSystemService = orderSystemService;
+        this.opinionService = opinionService;
+        this.imageService = imageService;
+        this.modelMapper = modelMapper;
+    }
+
+    @PostMapping(value = "/add_expert")
     public ResponseEntity<String> addExpert(@Valid @RequestBody ExpertDto expertDto) {
         Expert expert = modelMapper.map(expertDto, Expert.class);
         expertService.signUp(expert);

@@ -9,7 +9,6 @@ import ir.maktab.service.SubServicesService;
 import ir.maktab.service.SuggestionService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,13 +19,21 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/customer")
-@RequiredArgsConstructor
 public class CustomerController {
     private final CustomerService customerService;
     private final SubServicesService subServicesService;
     private final OrderSystemService orderSystemService;
     private final SuggestionService suggestionService;
     private final ModelMapper modelMapper;
+
+    public CustomerController(CustomerService customerService, SubServicesService subServicesService,
+                              OrderSystemService orderSystemService, SuggestionService suggestionService, ModelMapper modelMapper) {
+        this.customerService = customerService;
+        this.subServicesService = subServicesService;
+        this.orderSystemService = orderSystemService;
+        this.suggestionService = suggestionService;
+        this.modelMapper = modelMapper;
+    }
 
     @PostMapping("/add_customer")
     public ResponseEntity<String> addCustomer(@Valid @RequestBody CustomerDto customerDto) {

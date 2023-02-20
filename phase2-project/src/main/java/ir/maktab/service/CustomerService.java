@@ -9,8 +9,8 @@ import ir.maktab.util.exception.ExistException;
 import ir.maktab.util.exception.NotCorrect;
 import ir.maktab.util.exception.NotFoundUser;
 import jakarta.persistence.criteria.Predicate;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,16 +18,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
+@Transactional
 public class CustomerService {
 
     private final CustomerRepository customerRepository;
     private final MainServicesService mainServicesService;
 
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    public CustomerService(CustomerRepository customerRepository, MainServicesService mainServicesService,
+                           BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.customerRepository = customerRepository;
+        this.mainServicesService = mainServicesService;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
+
     public void signUp(Customer customer) {
         if (customerRepository.findCustomerByEmail(customer.getEmail()).isPresent())
             throw new ExistException("The email is exist");
-        customer.setRole(Role.CUSTOMER);
+        customer.setRole(Role.ROLE_CUSTOMER);
+        customer.setPassword(bCryptPasswordEncoder.encode(customer.getPassword()));
         customerRepository.save(customer);
     }
 

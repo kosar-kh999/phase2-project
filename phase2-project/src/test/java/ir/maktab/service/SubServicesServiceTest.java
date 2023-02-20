@@ -27,7 +27,7 @@ public class SubServicesServiceTest {
     SubServices subServices = SubServices.builder().subName("LAVAZEM_ASHPAZKHANE").price(300000).briefExplanation("KHARDI")
             .build();
     Expert expert = Expert.builder().firstName("mona").lastName("noori").email("mona.noori@gmail.com").
-            password("123qqqWW").entryDate(new Date()).expertStatus(ExpertStatus.NEW).role(Role.EXPORT).build();
+            password("123qqqWW").entryDate(new Date()).expertStatus(ExpertStatus.NEW).role(Role.EXPERT).build();
     @Autowired
     private SubServicesService subServicesService;
     @Autowired

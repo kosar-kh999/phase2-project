@@ -1,16 +1,11 @@
 package ir.maktab.controller;
 
-import ir.maktab.data.dto.CustomerDto;
-import ir.maktab.data.dto.ExpertSignInDto;
-import ir.maktab.data.dto.MainServiceDto;
-import ir.maktab.data.dto.SubServiceDto;
-import ir.maktab.data.model.Customer;
-import ir.maktab.data.model.Expert;
-import ir.maktab.data.model.MainService;
-import ir.maktab.data.model.SubServices;
+import ir.maktab.data.dto.*;
+import ir.maktab.data.model.*;
 import ir.maktab.service.AdminService;
 import ir.maktab.service.SubServicesService;
 import ir.maktab.service.SuggestionService;
+import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -29,6 +24,14 @@ public class AdminController {
     private final SubServicesService subServicesService;
     private final SuggestionService suggestionService;
     private final ModelMapper modelMapper;
+
+    @PostMapping("/add_admin")
+    @PermitAll
+    public ResponseEntity<String> addAdmin(@RequestBody AdminDto adminDto) {
+        Admin admin = modelMapper.map(adminDto, Admin.class);
+        adminService.saveAdmin(admin);
+        return ResponseEntity.ok().body(admin.getUsername() + " " + "sign up successfully");
+    }
 
     @PostMapping("/add_service")
     public ResponseEntity<String> addService(@Valid @RequestBody MainServiceDto mainServiceDto) {

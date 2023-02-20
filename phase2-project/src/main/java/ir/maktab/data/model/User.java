@@ -6,8 +6,13 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -17,7 +22,7 @@ import java.util.Date;
 @EqualsAndHashCode
 @ToString
 @SuperBuilder
-public class User extends BaseEntity {
+public class User extends BaseEntity implements UserDetails {
 
     @Column(nullable = false)
     String firstName;
@@ -31,7 +36,7 @@ public class User extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     Role role;
 
-    @Column(nullable = false, length = 8)
+    @Column(nullable = false)
     String password;
 
     @CreationTimestamp
@@ -39,6 +44,36 @@ public class User extends BaseEntity {
     Date entryDate;
 
     double credit;
+    private boolean isEnabled;
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.name()));
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
 

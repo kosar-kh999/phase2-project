@@ -34,9 +34,9 @@ public class ExpertServiceTest {
     @Order(1)
     public void saveNewExpert() {
         Expert expert = Expert.builder().firstName("mona").lastName("noori").email("mona.noori@gmail.com").
-                password("123qqqWW").entryDate(new Date()).expertStatus(ExpertStatus.NEW).role(Role.EXPORT).build();
+                password("123qqqWW").entryDate(new Date()).expertStatus(ExpertStatus.NEW).role(Role.EXPERT).build();
         Expert expert1 = Expert.builder().firstName("nader").lastName("babaee").email("nader.babaee@gmail.com").
-                password("456eeeRR").entryDate(new Date()).expertStatus(ExpertStatus.NEW).role(Role.EXPORT).build();
+                password("456eeeRR").entryDate(new Date()).expertStatus(ExpertStatus.NEW).role(Role.EXPERT).build();
         expertService.signUp(expert1);
         expertService.signUp(expert);
         Assertions.assertThat(expert.getId()).isGreaterThan(0);

@@ -2,12 +2,17 @@ package ir.maktab.service;
 
 import ir.maktab.data.enums.ActiveExpert;
 import ir.maktab.data.enums.ExpertStatus;
+import ir.maktab.data.enums.Role;
+import ir.maktab.data.model.Admin;
 import ir.maktab.data.model.Expert;
 import ir.maktab.data.model.MainService;
 import ir.maktab.data.model.SubServices;
+import ir.maktab.data.repository.AdminRepository;
+import ir.maktab.util.exception.NotFound;
 import ir.maktab.util.exception.StatusException;
 import ir.maktab.util.exception.SubServicesException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,11 +20,25 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class AdminService {
 
     private final MainServicesService mainServicesService;
     private final SubServicesService subServicesService;
     private final ExpertService expertService;
+
+    private final AdminRepository adminRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    public void saveAdmin(Admin admin) {
+        admin.setRole(Role.ROLE_ADMIN);
+        admin.setPassword(bCryptPasswordEncoder.encode(admin.getPassword()));
+        adminRepository.save(admin);
+    }
+
+    public Admin findByUsername(String username) {
+        return adminRepository.findByUsername(username).orElseThrow(() -> new NotFound("This user is not found!"));
+    }
 
     public void addServices(MainService mainService) {
         MainService service = mainServicesService.saveNewService(mainService);

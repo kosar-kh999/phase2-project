@@ -33,10 +33,13 @@ public class Expert extends User {
     List<Opinion> opinions = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ToString.Exclude
     Image image;
 
     double score;
 
     @Enumerated(value = EnumType.STRING)
     ActiveExpert activeExpert;
+
+
 }
