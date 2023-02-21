@@ -6,11 +6,11 @@ import ir.maktab.data.model.Expert;
 import ir.maktab.data.model.OrderSystem;
 import ir.maktab.data.model.Suggestion;
 import ir.maktab.service.*;
-import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -46,14 +46,6 @@ public class ExpertController {
         return ResponseEntity.ok().body(expert.getFirstName() + " " + " sign up successfully");
     }
 
-    @GetMapping("/sign_In_expert")
-    public ResponseEntity<ExpertSignInDto> getByEmail(@RequestParam("email") String email,
-                                                      @RequestParam("password") String password) {
-        Expert expert = expertService.signIn(email, password);
-        ExpertSignInDto dto = modelMapper.map(expert, ExpertSignInDto.class);
-        return ResponseEntity.ok().body(dto);
-    }
-
     @GetMapping("/get_all")
     public ResponseEntity<List<ExpertSignInDto>> getAllExpert() {
         return ResponseEntity.ok().body(expertService.getAll().stream().map(expert -> modelMapper.
@@ -84,9 +76,9 @@ public class ExpertController {
 
     @PutMapping("/change_password")
     public ResponseEntity<ExpertSignInDto> updatePassword(@RequestParam("newPassword") String newPassword,
-                                                          @RequestParam("confirmedPassword") String confirmedPassword,
-                                                          @RequestParam("email") String email) {
-        Expert expert = expertService.changePasswordExpert(newPassword, confirmedPassword, email);
+                                                          @RequestParam("confirmedPassword") String confirmedPassword) {
+        Expert principal = (Expert) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Expert expert = expertService.changePasswordExpert(newPassword, confirmedPassword, principal.getEmail());
         ExpertSignInDto dto = modelMapper.map(expert, ExpertSignInDto.class);
         return ResponseEntity.ok().body(dto);
     }
@@ -95,17 +87,17 @@ public class ExpertController {
     public ResponseEntity<List<OrderSystemDto>> findByServiceAndStatus(@RequestParam("id") Long id,
                                                                        @RequestParam("status") OrderStatus orderStatus,
                                                                        @RequestParam("status1") OrderStatus orderStatus1) {
-
         return ResponseEntity.ok().body(orderSystemService.findBySubAndStatus(id, orderStatus, orderStatus1).stream().
                 map(orderSystem -> modelMapper.map(orderSystem, OrderSystemDto.class)).collect(Collectors.toList()));
     }
 
     @PostMapping("/suggestion_add")
     public ResponseEntity<SuggestionDto> addSuggestion(@Valid @RequestBody SuggestionDto suggestionDto,
-                                                       @RequestParam(value = "subId") Long subId,
-                                                       @RequestParam(value = "expertId") Long expertId) {
+                                                       @RequestParam(value = "subId") Long subId) {
+        Expert principal = (Expert) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Suggestion suggestion = modelMapper.map(suggestionDto, Suggestion.class);
-        Suggestion suggestionFromExpert = suggestionService.sendSuggestionFromExpert(suggestion, subId, expertId);
+        Suggestion suggestionFromExpert = suggestionService.sendSuggestionFromExpert(suggestion, subId,
+                principal.getId());
         SuggestionDto dto = modelMapper.map(suggestionFromExpert, SuggestionDto.class);
         return ResponseEntity.ok().body(dto);
     }
@@ -126,22 +118,24 @@ public class ExpertController {
     }
 
     @PostMapping("/add_image")
-    public ResponseEntity<ExpertDto> addImage(@RequestParam("image") MultipartFile file,
-                                              @RequestParam(value = "id") Long id) throws IOException {
-        Expert expert = imageService.uploadImage(file, id);
+    public ResponseEntity<ExpertDto> addImage(@RequestParam("image") MultipartFile file) throws IOException {
+        Expert principal = (Expert) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Expert expert = imageService.uploadImage(file, principal.getId());
         ExpertDto dto = modelMapper.map(expert, ExpertDto.class);
         return ResponseEntity.ok().body(dto);
     }
 
     @GetMapping("/show-by-score")
-    public ResponseEntity<List<OpinionByScoreDto>> showByScore(@RequestParam(value = "id") Long id) {
-        return ResponseEntity.ok().body(opinionService.showByScore(id).stream().map(opinion -> modelMapper.
+    public ResponseEntity<List<OpinionByScoreDto>> showByScore() {
+        Expert principal = (Expert) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok().body(opinionService.showByScore(principal.getId()).stream().map(opinion -> modelMapper.
                 map(opinion, OpinionByScoreDto.class)).collect(Collectors.toList()));
     }
 
     @GetMapping("get_image")
-    public ResponseEntity<byte[]> getImage(@RequestParam(value = "email") String email) {
-        byte[] image = imageService.getImage(email);
+    public ResponseEntity<byte[]> getImage() {
+        Expert principal = (Expert) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        byte[] image = imageService.getImage(principal.getEmail());
         return ResponseEntity.ok().contentType(MediaType.valueOf("image/jpeg")).body(image);
     }
 

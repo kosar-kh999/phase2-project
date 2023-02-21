@@ -5,7 +5,6 @@ import ir.maktab.data.model.*;
 import ir.maktab.service.AdminService;
 import ir.maktab.service.SubServicesService;
 import ir.maktab.service.SuggestionService;
-import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -26,7 +25,6 @@ public class AdminController {
     private final ModelMapper modelMapper;
 
     @PostMapping("/add_admin")
-    @PermitAll
     public ResponseEntity<String> addAdmin(@RequestBody AdminDto adminDto) {
         Admin admin = modelMapper.map(adminDto, Admin.class);
         adminService.saveAdmin(admin);

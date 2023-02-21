@@ -44,7 +44,6 @@ public class User extends BaseEntity implements UserDetails {
     Date entryDate;
 
     double credit;
-    private boolean isEnabled;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

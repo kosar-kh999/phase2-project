@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,14 +41,6 @@ public class CustomerController {
         Customer customer = modelMapper.map(customerDto, Customer.class);
         customerService.signUp(customer);
         return ResponseEntity.ok().body("You sign up successfully");
-    }
-
-    @GetMapping("/sign_In_customer")
-    public ResponseEntity<CustomerSignInDto> getByEmail(@RequestParam("email") String email,
-                                                        @RequestParam("password") String password) {
-        Customer customer = customerService.signIn(email, password);
-        CustomerSignInDto dto = modelMapper.map(customer, CustomerSignInDto.class);
-        return ResponseEntity.ok().body(dto);
     }
 
     @GetMapping("/get_all")
@@ -80,9 +73,9 @@ public class CustomerController {
 
     @PutMapping("/change_password")
     public ResponseEntity<CustomerSignInDto> updatePassword(@RequestParam("newPassword") String newPassword,
-                                                            @RequestParam("confirmedPassword") String confirmedPassword,
-                                                            @RequestParam("email") String email) {
-        Customer customer = customerService.changePasswordCustomer(newPassword, confirmedPassword, email);
+                                                            @RequestParam("confirmedPassword") String confirmedPassword) {
+        Customer principal = (Customer) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Customer customer = customerService.changePasswordCustomer(newPassword, confirmedPassword, principal.getEmail());
         CustomerSignInDto dto = modelMapper.map(customer, CustomerSignInDto.class);
         return ResponseEntity.ok().body(dto);
     }
@@ -103,10 +96,10 @@ public class CustomerController {
     @Transactional
     @PostMapping("/add_order")
     public ResponseEntity<OrderSystemDto> addOrder(@Valid @RequestBody OrderSystemDto orderSystemDto,
-                                                   @RequestParam(value = "subId") Long subId,
-                                                   @RequestParam(value = "customerId") Long customerId) {
+                                                   @RequestParam(value = "subId") Long subId) {
+        Customer principal = (Customer) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         OrderSystem orderSystem = modelMapper.map(orderSystemDto, OrderSystem.class);
-        OrderSystem order = orderSystemService.addOrderWithSubService(subId, orderSystem, customerId);
+        OrderSystem order = orderSystemService.addOrderWithSubService(subId, orderSystem, principal.getId());
         OrderSystemDto dto = modelMapper.map(order, OrderSystemDto.class);
         return ResponseEntity.ok().body(dto);
     }
@@ -166,7 +159,8 @@ public class CustomerController {
     }
 
     @GetMapping("/filter_customer")
-    public ResponseEntity<List<CustomerFilterDto>> filterCustomer(@Valid @RequestBody CustomerFilterDto customerFilterDto) {
+    public ResponseEntity<List<CustomerFilterDto>> filterCustomer(@Valid @RequestBody CustomerFilterDto
+                                                                          customerFilterDto) {
         return ResponseEntity.ok().body(customerService.getCustomers(customerFilterDto).stream().map(customer ->
                 modelMapper.map(customer, CustomerFilterDto.class)).collect(Collectors.toList()));
     }
@@ -181,51 +175,54 @@ public class CustomerController {
     }
 
     @PostMapping("/save")
-    public String saveCard(@ModelAttribute("creditCardDto") CreditCardDto creditCardDto, HttpServletRequest httpServletRequest) {
+    public String saveCard(@ModelAttribute("creditCardDto") CreditCardDto creditCardDto,
+                           HttpServletRequest httpServletRequest) {
         if (creditCardDto.getCaptcha().equals(httpServletRequest.getSession().getAttribute("captcha")))
             System.out.println("captcha is match");
         return "captcha is not correct";
     }
 
     @GetMapping("/status_advice")
-    public ResponseEntity<List<OrderSystemDto>> findByStatusAdvice(@RequestParam("id") Long id,
-                                                                   @RequestParam("status") OrderStatus orderStatus) {
-        return ResponseEntity.ok().body(orderSystemService.findByStatusAdvice(id, orderStatus).stream().
+    public ResponseEntity<List<OrderSystemDto>> findByStatusAdvice(@RequestParam("status") OrderStatus orderStatus) {
+        Customer principal = (Customer) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok().body(orderSystemService.findByStatusAdvice(principal.getId(), orderStatus).stream().
                 map(orderSystem -> modelMapper.map(orderSystem, OrderSystemDto.class)).collect(Collectors.toList()));
     }
 
     @GetMapping("/status_selection")
-    public ResponseEntity<List<OrderSystemDto>> findByStatusSelection(@RequestParam("id") Long id,
-                                                                      @RequestParam("status") OrderStatus orderStatus) {
-        return ResponseEntity.ok().body(orderSystemService.findByStatusSelection(id, orderStatus).stream().
-                map(orderSystem -> modelMapper.map(orderSystem, OrderSystemDto.class)).collect(Collectors.toList()));
+    public ResponseEntity<List<OrderSystemDto>> findByStatusSelection(@RequestParam("status") OrderStatus orderStatus) {
+        Customer principal = (Customer) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok().body(orderSystemService.findByStatusSelection(principal.getId(), orderStatus).
+                stream().map(orderSystem -> modelMapper.map(orderSystem, OrderSystemDto.class)).collect(Collectors.
+                        toList()));
     }
 
     @GetMapping("/status_come-place")
-    public ResponseEntity<List<OrderSystemDto>> findByStatusComePlace(@RequestParam("id") Long id,
-                                                                      @RequestParam("status") OrderStatus orderStatus) {
-        return ResponseEntity.ok().body(orderSystemService.findByStatusComePlace(id, orderStatus).stream().
-                map(orderSystem -> modelMapper.map(orderSystem, OrderSystemDto.class)).collect(Collectors.toList()));
+    public ResponseEntity<List<OrderSystemDto>> findByStatusComePlace(@RequestParam("status") OrderStatus orderStatus) {
+        Customer principal = (Customer) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok().body(orderSystemService.findByStatusComePlace(principal.getId(), orderStatus).
+                stream().map(orderSystem -> modelMapper.map(orderSystem, OrderSystemDto.class)).collect(Collectors.
+                        toList()));
     }
 
     @GetMapping("/status_started")
-    public ResponseEntity<List<OrderSystemDto>> findByStatusStarted(@RequestParam("id") Long id,
-                                                                    @RequestParam("status") OrderStatus orderStatus) {
-        return ResponseEntity.ok().body(orderSystemService.findByStatusStarted(id, orderStatus).stream().
+    public ResponseEntity<List<OrderSystemDto>> findByStatusStarted(@RequestParam("status") OrderStatus orderStatus) {
+        Customer principal = (Customer) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok().body(orderSystemService.findByStatusStarted(principal.getId(), orderStatus).stream().
                 map(orderSystem -> modelMapper.map(orderSystem, OrderSystemDto.class)).collect(Collectors.toList()));
     }
 
     @GetMapping("/status_done")
-    public ResponseEntity<List<OrderSystemDto>> findByStatusDone(@RequestParam("id") Long id,
-                                                                 @RequestParam("status") OrderStatus orderStatus) {
-        return ResponseEntity.ok().body(orderSystemService.findByStatusDone(id, orderStatus).stream().
+    public ResponseEntity<List<OrderSystemDto>> findByStatusDone(@RequestParam("status") OrderStatus orderStatus) {
+        Customer principal = (Customer) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok().body(orderSystemService.findByStatusDone(principal.getId(), orderStatus).stream().
                 map(orderSystem -> modelMapper.map(orderSystem, OrderSystemDto.class)).collect(Collectors.toList()));
     }
 
     @GetMapping("/status_paid")
-    public ResponseEntity<List<OrderSystemDto>> findByStatusPaid(@RequestParam("id") Long id,
-                                                                 @RequestParam("status") OrderStatus orderStatus) {
-        return ResponseEntity.ok().body(orderSystemService.findByStatusPaid(id, orderStatus).stream().
+    public ResponseEntity<List<OrderSystemDto>> findByStatusPaid(@RequestParam("status") OrderStatus orderStatus) {
+        Customer principal = (Customer) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok().body(orderSystemService.findByStatusPaid(principal.getId(), orderStatus).stream().
                 map(orderSystem -> modelMapper.map(orderSystem, OrderSystemDto.class)).collect(Collectors.toList()));
     }
 
