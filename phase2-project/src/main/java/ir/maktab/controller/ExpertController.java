@@ -158,10 +158,4 @@ public class ExpertController {
         return ResponseEntity.ok().contentType(MediaType.valueOf("image/jpeg")).body(image);
     }
 
-    @GetMapping("/filter")
-    public ResponseEntity<List<ExpertFilterDto>> filter(@Valid @RequestBody ExpertFilterDto expert) {
-        return ResponseEntity.ok().body(expertService.getExperts(expert).stream().map(expert1 -> modelMapper.
-                map(expert1, ExpertFilterDto.class)).collect(Collectors.toList()));
-    }
-
 }

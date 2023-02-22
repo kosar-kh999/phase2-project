@@ -2,9 +2,7 @@ package ir.maktab.controller;
 
 import ir.maktab.data.dto.*;
 import ir.maktab.data.model.*;
-import ir.maktab.service.AdminService;
-import ir.maktab.service.SubServicesService;
-import ir.maktab.service.SuggestionService;
+import ir.maktab.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -22,6 +20,8 @@ public class AdminController {
     private final AdminService adminService;
     private final SubServicesService subServicesService;
     private final SuggestionService suggestionService;
+    private final ExpertService expertService;
+    private final CustomerService customerService;
     private final ModelMapper modelMapper;
 
     @PostMapping("/add_admin")
@@ -103,5 +103,18 @@ public class AdminController {
         Expert expert = suggestionService.deposit(idExpert, idSuggestion);
         ExpertSignInDto dto = modelMapper.map(expert, ExpertSignInDto.class);
         return ResponseEntity.ok().body(dto);
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<List<ExpertFilterDto>> filter(@Valid @RequestBody ExpertFilterDto expert) {
+        return ResponseEntity.ok().body(expertService.getExperts(expert).stream().map(expert1 -> modelMapper.
+                map(expert1, ExpertFilterDto.class)).collect(Collectors.toList()));
+    }
+
+    @GetMapping("/filter_customer")
+    public ResponseEntity<List<CustomerFilterDto>> filterCustomer(@Valid @RequestBody CustomerFilterDto
+                                                                          customerFilterDto) {
+        return ResponseEntity.ok().body(customerService.getCustomers(customerFilterDto).stream().map(customer ->
+                modelMapper.map(customer, CustomerFilterDto.class)).collect(Collectors.toList()));
     }
 }

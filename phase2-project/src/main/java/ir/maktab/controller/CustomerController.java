@@ -158,13 +158,6 @@ public class CustomerController {
         return ResponseEntity.ok().body(dto);
     }
 
-    @GetMapping("/filter_customer")
-    public ResponseEntity<List<CustomerFilterDto>> filterCustomer(@Valid @RequestBody CustomerFilterDto
-                                                                          customerFilterDto) {
-        return ResponseEntity.ok().body(customerService.getCustomers(customerFilterDto).stream().map(customer ->
-                modelMapper.map(customer, CustomerFilterDto.class)).collect(Collectors.toList()));
-    }
-
     @PutMapping("/order_done_date")
     public ResponseEntity<OrderSystemDoneDto> setDoneDate(@RequestParam(value = "suggestionId") Long suggestionId,
                                                           @Valid @RequestBody OrderDoneDateDto orderDoneDateDto,
