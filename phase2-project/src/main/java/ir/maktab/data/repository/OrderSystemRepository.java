@@ -5,13 +5,14 @@ import ir.maktab.data.model.Customer;
 import ir.maktab.data.model.OrderSystem;
 import ir.maktab.data.model.SubServices;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface OrderSystemRepository extends JpaRepository<OrderSystem, Long> {
+public interface OrderSystemRepository extends JpaRepository<OrderSystem, Long>, JpaSpecificationExecutor<OrderSystem> {
     Optional<OrderSystem> findOrderSystemById(Long id);
 
     @Transactional

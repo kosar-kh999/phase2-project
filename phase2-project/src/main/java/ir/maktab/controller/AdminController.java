@@ -22,6 +22,8 @@ public class AdminController {
     private final SuggestionService suggestionService;
     private final ExpertService expertService;
     private final CustomerService customerService;
+
+    private final OrderSystemService orderSystemService;
     private final ModelMapper modelMapper;
 
     @PostMapping("/add_admin")
@@ -116,5 +118,12 @@ public class AdminController {
                                                                           customerFilterDto) {
         return ResponseEntity.ok().body(customerService.getCustomers(customerFilterDto).stream().map(customer ->
                 modelMapper.map(customer, CustomerFilterDto.class)).collect(Collectors.toList()));
+    }
+
+    @GetMapping("/filter_order")
+    public ResponseEntity<List<OrderSystemFilterDto>> filterOrder(@Valid @RequestBody OrderSystemFilterDto
+                                                                          orderSystemFilterDto) {
+        return ResponseEntity.ok().body(orderSystemService.filterOrder(orderSystemFilterDto).stream().map(orderSystem ->
+                modelMapper.map(orderSystem, OrderSystemFilterDto.class)).collect(Collectors.toList()));
     }
 }

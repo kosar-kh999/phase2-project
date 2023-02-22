@@ -84,7 +84,6 @@ public class CustomerService {
 
     @Transactional
     public List<Customer> getCustomers(CustomerFilterDto customer) {
-
         return customerRepository.findAll((Specification<Customer>) (root, cq, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
             if (customer.getRole() != null)

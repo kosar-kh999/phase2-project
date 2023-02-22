@@ -1,15 +1,23 @@
 package ir.maktab.service;
 
+import ir.maktab.data.dto.OrderSystemFilterDto;
 import ir.maktab.data.enums.OrderStatus;
 import ir.maktab.data.model.*;
 import ir.maktab.data.repository.OrderSystemRepository;
+import ir.maktab.util.date.DateUtil;
 import ir.maktab.util.exception.NotFound;
 import ir.maktab.util.exception.OpinionException;
 import ir.maktab.util.exception.OrderException;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -21,6 +29,7 @@ public class OrderSystemService {
     private final CustomerService customerService;
     private final OpinionService opinionService;
     private final ExpertService expertService;
+    private final MainServicesService mainServicesService;
 
     public void addOrder(OrderSystem orderSystem) {
         orderSystemRepository.save(orderSystem);
@@ -113,6 +122,24 @@ public class OrderSystemService {
         opinion.setExpert(order.getExpert());
         expertService.update(expert);
         return opinionService.saveOpinion(opinion);
+    }
+
+    @Transactional
+    public List<OrderSystem> filterOrder(OrderSystemFilterDto dto) {
+        return orderSystemRepository.findAll((Specification<OrderSystem>) (root, cq, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            if (dto.getOrderStatus() != null)
+                predicates.add(cb.equal(root.get("orderStatus"), dto.getOrderStatus()));
+            if (dto.getSubName() != null && dto.getSubName().length() != 0){
+                SubServices service = subServicesService.findByName(dto.getSubName());
+                Join<OrderSystem,SubServices> join = root.join("subServices");
+                predicates.add(cb.equal(join.get("subName"),service.getSubName()));
+            }
+            if (dto.getTimeBefore() != null && dto.getTimeAfter() != null){
+                predicates.add(cb.between(root.get("timeToDo"),dto.getTimeAfter(),dto.getTimeBefore()));
+            }
+            return cb.and(predicates.toArray(new Predicate[0]));
+        });
     }
 
 }
