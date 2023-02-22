@@ -6,8 +6,11 @@ import ir.maktab.data.model.Expert;
 import ir.maktab.data.model.OrderSystem;
 import ir.maktab.data.model.Suggestion;
 import ir.maktab.service.*;
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,10 +44,24 @@ public class ExpertController {
     }
 
     @PostMapping(value = "/add_expert")
-    public ResponseEntity<String> addExpert(@Valid @RequestBody ExpertDto expertDto) {
+    public ResponseEntity<String> addExpert(@Valid @RequestBody ExpertDto expertDto, HttpServletRequest request) throws MessagingException, UnsupportedEncodingException {
         Expert expert = modelMapper.map(expertDto, Expert.class);
-        expertService.signUp(expert);
+        expertService.signUp(expert, getSiteURL(request));
         return ResponseEntity.ok().body(expert.getFirstName() + " " + " sign up successfully");
+    }
+
+    private String getSiteURL(HttpServletRequest request) {
+        String siteURL = request.getRequestURL().toString();
+        return siteURL.replace(request.getServletPath(), "");
+    }
+
+    @GetMapping("/verify")
+    public String verifyUser(@Param("code") String code) {
+        if (expertService.verify(code)) {
+            return "verify_success";
+        } else {
+            return "verify_fail";
+        }
     }
 
     @GetMapping("/get_all")

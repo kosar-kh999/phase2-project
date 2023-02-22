@@ -41,5 +41,10 @@ public class Expert extends User {
     @Enumerated(value = EnumType.STRING)
     ActiveExpert activeExpert;
 
+    @Column(length = 64)
+    private String verificationCode;
+
+    private boolean enabled;
+
 
 }

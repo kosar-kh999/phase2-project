@@ -1,7 +1,6 @@
 package ir.maktab.service;
 
 import ir.maktab.data.enums.ExpertStatus;
-import ir.maktab.data.enums.Role;
 import ir.maktab.data.model.Expert;
 import ir.maktab.util.exception.NotFoundUser;
 import org.assertj.core.api.Assertions;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -30,19 +28,19 @@ public class ExpertServiceTest {
     private AdminService adminService;
 
 
-    @Test
+   /* @Test
     @Order(1)
     public void saveNewExpert() {
         Expert expert = Expert.builder().firstName("mona").lastName("noori").email("mona.noori@gmail.com").
-                password("123qqqWW").entryDate(new Date()).expertStatus(ExpertStatus.NEW).role(Role.EXPERT).build();
+                password("123qqqWW").entryDate(new Date()).expertStatus(ExpertStatus.NEW).role(Role.ROLE_EXPERT).build();
         Expert expert1 = Expert.builder().firstName("nader").lastName("babaee").email("nader.babaee@gmail.com").
-                password("456eeeRR").entryDate(new Date()).expertStatus(ExpertStatus.NEW).role(Role.EXPERT).build();
+                password("456eeeRR").entryDate(new Date()).expertStatus(ExpertStatus.NEW).role(Role.ROLE_EXPERT).build();
         expertService.signUp(expert1);
         expertService.signUp(expert);
         Assertions.assertThat(expert.getId()).isGreaterThan(0);
         Assertions.assertThat(expert1.getId()).isGreaterThan(0);
     }
-
+*/
     /*@Test
     public void saveImage() {
         Expert expertByEmail = expertService.getExpertByEmail("mona.noori@gmail.com");

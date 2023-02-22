@@ -38,6 +38,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers("/customer/add_customer").permitAll()
                 .requestMatchers("/expert/add_expert").permitAll()
+                .requestMatchers("/expert/verify").permitAll()
                 .requestMatchers("/admin/add_admin").permitAll()
                 .requestMatchers("/expert/**").hasRole("EXPERT")
                 .requestMatchers("/customer/**").hasRole("CUSTOMER")

@@ -9,13 +9,19 @@ import ir.maktab.data.repository.ExpertRepository;
 import ir.maktab.util.exception.ExistException;
 import ir.maktab.util.exception.NotCorrect;
 import ir.maktab.util.exception.NotFoundUser;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
+import org.modelmapper.internal.bytebuddy.utility.RandomString;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,14 +32,17 @@ public class ExpertService {
     private final SubServicesService subServicesService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    private final JavaMailSender mailSender;
+
     public ExpertService(ExpertRepository expertRepository, SubServicesService subServicesService,
-                         BCryptPasswordEncoder bCryptPasswordEncoder) {
+                         BCryptPasswordEncoder bCryptPasswordEncoder, JavaMailSender mailSender) {
         this.expertRepository = expertRepository;
         this.subServicesService = subServicesService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.mailSender = mailSender;
     }
 
-    public void signUp(Expert expert) {
+    public void signUp(Expert expert, String siteURL) throws MessagingException, UnsupportedEncodingException {
         if (expertRepository.findExpertByEmail(expert.getEmail()).isPresent())
             throw new ExistException("The email is exist");
         expert.setRole(Role.ROLE_EXPERT);
@@ -41,7 +50,56 @@ public class ExpertService {
         expert.setExpertStatus(ExpertStatus.NEW);
         expert.setCredit(0);
         expert.setPassword(bCryptPasswordEncoder.encode(expert.getPassword()));
+        String randomCode = RandomString.make(64);
+        expert.setVerificationCode(randomCode);
+        expert.setEnabled(false);
+        sendVerificationEmail(expert, siteURL);
         expertRepository.save(expert);
+    }
+
+    private void sendVerificationEmail(Expert expert, String siteURL)
+            throws MessagingException, UnsupportedEncodingException {
+        String toAddress = expert.getEmail();
+        String fromAddress = "spring.mail.username";
+        String senderName = "maktab";
+        String subject = "Please verify your registration";
+        String content = "Dear [[name]],<br>"
+                + "Please click the link below to verify your registration:<br>"
+                + "<h3><a href=\"[[URL]]\" target=\"_self\">VERIFY</a></h3>"
+                + "Thank you,<br>"
+                + "Your company name.";
+
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+
+        helper.setFrom(fromAddress, senderName);
+        helper.setTo(toAddress);
+        helper.setSubject(subject);
+
+        content = content.replace("[[name]]", expert.getFirstName());
+        String verifyURL = siteURL + "/expert/verify?code=" + expert.getVerificationCode();
+
+        content = content.replace("[[URL]]", verifyURL);
+
+        helper.setText(content, true);
+
+        mailSender.send(message);
+
+    }
+
+    public boolean verify(String verificationCode) {
+        Expert user = expertRepository.findByVerificationCode(verificationCode);
+
+        if (user == null || user.isEnabled()) {
+            return false;
+        } else {
+            user.setVerificationCode(null);
+            user.setEnabled(true);
+            expertRepository.save(user);
+
+            return true;
+        }
+
     }
 
     public Expert signIn(String email, String password) {
