@@ -44,7 +44,8 @@ public class ExpertController {
     }
 
     @PostMapping(value = "/add_expert")
-    public ResponseEntity<String> addExpert(@Valid @RequestBody ExpertDto expertDto, HttpServletRequest request) throws MessagingException, UnsupportedEncodingException {
+    public ResponseEntity<String> addExpert(@Valid @RequestBody ExpertDto expertDto, HttpServletRequest request) throws
+            MessagingException, UnsupportedEncodingException {
         Expert expert = modelMapper.map(expertDto, Expert.class);
         expertService.signUp(expert, getSiteURL(request));
         return ResponseEntity.ok().body(expert.getFirstName() + " " + " sign up successfully");

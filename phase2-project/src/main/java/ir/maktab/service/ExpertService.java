@@ -95,6 +95,7 @@ public class ExpertService {
         } else {
             user.setVerificationCode(null);
             user.setEnabled(true);
+            user.setExpertStatus(ExpertStatus.AWAITING_CONFIRMATION);
             expertRepository.save(user);
 
             return true;
@@ -144,7 +145,7 @@ public class ExpertService {
 
     @Transactional
     public List<Expert> getExperts(ExpertFilterDto expert) {
-        SubServices service = subServicesService.findByName(expert.getSubName());
+
         return expertRepository.findAll((Specification<Expert>) (root, cq, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
             if (expert.getRole() != null)
@@ -157,9 +158,10 @@ public class ExpertService {
                 predicates.add(cb.equal(root.get("email"), expert.getEmail()));
             if (expert.getScore() < 6)
                 cq.orderBy(cb.desc(root.get("score")));
-            if (service.getSubName() != null && service.getSubName().length() != 0) {
+            if (expert.getSubName() != null && expert.getSubName().length() != 0) {
+                SubServices service = subServicesService.findByName(expert.getSubName());
                 Join<Expert, SubServices> expertSub = root.join("subServices");
-                predicates.add(cb.equal(expertSub.get("subName"), expert.getSubName()));
+                predicates.add(cb.equal(expertSub.get("subName"), service.getSubName()));
             }
             return cb.and(predicates.toArray(new Predicate[0]));
         });

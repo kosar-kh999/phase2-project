@@ -18,7 +18,7 @@ public class SubServices extends BaseEntity {
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     MainService mainService;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     String subName;
     @Column(nullable = false)
     double price;
