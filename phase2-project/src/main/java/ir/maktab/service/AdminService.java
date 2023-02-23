@@ -64,15 +64,13 @@ public class AdminService {
         return expert;
     }
 
-    public boolean deleteExpertFromSubServices(Long expertId, Long subId) {
+    public void deleteExpertFromSubServices(Long expertId, Long subId) {
         Expert expert = expertService.getExpertById(expertId);
         SubServices subServices = subServicesService.findById(subId);
-        boolean flag = true;
         if (!(expert.getSubServices().contains(subServices)))
-            return false;
+            throw new NotFound("This sub service not found for this expert");
         expert.getSubServices().remove(subServices);
         expertService.update(expert);
-        return flag;
     }
 
     public List<MainService> showAllServices() {
