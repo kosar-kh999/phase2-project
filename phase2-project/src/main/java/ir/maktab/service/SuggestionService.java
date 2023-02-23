@@ -98,12 +98,6 @@ public class SuggestionService {
         return suggestionRepository.findAllOrderByScore(orderSystem);
     }
 
-    public Suggestion changeOrderStatusToDone(Long id) {
-        Suggestion suggestion = getSuggestionById(id);
-        suggestion.getOrderSystem().setOrderStatus(OrderStatus.DONE);
-        return suggestionRepository.save(suggestion);
-    }
-
     @Transactional
     public Suggestion changeOrderStatusToStarted(Long orderId, Long suggestionId) {
         OrderSystem orderSystem = orderSystemService.getOrderById(orderId);
@@ -125,6 +119,8 @@ public class SuggestionService {
         expert.setScore(score);
         if (score < 0)
             expert.setActiveExpert(ActiveExpert.NOT_ACTIVE);
+        suggestion.getOrderSystem().setOrderStatus(OrderStatus.DONE);
+        suggestionRepository.save(suggestion);
         expertService.update(expert);
         return expert;
     }
