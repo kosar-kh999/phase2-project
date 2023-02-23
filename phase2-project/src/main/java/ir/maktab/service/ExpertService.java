@@ -103,13 +103,6 @@ public class ExpertService {
 
     }
 
-    public Expert signIn(String email, String password) {
-        Expert expert = expertRepository.findExpertByEmail(email).orElseThrow(() -> new NotFoundUser("This email is not exist"));
-        if (!(expert.getPassword().equals(password)))
-            throw new NotFoundUser("This user is not correct");
-        return expert;
-    }
-
 
     public Expert changePasswordExpert(String newPassword, String confirmedPassword, String email) {
         Expert expertByEmail = getExpertByEmail(email);

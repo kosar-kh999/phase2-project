@@ -8,6 +8,7 @@ import ir.maktab.data.model.Expert;
 import ir.maktab.data.model.MainService;
 import ir.maktab.data.model.SubServices;
 import ir.maktab.data.repository.AdminRepository;
+import ir.maktab.util.exception.NotCorrect;
 import ir.maktab.util.exception.NotFound;
 import ir.maktab.util.exception.StatusException;
 import ir.maktab.util.exception.SubServicesException;
@@ -56,6 +57,8 @@ public class AdminService {
     @Transactional
     public Expert addExpertToSubService(Long expertId, Long subId) {
         Expert expert = expertService.getExpertById(expertId);
+        if (expert.getExpertStatus().equals(ExpertStatus.NEW) || expert.getExpertStatus().equals(ExpertStatus.AWAITING_CONFIRMATION))
+            throw new NotCorrect("The expert status must confirmed");
         SubServices services = subServicesService.findById(subId);
         if (expert.getSubServices().contains(services))
             throw new SubServicesException("This sub service was added before");
