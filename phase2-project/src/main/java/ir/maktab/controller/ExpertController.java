@@ -122,9 +122,9 @@ public class ExpertController {
     }
 
     @PostMapping("/set_order")
-    public ResponseEntity<SuggestionDto> setOrder(@RequestParam(value = "suggestionId") Long suggestionId,
-                                                  @RequestParam(value = "orderId") Long orderId) {
-        Suggestion suggestion = suggestionService.setOrder(suggestionId, orderId);
+    public ResponseEntity<SuggestionDto> setOrder(@Valid @RequestBody OrderSuggestionDto orderSuggestionDto) {
+        Suggestion suggestion = suggestionService.setOrder(orderSuggestionDto.getSuggestionId(), orderSuggestionDto.
+                getOrderId());
         SuggestionDto dto = modelMapper.map(suggestion, SuggestionDto.class);
         return ResponseEntity.ok().body(dto);
     }

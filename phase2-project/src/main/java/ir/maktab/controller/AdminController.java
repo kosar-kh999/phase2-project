@@ -51,9 +51,8 @@ public class AdminController {
 
     @Transactional
     @PostMapping("/add_expert_to_sub_service")
-    public ResponseEntity<String> addExpertToSubService(@RequestParam(value = "idSub") Long idSub,
-                                                        @RequestParam(value = "id") Long id) {
-        Expert expert = adminService.addExpertToSubService(id, idSub);
+    public ResponseEntity<String> addExpertToSubService(@Valid @RequestBody ExpertSubDto expertSubDto) {
+        Expert expert = adminService.addExpertToSubService(expertSubDto.getExpertId(), expertSubDto.getSubId());
         return ResponseEntity.ok().body(expert.getFirstName() + " " + "added to sub service");
     }
 
