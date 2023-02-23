@@ -4,19 +4,17 @@ import ir.maktab.data.dto.OrderSystemFilterDto;
 import ir.maktab.data.enums.OrderStatus;
 import ir.maktab.data.model.*;
 import ir.maktab.data.repository.OrderSystemRepository;
-import ir.maktab.util.date.DateUtil;
 import ir.maktab.util.exception.NotFound;
 import ir.maktab.util.exception.OpinionException;
 import ir.maktab.util.exception.OrderException;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -50,7 +48,8 @@ public class OrderSystemService {
         orderSystem.setSubServices(subServices);
         orderSystem.setCustomer(customer);
         orderSystem.setOrderStatus(OrderStatus.WAITING_ADVICE_EXPERTS);
-        return orderSystemRepository.save(orderSystem);
+        OrderSystem system = orderSystemRepository.save(orderSystem);
+        return system;
     }
 
     public OrderSystem changeOrderStatus(Long id) {
@@ -130,16 +129,52 @@ public class OrderSystemService {
             List<Predicate> predicates = new ArrayList<>();
             if (dto.getOrderStatus() != null)
                 predicates.add(cb.equal(root.get("orderStatus"), dto.getOrderStatus()));
-            if (dto.getSubName() != null && dto.getSubName().length() != 0){
+            if (dto.getSubName() != null && dto.getSubName().length() != 0) {
                 SubServices service = subServicesService.findByName(dto.getSubName());
-                Join<OrderSystem,SubServices> join = root.join("subServices");
-                predicates.add(cb.equal(join.get("subName"),service.getSubName()));
+                Join<OrderSystem, SubServices> join = root.join("subServices");
+                predicates.add(cb.equal(join.get("subName"), service.getSubName()));
             }
-            if (dto.getTimeBefore() != null && dto.getTimeAfter() != null){
-                predicates.add(cb.between(root.get("timeToDo"),dto.getTimeAfter(),dto.getTimeBefore()));
+            if (dto.getTimeBefore() != null && dto.getTimeAfter() != null) {
+                predicates.add(cb.between(root.get("timeToDo"), dto.getTimeAfter(), dto.getTimeBefore()));
+            }
+
+            if (dto.getName() != null && dto.getName().length() != 0) {
+                MainService service = mainServicesService.findByName(dto.getName());
+                Root<OrderSystem> orderSystemRoot = cq.from(OrderSystem.class);
+                Root<SubServices> subServicesRoot = cq.from(SubServices.class);
+                Root<MainService> mainServiceRoot = cq.from(MainService.class);
+                cq.select(orderSystemRoot.get("subServices"));
+                cq.where(
+                        cb.and(
+                                cb.equal(orderSystemRoot.get("subServices"), subServicesRoot.get("subName")),
+                                cb.equal(mainServiceRoot.get("name"), subServicesRoot.get("mainService")),
+                                cb.equal(mainServiceRoot.get("name"), service.getName())
+                        )
+
+                );
             }
             return cb.and(predicates.toArray(new Predicate[0]));
         });
+    }
+
+    public int calculateOrders(String email, OrderStatus orderStatus) {
+        Customer customer = customerService.getCustomerByEmail(email);
+        return orderSystemRepository.calculateOrders(customer, orderStatus);
+    }
+
+    public int calculateOrdersExpert(String email, OrderStatus orderStatus) {
+        Expert expert = expertService.getExpertByEmail(email);
+        return orderSystemRepository.calculateOrdersExpert(expert, orderStatus);
+    }
+
+    public List<OrderSystem> viewOrderCustomer(String email, OrderStatus orderStatus) {
+        Customer customer = customerService.getCustomerByEmail(email);
+        return orderSystemRepository.findByStatus(customer, orderStatus);
+    }
+
+    public List<OrderSystem> viewOrderExpert(String email, OrderStatus orderStatus) {
+        Expert expert = expertService.getExpertByEmail(email);
+        return orderSystemRepository.findByStatusExpert(expert, orderStatus);
     }
 
 }

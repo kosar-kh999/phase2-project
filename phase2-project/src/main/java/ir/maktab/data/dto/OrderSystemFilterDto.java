@@ -16,9 +16,21 @@ import java.util.Date;
 public class OrderSystemFilterDto {
 
     private OrderStatus orderStatus;
+
     private String subName;
+
+    private String name;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date timeAfter;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date timeBefore;
+
+    private double price;
+
+    private String description;
+
+    private String address;
+
 }

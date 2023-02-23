@@ -158,4 +158,17 @@ public class ExpertController {
         return ResponseEntity.ok().contentType(MediaType.valueOf("image/jpeg")).body(image);
     }
 
+    @GetMapping("view_history_order")
+    public ResponseEntity<List<OrderSystemDto>> viewOrderCustomer(@RequestParam("status") OrderStatus orderStatus) {
+        Expert principal = (Expert) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok().body(orderSystemService.viewOrderExpert(principal.getEmail(), orderStatus).stream().map(
+                orderSystem -> modelMapper.map(orderSystem, OrderSystemDto.class)).collect(Collectors.toList()));
+    }
+
+    @GetMapping("view_credit")
+    public ResponseEntity<Double> viewCreditCustomer() {
+        Expert principal = (Expert) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok().body(expertService.viewCredit(principal.getEmail()));
+    }
+
 }

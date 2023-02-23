@@ -1,6 +1,7 @@
 package ir.maktab.service;
 
 import ir.maktab.data.dto.CustomerFilterDto;
+import ir.maktab.data.dto.CustomerSignUpDto;
 import ir.maktab.data.enums.Role;
 import ir.maktab.data.model.Customer;
 import ir.maktab.data.model.MainService;
@@ -43,13 +44,6 @@ public class CustomerService {
 
     public Customer getCustomerByEmail(String email) {
         return customerRepository.findCustomerByEmail(email).orElseThrow(() -> new NotFoundUser("This email is not exist"));
-    }
-
-    public Customer signIn(String email, String password) {
-        Customer customer = customerRepository.findCustomerByEmail(email).orElseThrow(() -> new NotFoundUser("This email is not exist ! "));
-        if (!(customer.getPassword().equals(password)))
-            throw new NotFoundUser("This user is not correct");
-        return customer;
     }
 
     public Customer getById(Long id) {
@@ -96,6 +90,21 @@ public class CustomerService {
                 predicates.add(cb.equal(root.get("email"), customer.getEmail()));
             return cb.and(predicates.toArray(new Predicate[0]));
         });
+    }
+
+    @Transactional
+    public List<Customer> signUpDateFilter(CustomerSignUpDto customer) {
+        return customerRepository.findAll((Specification<Customer>) (root, cq, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            if (customer.getTimeAfter() != null && customer.getTimeBefore() != null)
+                predicates.add(cb.between(root.get("entryDate"), customer.getTimeAfter(), customer.getTimeBefore()));
+            return cb.and(predicates.toArray(new Predicate[0]));
+        });
+    }
+
+    public Double viewCredit(String email) {
+        Customer customer = getCustomerByEmail(email);
+        return customer.getCredit();
     }
 
 }

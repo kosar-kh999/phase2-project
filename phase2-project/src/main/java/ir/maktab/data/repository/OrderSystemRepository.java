@@ -2,6 +2,7 @@ package ir.maktab.data.repository;
 
 import ir.maktab.data.enums.OrderStatus;
 import ir.maktab.data.model.Customer;
+import ir.maktab.data.model.Expert;
 import ir.maktab.data.model.OrderSystem;
 import ir.maktab.data.model.SubServices;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,4 +24,14 @@ public interface OrderSystemRepository extends JpaRepository<OrderSystem, Long>,
     @Transactional
     @Query("select o from OrderSystem o where o.customer=:customer and o.orderStatus=:orderStatus")
     List<OrderSystem> findByStatus(Customer customer, OrderStatus orderStatus);
+
+    @Transactional
+    @Query("select o from OrderSystem o where o.expert=:expert and o.orderStatus=:orderStatus")
+    List<OrderSystem> findByStatusExpert(Expert expert, OrderStatus orderStatus);
+
+    @Query("select count(o.customer) from OrderSystem o where o.customer=:customer and o.orderStatus=:orderStatus")
+    int calculateOrders(Customer customer, OrderStatus orderStatus);
+
+    @Query("select count(o.expert) from OrderSystem o where o.expert=:expert and o.orderStatus=:orderStatus")
+    int calculateOrdersExpert(Expert expert, OrderStatus orderStatus);
 }

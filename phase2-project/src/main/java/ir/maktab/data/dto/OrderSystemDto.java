@@ -13,8 +13,11 @@ import java.util.Date;
 public class OrderSystemDto {
 
     private double price;
+
     private String description;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date timeToDo;
+
     private String address;
 }

@@ -145,7 +145,6 @@ public class ExpertService {
 
     @Transactional
     public List<Expert> getExperts(ExpertFilterDto expert) {
-
         return expertRepository.findAll((Specification<Expert>) (root, cq, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
             if (expert.getRole() != null)
@@ -156,8 +155,10 @@ public class ExpertService {
                 predicates.add(cb.equal(root.get("lastName"), expert.getLastName()));
             if (expert.getEmail() != null && expert.getEmail().length() != 0)
                 predicates.add(cb.equal(root.get("email"), expert.getEmail()));
-            if (expert.getScore() < 6)
-                cq.orderBy(cb.desc(root.get("score")));
+            if (expert.getMinScore() == 0 && expert.getMaxScore() != 0)
+                predicates.add(cb.lt(root.get("score"), expert.getMaxScore()));
+            if (expert.getMinScore() != 0 && expert.getMaxScore() == 0)
+                predicates.add(cb.gt(root.get("score"), expert.getMinScore()));
             if (expert.getSubName() != null && expert.getSubName().length() != 0) {
                 SubServices service = subServicesService.findByName(expert.getSubName());
                 Join<Expert, SubServices> expertSub = root.join("subServices");
@@ -165,5 +166,10 @@ public class ExpertService {
             }
             return cb.and(predicates.toArray(new Predicate[0]));
         });
+    }
+
+    public Double viewCredit(String email) {
+        Expert expert = getExpertByEmail(email);
+        return expert.getCredit();
     }
 }

@@ -126,4 +126,23 @@ public class AdminController {
         return ResponseEntity.ok().body(orderSystemService.filterOrder(orderSystemFilterDto).stream().map(orderSystem ->
                 modelMapper.map(orderSystem, OrderSystemFilterDto.class)).collect(Collectors.toList()));
     }
+
+    @GetMapping("/filter_customer_entry_date")
+    public ResponseEntity<List<CustomerSignUpDto>> filterCustomerByEntry(@Valid @RequestBody CustomerSignUpDto
+                                                                                 customerSignUpDto) {
+        return ResponseEntity.ok().body(customerService.signUpDateFilter(customerSignUpDto).stream().map(customer ->
+                modelMapper.map(customer, CustomerSignUpDto.class)).collect(Collectors.toList()));
+    }
+
+    @GetMapping("/count_order")
+    public int calculateOrders(@RequestBody OrderCountCustomerDto orderCountCustomerDto) {
+        return orderSystemService.calculateOrders(orderCountCustomerDto.getEmail(), orderCountCustomerDto.
+                getOrderStatus());
+    }
+
+    @GetMapping("/count_order_expert")
+    public int calculateOrdersExpert(@RequestBody OrderCountExpertDto orderCountExpertDto) {
+        return orderSystemService.calculateOrdersExpert(orderCountExpertDto.getEmail(), orderCountExpertDto.
+                getOrderStatus());
+    }
 }

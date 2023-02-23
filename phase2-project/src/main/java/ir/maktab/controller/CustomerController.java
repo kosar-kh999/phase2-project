@@ -225,4 +225,16 @@ public class CustomerController {
                 modelMapper.map(suggestion, SuggestionDto.class)).collect(Collectors.toList()));
     }
 
+    @GetMapping("view_history_order")
+    public ResponseEntity<List<OrderSystemDto>> viewOrderCustomer(@RequestParam("status") OrderStatus orderStatus) {
+        Customer principal = (Customer) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok().body(orderSystemService.viewOrderCustomer(principal.getEmail(), orderStatus).stream()
+                .map(orderSystem -> modelMapper.map(orderSystem, OrderSystemDto.class)).collect(Collectors.toList()));
+    }
+
+    @GetMapping("view_credit")
+    public ResponseEntity<Double> viewCreditCustomer() {
+        Customer principal = (Customer) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok().body(customerService.viewCredit(principal.getEmail()));
+    }
 }

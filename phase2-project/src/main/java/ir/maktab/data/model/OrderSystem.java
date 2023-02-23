@@ -38,6 +38,8 @@ public class OrderSystem extends BaseEntity {
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     Customer customer;
 
+    int count;
+
     public OrderSystem(double price, String description, Date timeToDo, String address) {
         this.price = price;
         this.description = description;
