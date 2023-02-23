@@ -10,6 +10,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OpinionDto {
+
     private int score;
+
     private String viewpoint;
 }

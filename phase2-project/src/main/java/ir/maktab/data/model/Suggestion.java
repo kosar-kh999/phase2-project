@@ -37,6 +37,4 @@ public class Suggestion extends BaseEntity {
     @Temporal(value = TemporalType.TIMESTAMP)
     @Column(nullable = false)
     Date doneDateExpert;
-
-    int count;
 }
