@@ -82,7 +82,7 @@ public class AdminService {
 
     public Expert editStatus(String email) {
         Expert expert = expertService.getExpertByEmail(email);
-        if (!(expert.getExpertStatus().equals(ExpertStatus.NEW)))
+        if (!(expert.getExpertStatus().equals(ExpertStatus.AWAITING_CONFIRMATION)))
             throw new StatusException("This user is not new");
         expert.setExpertStatus(ExpertStatus.CONFIRMED);
         expert.setActiveExpert(ActiveExpert.ACTIVE);
