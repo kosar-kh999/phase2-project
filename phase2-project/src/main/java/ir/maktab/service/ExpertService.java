@@ -103,12 +103,11 @@ public class ExpertService {
 
     }
 
-
     public Expert changePasswordExpert(String newPassword, String confirmedPassword, String email) {
         Expert expertByEmail = getExpertByEmail(email);
-        if (!newPassword.equals(confirmedPassword))
+        if (!(newPassword.equals(confirmedPassword)))
             throw new NotCorrect("The new password and confirmed password must be match");
-        expertByEmail.setPassword(newPassword);
+        expertByEmail.setPassword(bCryptPasswordEncoder.encode(newPassword));
         return expertRepository.save(expertByEmail);
     }
 

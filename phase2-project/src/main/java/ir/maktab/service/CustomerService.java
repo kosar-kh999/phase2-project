@@ -52,9 +52,9 @@ public class CustomerService {
 
     public Customer changePasswordCustomer(String newPassword, String confirmedPassword, String email) {
         Customer customerByEmail = getCustomerByEmail(email);
-        if (!newPassword.equals(confirmedPassword))
+        if (!(newPassword.equals(confirmedPassword)))
             throw new NotCorrect("The new password and confirmed password must be match");
-        customerByEmail.setPassword(newPassword);
+        customerByEmail.setPassword(bCryptPasswordEncoder.encode(newPassword));
         return customerRepository.save(customerByEmail);
     }
 
