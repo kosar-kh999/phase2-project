@@ -1,5 +1,6 @@
 package ir.maktab.controller;
 
+import ir.maktab.captcha.ValidateCaptcha;
 import ir.maktab.data.dto.*;
 import ir.maktab.data.enums.OrderStatus;
 import ir.maktab.data.model.*;
@@ -7,7 +8,7 @@ import ir.maktab.service.CustomerService;
 import ir.maktab.service.OrderSystemService;
 import ir.maktab.service.SubServicesService;
 import ir.maktab.service.SuggestionService;
-import jakarta.servlet.http.HttpServletRequest;
+import ir.maktab.util.exception.ForbiddenException;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
@@ -25,14 +26,17 @@ public class CustomerController {
     private final SubServicesService subServicesService;
     private final OrderSystemService orderSystemService;
     private final SuggestionService suggestionService;
+
+    private final ValidateCaptcha validateCaptcha;
     private final ModelMapper modelMapper;
 
     public CustomerController(CustomerService customerService, SubServicesService subServicesService,
-                              OrderSystemService orderSystemService, SuggestionService suggestionService, ModelMapper modelMapper) {
+                              OrderSystemService orderSystemService, SuggestionService suggestionService, ValidateCaptcha validateCaptcha, ModelMapper modelMapper) {
         this.customerService = customerService;
         this.subServicesService = subServicesService;
         this.orderSystemService = orderSystemService;
         this.suggestionService = suggestionService;
+        this.validateCaptcha = validateCaptcha;
         this.modelMapper = modelMapper;
     }
 
@@ -161,11 +165,12 @@ public class CustomerController {
     }
 
     @PostMapping("/save")
-    public String saveCard(@ModelAttribute("creditCardDto") CreditCardDto creditCardDto,
-                           HttpServletRequest httpServletRequest) {
-        if (creditCardDto.getCaptcha().equals(httpServletRequest.getSession().getAttribute("captcha")))
-            System.out.println("captcha is match");
-        return "captcha is not correct";
+    public String saveCard(@Valid @RequestBody CreditCardDto creditCardDto) throws ForbiddenException {
+        final boolean isValidCaptcha = validateCaptcha.validateCaptcha(creditCardDto.getCaptcha());
+        if (!isValidCaptcha) {
+            throw new ForbiddenException("INVALID_CAPTCHA");
+        }
+        return ("pay from  " + creditCardDto.getCardNumber());
     }
 
     @GetMapping("/status_advice")
