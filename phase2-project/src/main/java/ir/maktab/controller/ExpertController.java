@@ -161,14 +161,21 @@ public class ExpertController {
     @GetMapping("view_history_order")
     public ResponseEntity<List<OrderSystemDto>> viewOrderCustomer(@RequestParam("status") OrderStatus orderStatus) {
         Expert principal = (Expert) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return ResponseEntity.ok().body(orderSystemService.viewOrderExpert(principal.getEmail(), orderStatus).stream().map(
-                orderSystem -> modelMapper.map(orderSystem, OrderSystemDto.class)).collect(Collectors.toList()));
+        return ResponseEntity.ok().body(orderSystemService.viewOrderExpert(principal.getEmail(), orderStatus).stream().
+                map(orderSystem -> modelMapper.map(orderSystem, OrderSystemDto.class)).collect(Collectors.toList()));
     }
 
     @GetMapping("view_credit")
     public ResponseEntity<Double> viewCreditCustomer() {
         Expert principal = (Expert) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ResponseEntity.ok().body(expertService.viewCredit(principal.getEmail()));
+    }
+
+    @GetMapping("all_orders_expert")
+    public ResponseEntity<List<OrderSystemDto>> getAllOrdersExpert() {
+        Expert principal = (Expert) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok().body(orderSystemService.viewOrderOfExpert(principal.getEmail()).stream().
+                map(orderSystem -> modelMapper.map(orderSystem, OrderSystemDto.class)).collect(Collectors.toList()));
     }
 
 }

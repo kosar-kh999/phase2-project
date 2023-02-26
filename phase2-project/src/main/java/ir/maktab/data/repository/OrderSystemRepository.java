@@ -34,4 +34,10 @@ public interface OrderSystemRepository extends JpaRepository<OrderSystem, Long>,
 
     @Query("select count(o.expert) from OrderSystem o where o.expert=:expert and o.orderStatus=:orderStatus")
     int calculateOrdersExpert(Expert expert, OrderStatus orderStatus);
+
+    @Query("select o from OrderSystem o where o.customer=:customer")
+    List<OrderSystem> findAllOrdersOfCustomer(Customer customer);
+
+    @Query("select o from OrderSystem o where o.expert=:expert")
+    List<OrderSystem> findAllOrdersOfExpert(Expert expert);
 }

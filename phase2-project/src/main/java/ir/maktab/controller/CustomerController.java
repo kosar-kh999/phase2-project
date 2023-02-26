@@ -1,9 +1,9 @@
 package ir.maktab.controller;
 
-import ir.maktab.recaptcha.ValidateCaptcha;
 import ir.maktab.data.dto.*;
 import ir.maktab.data.enums.OrderStatus;
 import ir.maktab.data.model.*;
+import ir.maktab.recaptcha.ValidateCaptcha;
 import ir.maktab.service.CustomerService;
 import ir.maktab.service.OrderSystemService;
 import ir.maktab.service.SubServicesService;
@@ -173,50 +173,6 @@ public class CustomerController {
         return ("pay from  " + creditCardDto.getCardNumber());
     }
 
-    @GetMapping("/status_advice")
-    public ResponseEntity<List<OrderSystemDto>> findByStatusAdvice(@RequestParam("status") OrderStatus orderStatus) {
-        Customer principal = (Customer) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return ResponseEntity.ok().body(orderSystemService.findByStatusAdvice(principal.getId(), orderStatus).stream().
-                map(orderSystem -> modelMapper.map(orderSystem, OrderSystemDto.class)).collect(Collectors.toList()));
-    }
-
-    @GetMapping("/status_selection")
-    public ResponseEntity<List<OrderSystemDto>> findByStatusSelection(@RequestParam("status") OrderStatus orderStatus) {
-        Customer principal = (Customer) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return ResponseEntity.ok().body(orderSystemService.findByStatusSelection(principal.getId(), orderStatus).
-                stream().map(orderSystem -> modelMapper.map(orderSystem, OrderSystemDto.class)).collect(Collectors.
-                        toList()));
-    }
-
-    @GetMapping("/status_come-place")
-    public ResponseEntity<List<OrderSystemDto>> findByStatusComePlace(@RequestParam("status") OrderStatus orderStatus) {
-        Customer principal = (Customer) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return ResponseEntity.ok().body(orderSystemService.findByStatusComePlace(principal.getId(), orderStatus).
-                stream().map(orderSystem -> modelMapper.map(orderSystem, OrderSystemDto.class)).collect(Collectors.
-                        toList()));
-    }
-
-    @GetMapping("/status_started")
-    public ResponseEntity<List<OrderSystemDto>> findByStatusStarted(@RequestParam("status") OrderStatus orderStatus) {
-        Customer principal = (Customer) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return ResponseEntity.ok().body(orderSystemService.findByStatusStarted(principal.getId(), orderStatus).stream().
-                map(orderSystem -> modelMapper.map(orderSystem, OrderSystemDto.class)).collect(Collectors.toList()));
-    }
-
-    @GetMapping("/status_done")
-    public ResponseEntity<List<OrderSystemDto>> findByStatusDone(@RequestParam("status") OrderStatus orderStatus) {
-        Customer principal = (Customer) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return ResponseEntity.ok().body(orderSystemService.findByStatusDone(principal.getId(), orderStatus).stream().
-                map(orderSystem -> modelMapper.map(orderSystem, OrderSystemDto.class)).collect(Collectors.toList()));
-    }
-
-    @GetMapping("/status_paid")
-    public ResponseEntity<List<OrderSystemDto>> findByStatusPaid(@RequestParam("status") OrderStatus orderStatus) {
-        Customer principal = (Customer) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return ResponseEntity.ok().body(orderSystemService.findByStatusPaid(principal.getId(), orderStatus).stream().
-                map(orderSystem -> modelMapper.map(orderSystem, OrderSystemDto.class)).collect(Collectors.toList()));
-    }
-
     @GetMapping("all_suggestion_from_expert")
     public ResponseEntity<List<SuggestionDto>> showAllSuggestion(@RequestParam("id") Long id) {
         return ResponseEntity.ok().body(suggestionService.getAllSuggestionFromExpert(id).stream().map(suggestion ->
@@ -234,5 +190,12 @@ public class CustomerController {
     public ResponseEntity<Double> viewCreditCustomer() {
         Customer principal = (Customer) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ResponseEntity.ok().body(customerService.viewCredit(principal.getEmail()));
+    }
+
+    @GetMapping("all_orders_customer")
+    public ResponseEntity<List<OrderSystemDto>> getAllOrderOfCustomer() {
+        Customer principal = (Customer) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok().body(orderSystemService.viewOrdersOfCustomer(principal.getEmail()).stream().
+                map(orderSystem -> modelMapper.map(orderSystem, OrderSystemDto.class)).collect(Collectors.toList()));
     }
 }
