@@ -1,6 +1,6 @@
 package ir.maktab.controller;
 
-import ir.maktab.captcha.ValidateCaptcha;
+import ir.maktab.recaptcha.ValidateCaptcha;
 import ir.maktab.data.dto.*;
 import ir.maktab.data.enums.OrderStatus;
 import ir.maktab.data.model.*;

@@ -1,4 +1,4 @@
-package ir.maktab.captcha;
+package ir.maktab.recaptcha;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

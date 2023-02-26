@@ -1,4 +1,4 @@
-package ir.maktab.captcha;
+package ir.maktab.recaptcha;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
