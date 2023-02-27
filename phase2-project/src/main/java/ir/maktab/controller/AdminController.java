@@ -89,14 +89,6 @@ public class AdminController {
         return ResponseEntity.ok().body("The brief has been update");
     }
 
-    @PutMapping("/withdraw_credit")
-    public ResponseEntity<CustomerDto> withdraw(@RequestParam(value = "idCustomer") Long idCustomer,
-                                                @RequestParam(value = "idSuggestion") Long idSuggestion) {
-        Customer customer = suggestionService.withdraw(idCustomer, idSuggestion);
-        CustomerDto dto = modelMapper.map(customer, CustomerDto.class);
-        return ResponseEntity.ok().body(dto);
-    }
-
     @PutMapping("/deposit_credit")
     public ResponseEntity<ExpertSignInDto> deposit(@RequestParam(value = "idExpert") Long idExpert,
                                                    @RequestParam(value = "idSuggestion") Long idSuggestion) {
@@ -130,6 +122,13 @@ public class AdminController {
                                                                                  customerSignUpDto) {
         return ResponseEntity.ok().body(customerService.signUpDateFilter(customerSignUpDto).stream().map(customer ->
                 modelMapper.map(customer, CustomerSignUpDto.class)).collect(Collectors.toList()));
+    }
+
+    @GetMapping("/filter_expert_entry_date")
+    public ResponseEntity<List<ExpertSignUpDto>> filterExpertByEntry(@Valid @RequestBody ExpertSignUpDto
+                                                                                   expertSignUpDto) {
+        return ResponseEntity.ok().body(expertService.signUpDateFilter(expertSignUpDto).stream().map(expert ->
+                modelMapper.map(expert, ExpertSignUpDto.class)).collect(Collectors.toList()));
     }
 
     @GetMapping("/count_order")

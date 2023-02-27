@@ -136,12 +136,20 @@ public class CustomerController {
         return ResponseEntity.ok().body(dto);
     }
 
+    @PutMapping("/withdraw_credit")
+    public ResponseEntity<CustomerSignInDto> withdraw(@RequestParam(value = "idSuggestion") Long idSuggestion) {
+        Customer principal = (Customer) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Customer customer = suggestionService.withdraw(principal.getId(), idSuggestion);
+        CustomerSignInDto dto = modelMapper.map(customer, CustomerSignInDto.class);
+        return ResponseEntity.ok().body(dto);
+    }
+
     @PutMapping("/update_score")
-    public ResponseEntity<ExpertDto> updateScore(@RequestParam(value = "suggestionId") Long suggestionId,
-                                                 @RequestParam(value = "expertId") Long expertId,
-                                                 @RequestParam(value = "orderId") Long orderId) {
+    public ResponseEntity<ExpertSignInDto> updateScore(@RequestParam(value = "suggestionId") Long suggestionId,
+                                                       @RequestParam(value = "expertId") Long expertId,
+                                                       @RequestParam(value = "orderId") Long orderId) {
         Expert expert = suggestionService.checkDuration(orderId, suggestionId, expertId);
-        ExpertDto dto = modelMapper.map(expert, ExpertDto.class);
+        ExpertSignInDto dto = modelMapper.map(expert, ExpertSignInDto.class);
         return ResponseEntity.ok().body(dto);
     }
 

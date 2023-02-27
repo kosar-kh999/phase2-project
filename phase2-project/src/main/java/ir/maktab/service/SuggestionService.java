@@ -131,6 +131,8 @@ public class SuggestionService {
             throw new SuggestionException("the amount of customer is should more than suggestion");
         double withdraw = customerByEmail.getCredit() - suggestion.getPrice();
         customer.setCredit(withdraw);
+        suggestion.getOrderSystem().setOrderStatus(OrderStatus.PAID);
+        orderSystemService.addOrder(suggestion.getOrderSystem());
         return customerService.update(customer);
     }
 

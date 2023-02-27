@@ -1,8 +1,11 @@
 package ir.maktab.service;
 
+import ir.maktab.data.dto.CustomerSignUpDto;
 import ir.maktab.data.dto.ExpertFilterDto;
+import ir.maktab.data.dto.ExpertSignUpDto;
 import ir.maktab.data.enums.ExpertStatus;
 import ir.maktab.data.enums.Role;
+import ir.maktab.data.model.Customer;
 import ir.maktab.data.model.Expert;
 import ir.maktab.data.model.SubServices;
 import ir.maktab.data.repository.ExpertRepository;
@@ -156,6 +159,16 @@ public class ExpertService {
                 Join<Expert, SubServices> expertSub = root.join("subServices");
                 predicates.add(cb.equal(expertSub.get("subName"), service.getSubName()));
             }
+            return cb.and(predicates.toArray(new Predicate[0]));
+        });
+    }
+
+    @Transactional
+    public List<Expert> signUpDateFilter(ExpertSignUpDto expert) {
+        return expertRepository.findAll((Specification<Expert>) (root, cq, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            if (expert.getTimeAfter() != null && expert.getTimeBefore() != null)
+                predicates.add(cb.between(root.get("entryDate"), expert.getTimeAfter(), expert.getTimeBefore()));
             return cb.and(predicates.toArray(new Predicate[0]));
         });
     }
