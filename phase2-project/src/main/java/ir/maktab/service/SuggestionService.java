@@ -1,14 +1,15 @@
 package ir.maktab.service;
 
 import ir.maktab.data.enums.ActiveExpert;
+import ir.maktab.data.enums.ExpertStatus;
 import ir.maktab.data.enums.OrderStatus;
-import ir.maktab.data.model.*;
+import ir.maktab.data.model.Customer;
+import ir.maktab.data.model.Expert;
+import ir.maktab.data.model.OrderSystem;
+import ir.maktab.data.model.Suggestion;
 import ir.maktab.data.repository.SuggestionRepository;
 import ir.maktab.util.date.DateUtil;
-import ir.maktab.util.exception.NotCorrect;
-import ir.maktab.util.exception.NotFound;
-import ir.maktab.util.exception.OrderException;
-import ir.maktab.util.exception.SuggestionException;
+import ir.maktab.util.exception.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,21 +50,20 @@ public class SuggestionService {
     }
 
     @Transactional
-    public Suggestion sendSuggestionFromExpert(Suggestion suggestion, Long subId, Long expertId) {
-        SubServices subServices = subServicesService.findById(subId);
-        Expert expert = expertService.getExpertById(expertId);
-        if (suggestion.getPrice() < subServices.getPrice())
-            throw new SuggestionException("Price must be more than original");
-        if (suggestion.getSuggestionsStartedTime().before(new Date()))
-            throw new SuggestionException("time that suggested must be after now");
-        suggestion.setExpert(expert);
-        return suggestionRepository.save(suggestion);
-    }
-
-    @Transactional
-    public Suggestion setOrder(Long suggestionId, Long orderId) {
-        Suggestion suggestion = getSuggestionById(suggestionId);
+    public Suggestion sendSuggestionFromExpert(Suggestion suggestion, Long orderId, Long expertId) {
         OrderSystem order = orderSystemService.getOrderById(orderId);
+        Expert expert = expertService.getExpertById(expertId);
+        if (!expert.getExpertStatus().equals(ExpertStatus.CONFIRMED))
+            throw new NotAccessException("Expert must be confirmed");
+        if (!expert.getSubServices().contains(order.getSubServices()))
+            throw new NotFoundUser("Expert is not found in this sub service");
+        if (!order.getOrderStatus().equals(OrderStatus.WAITING_ADVICE_EXPERTS))
+            throw new OrderException("Status must be on WAITING_ADVICE_EXPERTS ");
+        if (suggestion.getPrice() < order.getSubServices().getPrice())
+            throw new SuggestionException("Price must be more than order");
+        if (suggestion.getSuggestionsStartedTime().before(order.getTimeToDo()))
+            throw new SuggestionException("time that suggested must be after order time");
+        suggestion.setExpert(expert);
         suggestion.setOrderSystem(order);
         return suggestionRepository.save(suggestion);
     }

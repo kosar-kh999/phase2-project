@@ -112,20 +112,12 @@ public class ExpertController {
 
     @PostMapping("/suggestion_add")
     public ResponseEntity<SuggestionDto> addSuggestion(@Valid @RequestBody SuggestionDto suggestionDto,
-                                                       @RequestParam(value = "subId") Long subId) {
+                                                       @RequestParam(value = "orderId") Long orderId) {
         Expert principal = (Expert) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Suggestion suggestion = modelMapper.map(suggestionDto, Suggestion.class);
-        Suggestion suggestionFromExpert = suggestionService.sendSuggestionFromExpert(suggestion, subId,
+        Suggestion suggestionFromExpert = suggestionService.sendSuggestionFromExpert(suggestion, orderId,
                 principal.getId());
         SuggestionDto dto = modelMapper.map(suggestionFromExpert, SuggestionDto.class);
-        return ResponseEntity.ok().body(dto);
-    }
-
-    @PostMapping("/set_order")
-    public ResponseEntity<SuggestionDto> setOrder(@Valid @RequestBody OrderSuggestionDto orderSuggestionDto) {
-        Suggestion suggestion = suggestionService.setOrder(orderSuggestionDto.getSuggestionId(), orderSuggestionDto.
-                getOrderId());
-        SuggestionDto dto = modelMapper.map(suggestion, SuggestionDto.class);
         return ResponseEntity.ok().body(dto);
     }
 
