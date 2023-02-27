@@ -24,7 +24,6 @@ import java.util.List;
 public class SuggestionService {
 
     private final SuggestionRepository suggestionRepository;
-    private final SubServicesService subServicesService;
     private final ExpertService expertService;
     private final OrderSystemService orderSystemService;
     private final CustomerService customerService;
