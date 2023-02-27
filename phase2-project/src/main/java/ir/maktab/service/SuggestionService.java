@@ -2,6 +2,7 @@ package ir.maktab.service;
 
 import ir.maktab.data.enums.ActiveExpert;
 import ir.maktab.data.enums.ExpertStatus;
+import ir.maktab.data.enums.OpinionStatus;
 import ir.maktab.data.enums.OrderStatus;
 import ir.maktab.data.model.Customer;
 import ir.maktab.data.model.Expert;
@@ -116,6 +117,8 @@ public class SuggestionService {
             expertService.update(expert);
         }
         suggestion.getOrderSystem().setOrderStatus(OrderStatus.DONE);
+        orderSystem.setOpinionStatus(OpinionStatus.NOT_SCORED);
+        orderSystemService.addOrder(orderSystem);
         suggestionRepository.save(suggestion);
         return expert;
     }

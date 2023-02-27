@@ -1,5 +1,6 @@
 package ir.maktab.data.model;
 
+import ir.maktab.data.enums.OpinionStatus;
 import ir.maktab.data.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -37,6 +38,9 @@ public class OrderSystem extends BaseEntity {
 
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     Customer customer;
+
+    @Enumerated(value = EnumType.STRING)
+    OpinionStatus opinionStatus;
 
     public OrderSystem(double price, String description, Date timeToDo, String address) {
         this.price = price;

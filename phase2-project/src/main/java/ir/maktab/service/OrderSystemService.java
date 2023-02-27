@@ -1,6 +1,7 @@
 package ir.maktab.service;
 
 import ir.maktab.data.dto.OrderSystemFilterDto;
+import ir.maktab.data.enums.OpinionStatus;
 import ir.maktab.data.enums.OrderStatus;
 import ir.maktab.data.model.*;
 import ir.maktab.data.repository.OrderSystemRepository;
@@ -64,6 +65,8 @@ public class OrderSystemService {
 
     public Opinion saveOpinionForExpert(Opinion opinion, Long orderId) {
         OrderSystem order = getOrderById(orderId);
+        if (order.getOpinionStatus().equals(OpinionStatus.IS_SCORED))
+            throw new OpinionException("You save your opinion before");
         if (opinion.getScore() < 1 || opinion.getScore() > 5)
             throw new OpinionException("The score must be between 1 and 5");
         Expert expert = order.getExpert();
@@ -72,6 +75,8 @@ public class OrderSystemService {
         double score = (expert.getScore() + opinion.getScore()) / 2;
         expert.setScore(score);
         opinion.setExpert(order.getExpert());
+        order.setOpinionStatus(OpinionStatus.IS_SCORED);
+        orderSystemRepository.save(order);
         expertService.update(expert);
         return opinionService.saveOpinion(opinion);
     }

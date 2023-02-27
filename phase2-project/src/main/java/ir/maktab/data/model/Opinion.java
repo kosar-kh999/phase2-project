@@ -22,4 +22,7 @@ public class Opinion extends BaseEntity {
 
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     Expert expert;
+
+    @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    OrderSystem orderSystem;
 }
