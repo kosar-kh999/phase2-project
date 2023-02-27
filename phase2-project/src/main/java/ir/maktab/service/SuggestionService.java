@@ -64,6 +64,7 @@ public class SuggestionService {
             throw new SuggestionException("time that suggested must be after order time");
         suggestion.setExpert(expert);
         suggestion.setOrderSystem(order);
+        order.setOrderStatus(OrderStatus.WAITING_EXPERT_SELECTION);
         return suggestionRepository.save(suggestion);
     }
 
@@ -79,16 +80,6 @@ public class SuggestionService {
         order.setExpert(expert);
         suggestion.getOrderSystem().setOrderStatus(OrderStatus.WAITING_EXPERT_COME_PLACE);
         return suggestionRepository.save(suggestion);
-    }
-
-    public OrderSystem setDoneDate(Long orderId, Date date, Long suggestionId) {
-        OrderSystem order = orderSystemService.getOrderById(orderId);
-        Suggestion suggestion = getSuggestionById(suggestionId);
-        if (date.before(suggestion.getSuggestionsStartedTime()))
-            throw new NotCorrect("order done date must be after suggestion started time");
-        order.setDoneDate(date);
-        orderSystemService.addOrder(order);
-        return order;
     }
 
     @Transactional
@@ -111,16 +102,21 @@ public class SuggestionService {
         Expert expert = expertService.getExpertById(expertId);
         OrderSystem orderSystem = orderSystemService.getOrderById(orderId);
         Suggestion suggestion = getSuggestionById(suggestionId);
+        orderSystem.setDoneDate(new Date());
         LocalDateTime doneOrder = DateUtil.changeDateToLocalDateTime(orderSystem.getDoneDate());
         LocalDateTime doneSuggestion = DateUtil.changeDateToLocalDateTime(suggestion.getDoneDateExpert());
-        long hours = Duration.between(doneSuggestion, doneOrder).toHours();
-        double score = expert.getScore() - hours;
-        expert.setScore(score);
-        if (score < 0)
-            expert.setActiveExpert(ActiveExpert.NOT_ACTIVE);
+        if (doneSuggestion.isBefore(doneOrder)) {
+            long hours = Duration.between(doneSuggestion, doneOrder).toHours();
+            double score = expert.getScore() - hours;
+            expert.setScore(score);
+            if (score < 0) {
+                expert.setActiveExpert(ActiveExpert.NOT_ACTIVE);
+                expert.setExpertStatus(ExpertStatus.AWAITING_CONFIRMATION);
+            }
+            expertService.update(expert);
+        }
         suggestion.getOrderSystem().setOrderStatus(OrderStatus.DONE);
         suggestionRepository.save(suggestion);
-        expertService.update(expert);
         return expert;
     }
 

@@ -155,15 +155,6 @@ public class CustomerController {
         return ResponseEntity.ok().body(dto);
     }
 
-    @PutMapping("/order_done_date")
-    public ResponseEntity<OrderSystemDoneDto> setDoneDate(@RequestParam(value = "suggestionId") Long suggestionId,
-                                                          @Valid @RequestBody OrderDoneDateDto orderDoneDateDto,
-                                                          @RequestParam(value = "orderId") Long orderId) {
-        OrderSystem orderSystem = suggestionService.setDoneDate(orderId, orderDoneDateDto.getDoneDate(), suggestionId);
-        OrderSystemDoneDto dto = modelMapper.map(orderSystem, OrderSystemDoneDto.class);
-        return ResponseEntity.ok().body(dto);
-    }
-
     @PostMapping("/save")
     public String saveCard(@Valid @RequestBody CreditCardDto creditCardDto) throws ForbiddenException {
         final boolean isValidCaptcha = validateCaptcha.validateCaptcha(creditCardDto.getCaptcha());
