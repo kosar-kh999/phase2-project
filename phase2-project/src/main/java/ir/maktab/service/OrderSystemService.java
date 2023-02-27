@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -43,13 +42,10 @@ public class OrderSystemService {
         Customer customer = customerService.getById(customerId);
         if (orderSystem.getPrice() < subServices.getPrice())
             throw new OrderException("Price must be more than original");
-        if (new Date().after(orderSystem.getTimeToDo()))
-            throw new OrderException("time and date must be after than today");
         orderSystem.setSubServices(subServices);
         orderSystem.setCustomer(customer);
         orderSystem.setOrderStatus(OrderStatus.WAITING_ADVICE_EXPERTS);
-        OrderSystem system = orderSystemRepository.save(orderSystem);
-        return system;
+        return orderSystemRepository.save(orderSystem);
     }
 
     public OrderSystem changeOrderStatus(Long id) {
@@ -139,7 +135,7 @@ public class OrderSystemService {
         return orderSystemRepository.findAllOrdersOfCustomer(customer);
     }
 
-    public List<OrderSystem> viewOrderOfExpert(String email){
+    public List<OrderSystem> viewOrderOfExpert(String email) {
         Expert expert = expertService.getExpertByEmail(email);
         return orderSystemRepository.findAllOrdersOfExpert(expert);
     }
