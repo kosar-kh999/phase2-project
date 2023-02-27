@@ -10,6 +10,8 @@ import lombok.*;
 public class SubServiceDto {
 
     private String subName;
+
     private double price;
+
     private String briefExplanation;
 }

@@ -10,5 +10,6 @@ import lombok.*;
 public class AdminDto {
 
     private String username;
+
     private String password;
 }

@@ -26,7 +26,6 @@ public class CustomerController {
     private final SubServicesService subServicesService;
     private final OrderSystemService orderSystemService;
     private final SuggestionService suggestionService;
-
     private final ValidateCaptcha validateCaptcha;
     private final ModelMapper modelMapper;
 

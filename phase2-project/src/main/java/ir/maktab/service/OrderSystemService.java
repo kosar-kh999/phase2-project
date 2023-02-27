@@ -57,8 +57,9 @@ public class OrderSystemService {
 
     public List<OrderSystem> findBySubAndStatus(Long subId, OrderStatus orderStatus, OrderStatus orderStatus1) {
         SubServices subServices = subServicesService.findById(subId);
-        if (!(orderStatus.equals(OrderStatus.WAITING_EXPERT_SELECTION) || orderStatus1.
-                equals(OrderStatus.WAITING_ADVICE_EXPERTS)))
+        if (!(orderStatus.equals(OrderStatus.WAITING_EXPERT_SELECTION) || orderStatus.equals(OrderStatus.
+                WAITING_ADVICE_EXPERTS) || orderStatus1.equals(OrderStatus.WAITING_ADVICE_EXPERTS) || orderStatus1.
+                equals(OrderStatus.WAITING_EXPERT_SELECTION)))
             throw new OrderException("the order status must be WAITING_EXPERT_SELECTION or WAITING_ADVICE_EXPERTS");
         return orderSystemRepository.findBySub(subServices, orderStatus, orderStatus1);
     }

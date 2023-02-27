@@ -10,6 +10,8 @@ import lombok.*;
 public class CustomerSignInDto {
 
     private String firstName;
+
     private String lastName;
+
     private String email;
 }

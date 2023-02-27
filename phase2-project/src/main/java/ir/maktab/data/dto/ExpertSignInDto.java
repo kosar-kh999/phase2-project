@@ -10,7 +10,10 @@ import lombok.*;
 public class ExpertSignInDto {
 
     private String firstName;
+
     private String lastName;
+
     private String email;
+
     private double credit;
 }
