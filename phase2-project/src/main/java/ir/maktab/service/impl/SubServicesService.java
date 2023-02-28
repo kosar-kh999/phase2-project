@@ -1,7 +1,8 @@
-package ir.maktab.service;
+package ir.maktab.service.impl;
 
 import ir.maktab.data.model.SubServices;
 import ir.maktab.data.repository.SubServicesRepository;
+import ir.maktab.service.SubServicesServiceInterface;
 import ir.maktab.util.exception.ExistException;
 import ir.maktab.util.exception.NotFound;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class SubServicesService {
+public class SubServicesService implements SubServicesServiceInterface {
 
     private final SubServicesRepository subServicesRepository;
 

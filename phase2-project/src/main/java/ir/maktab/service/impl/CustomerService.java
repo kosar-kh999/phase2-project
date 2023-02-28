@@ -1,4 +1,4 @@
-package ir.maktab.service;
+package ir.maktab.service.impl;
 
 import ir.maktab.data.dto.CustomerFilterDto;
 import ir.maktab.data.dto.CustomerSignUpDto;
@@ -6,6 +6,7 @@ import ir.maktab.data.enums.Role;
 import ir.maktab.data.model.Customer;
 import ir.maktab.data.model.MainService;
 import ir.maktab.data.repository.CustomerRepository;
+import ir.maktab.service.CustomerServiceInterface;
 import ir.maktab.util.exception.ExistException;
 import ir.maktab.util.exception.NotCorrect;
 import ir.maktab.util.exception.NotFoundUser;
@@ -20,7 +21,7 @@ import java.util.List;
 
 @Service
 @Transactional
-public class CustomerService {
+public class CustomerService implements CustomerServiceInterface {
 
     private final CustomerRepository customerRepository;
     private final MainServicesService mainServicesService;

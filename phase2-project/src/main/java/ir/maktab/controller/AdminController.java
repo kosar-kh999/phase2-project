@@ -1,7 +1,10 @@
 package ir.maktab.controller;
 
 import ir.maktab.data.dto.*;
-import ir.maktab.data.model.*;
+import ir.maktab.data.model.Admin;
+import ir.maktab.data.model.Expert;
+import ir.maktab.data.model.MainService;
+import ir.maktab.data.model.SubServices;
 import ir.maktab.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +20,12 @@ import java.util.stream.Collectors;
 @RequestMapping("/admin")
 @RequiredArgsConstructor
 public class AdminController {
-    private final AdminService adminService;
-    private final SubServicesService subServicesService;
-    private final SuggestionService suggestionService;
-    private final ExpertService expertService;
-    private final CustomerService customerService;
-    private final OrderSystemService orderSystemService;
+    private final AdminServiceInterface adminService;
+    private final SubServicesServiceInterface subServicesService;
+    private final SuggestionServiceInterface suggestionService;
+    private final ExpertServiceInterface expertService;
+    private final CustomerServiceInterface customerService;
+    private final OrderSystemServiceInterface orderSystemService;
     private final ModelMapper modelMapper;
 
     @PostMapping("/add_admin")
@@ -126,7 +129,7 @@ public class AdminController {
 
     @GetMapping("/filter_expert_entry_date")
     public ResponseEntity<List<ExpertSignUpDto>> filterExpertByEntry(@Valid @RequestBody ExpertSignUpDto
-                                                                                   expertSignUpDto) {
+                                                                             expertSignUpDto) {
         return ResponseEntity.ok().body(expertService.signUpDateFilter(expertSignUpDto).stream().map(expert ->
                 modelMapper.map(expert, ExpertSignUpDto.class)).collect(Collectors.toList()));
     }

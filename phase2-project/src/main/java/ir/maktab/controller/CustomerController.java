@@ -4,10 +4,10 @@ import ir.maktab.data.dto.*;
 import ir.maktab.data.enums.OrderStatus;
 import ir.maktab.data.model.*;
 import ir.maktab.recaptcha.ValidateCaptcha;
-import ir.maktab.service.CustomerService;
-import ir.maktab.service.OrderSystemService;
-import ir.maktab.service.SubServicesService;
-import ir.maktab.service.SuggestionService;
+import ir.maktab.service.CustomerServiceInterface;
+import ir.maktab.service.OrderSystemServiceInterface;
+import ir.maktab.service.SubServicesServiceInterface;
+import ir.maktab.service.SuggestionServiceInterface;
 import ir.maktab.util.exception.ForbiddenException;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
@@ -22,15 +22,17 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/customer")
 public class CustomerController {
-    private final CustomerService customerService;
-    private final SubServicesService subServicesService;
-    private final OrderSystemService orderSystemService;
-    private final SuggestionService suggestionService;
+    private final CustomerServiceInterface customerService;
+    private final SubServicesServiceInterface subServicesService;
+    private final OrderSystemServiceInterface orderSystemService;
+    private final SuggestionServiceInterface suggestionService;
     private final ValidateCaptcha validateCaptcha;
     private final ModelMapper modelMapper;
 
-    public CustomerController(CustomerService customerService, SubServicesService subServicesService,
-                              OrderSystemService orderSystemService, SuggestionService suggestionService, ValidateCaptcha validateCaptcha, ModelMapper modelMapper) {
+    public CustomerController(CustomerServiceInterface customerService, SubServicesServiceInterface subServicesService,
+                              OrderSystemServiceInterface orderSystemService,
+                              SuggestionServiceInterface suggestionService, ValidateCaptcha validateCaptcha,
+                              ModelMapper modelMapper) {
         this.customerService = customerService;
         this.subServicesService = subServicesService;
         this.orderSystemService = orderSystemService;
@@ -38,6 +40,7 @@ public class CustomerController {
         this.validateCaptcha = validateCaptcha;
         this.modelMapper = modelMapper;
     }
+
 
     @PostMapping("/add_customer")
     public ResponseEntity<String> addCustomer(@Valid @RequestBody CustomerDto customerDto) {

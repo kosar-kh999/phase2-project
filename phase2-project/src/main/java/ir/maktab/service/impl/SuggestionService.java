@@ -1,4 +1,4 @@
-package ir.maktab.service;
+package ir.maktab.service.impl;
 
 import ir.maktab.data.enums.ActiveExpert;
 import ir.maktab.data.enums.ExpertStatus;
@@ -9,6 +9,7 @@ import ir.maktab.data.model.Expert;
 import ir.maktab.data.model.OrderSystem;
 import ir.maktab.data.model.Suggestion;
 import ir.maktab.data.repository.SuggestionRepository;
+import ir.maktab.service.SuggestionServiceInterface;
 import ir.maktab.util.date.DateUtil;
 import ir.maktab.util.exception.*;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class SuggestionService {
+public class SuggestionService implements SuggestionServiceInterface {
 
     private final SuggestionRepository suggestionRepository;
     private final ExpertService expertService;

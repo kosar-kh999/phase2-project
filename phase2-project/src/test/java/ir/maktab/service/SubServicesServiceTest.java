@@ -4,6 +4,9 @@ import ir.maktab.data.enums.ExpertStatus;
 import ir.maktab.data.enums.Role;
 import ir.maktab.data.model.Expert;
 import ir.maktab.data.model.SubServices;
+import ir.maktab.service.impl.AdminService;
+import ir.maktab.service.impl.ExpertService;
+import ir.maktab.service.impl.SubServicesService;
 import ir.maktab.util.exception.NotFound;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -27,7 +30,7 @@ public class SubServicesServiceTest {
     SubServices subServices = SubServices.builder().subName("LAVAZEM_ASHPAZKHANE").price(300000).briefExplanation("KHARDI")
             .build();
     Expert expert = Expert.builder().firstName("mona").lastName("noori").email("mona.noori@gmail.com").
-            password("123qqqWW").entryDate(new Date()).expertStatus(ExpertStatus.NEW).role(Role.EXPERT).build();
+            password("123qqqWW").entryDate(new Date()).expertStatus(ExpertStatus.NEW).role(Role.ROLE_EXPERT).build();
     @Autowired
     private SubServicesService subServicesService;
     @Autowired

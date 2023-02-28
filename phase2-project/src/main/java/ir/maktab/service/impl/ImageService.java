@@ -1,8 +1,9 @@
-package ir.maktab.service;
+package ir.maktab.service.impl;
 
 import ir.maktab.data.model.Expert;
 import ir.maktab.data.model.Image;
 import ir.maktab.data.repository.ImageRepository;
+import ir.maktab.service.ImageServiceInterface;
 import ir.maktab.util.exception.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,7 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
-public class ImageService {
+public class ImageService implements ImageServiceInterface {
     private final ImageRepository imageRepository;
     private final ExpertService expertService;
 

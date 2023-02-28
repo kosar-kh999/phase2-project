@@ -2,6 +2,7 @@ package ir.maktab.service;
 
 import ir.maktab.data.enums.Role;
 import ir.maktab.data.model.Customer;
+import ir.maktab.service.impl.CustomerService;
 import ir.maktab.util.exception.NotFoundUser;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;

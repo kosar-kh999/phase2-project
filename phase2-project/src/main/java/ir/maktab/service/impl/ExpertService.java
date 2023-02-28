@@ -1,14 +1,13 @@
-package ir.maktab.service;
+package ir.maktab.service.impl;
 
-import ir.maktab.data.dto.CustomerSignUpDto;
 import ir.maktab.data.dto.ExpertFilterDto;
 import ir.maktab.data.dto.ExpertSignUpDto;
 import ir.maktab.data.enums.ExpertStatus;
 import ir.maktab.data.enums.Role;
-import ir.maktab.data.model.Customer;
 import ir.maktab.data.model.Expert;
 import ir.maktab.data.model.SubServices;
 import ir.maktab.data.repository.ExpertRepository;
+import ir.maktab.service.ExpertServiceInterface;
 import ir.maktab.util.exception.ExistException;
 import ir.maktab.util.exception.NotCorrect;
 import ir.maktab.util.exception.NotFoundUser;
@@ -30,7 +29,7 @@ import java.util.List;
 
 @Service
 @Transactional
-public class ExpertService {
+public class ExpertService implements ExpertServiceInterface {
     private final ExpertRepository expertRepository;
     private final SubServicesService subServicesService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;

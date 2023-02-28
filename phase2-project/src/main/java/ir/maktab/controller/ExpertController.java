@@ -25,16 +25,16 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/expert")
 public class ExpertController {
-    private final ExpertService expertService;
-    private final SuggestionService suggestionService;
-    private final OrderSystemService orderSystemService;
-    private final OpinionService opinionService;
-    private final ImageService imageService;
+    private final ExpertServiceInterface expertService;
+    private final SuggestionServiceInterface suggestionService;
+    private final OrderSystemServiceInterface orderSystemService;
+    private final OpinionServiceInterface opinionService;
+    private final ImageServiceInterface imageService;
     private final ModelMapper modelMapper;
 
-    public ExpertController(ExpertService expertService, SuggestionService suggestionService,
-                            OrderSystemService orderSystemService, OpinionService opinionService,
-                            ImageService imageService, ModelMapper modelMapper) {
+    public ExpertController(ExpertServiceInterface expertService, SuggestionServiceInterface suggestionService,
+                            OrderSystemServiceInterface orderSystemService, OpinionServiceInterface opinionService,
+                            ImageServiceInterface imageService, ModelMapper modelMapper) {
         this.expertService = expertService;
         this.suggestionService = suggestionService;
         this.orderSystemService = orderSystemService;
@@ -42,6 +42,7 @@ public class ExpertController {
         this.imageService = imageService;
         this.modelMapper = modelMapper;
     }
+
 
     @PostMapping(value = "/add_expert")
     public ResponseEntity<String> addExpert(@Valid @RequestBody ExpertDto expertDto, HttpServletRequest request) throws

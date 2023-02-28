@@ -1,8 +1,9 @@
-package ir.maktab.service;
+package ir.maktab.service.impl;
 
 import ir.maktab.data.model.Expert;
 import ir.maktab.data.model.Opinion;
 import ir.maktab.data.repository.OpinionRepository;
+import ir.maktab.service.OpinionServiceInterface;
 import ir.maktab.util.exception.NotFound;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class OpinionService {
+public class OpinionService implements OpinionServiceInterface {
     private final OpinionRepository opinionRepository;
     private final ExpertService expertService;
 

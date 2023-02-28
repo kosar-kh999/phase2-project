@@ -1,10 +1,11 @@
-package ir.maktab.service;
+package ir.maktab.service.impl;
 
 import ir.maktab.data.dto.OrderSystemFilterDto;
 import ir.maktab.data.enums.OpinionStatus;
 import ir.maktab.data.enums.OrderStatus;
 import ir.maktab.data.model.*;
 import ir.maktab.data.repository.OrderSystemRepository;
+import ir.maktab.service.OrderSystemServiceInterface;
 import ir.maktab.util.exception.NotFound;
 import ir.maktab.util.exception.OpinionException;
 import ir.maktab.util.exception.OrderException;
@@ -21,7 +22,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class OrderSystemService {
+public class OrderSystemService implements OrderSystemServiceInterface {
     private final OrderSystemRepository orderSystemRepository;
     private final SubServicesService subServicesService;
     private final CustomerService customerService;

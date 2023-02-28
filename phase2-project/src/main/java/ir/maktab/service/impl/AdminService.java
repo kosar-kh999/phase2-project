@@ -1,4 +1,4 @@
-package ir.maktab.service;
+package ir.maktab.service.impl;
 
 import ir.maktab.data.enums.ActiveExpert;
 import ir.maktab.data.enums.ExpertStatus;
@@ -8,6 +8,7 @@ import ir.maktab.data.model.Expert;
 import ir.maktab.data.model.MainService;
 import ir.maktab.data.model.SubServices;
 import ir.maktab.data.repository.AdminRepository;
+import ir.maktab.service.AdminServiceInterface;
 import ir.maktab.util.exception.NotCorrect;
 import ir.maktab.util.exception.NotFound;
 import ir.maktab.util.exception.StatusException;
@@ -22,7 +23,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class AdminService {
+public class AdminService implements AdminServiceInterface {
 
     private final MainServicesService mainServicesService;
     private final SubServicesService subServicesService;

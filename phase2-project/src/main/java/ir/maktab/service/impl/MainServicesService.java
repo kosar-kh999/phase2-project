@@ -1,7 +1,8 @@
-package ir.maktab.service;
+package ir.maktab.service.impl;
 
 import ir.maktab.data.model.MainService;
 import ir.maktab.data.repository.MainServicesRepository;
+import ir.maktab.service.MainServicesServiceInterface;
 import ir.maktab.util.exception.ExistException;
 import ir.maktab.util.exception.NotFound;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class MainServicesService {
+public class MainServicesService implements MainServicesServiceInterface {
     private final MainServicesRepository mainServicesRepository;
 
     public void addServices(MainService mainService) {
